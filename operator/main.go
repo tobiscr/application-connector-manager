@@ -36,6 +36,10 @@ import (
 	//+kubebuilder:scaffold:imports
 )
 
+const (
+	chartPath = "./module-chart"
+)
+
 var (
 	scheme   = runtime.NewScheme()
 	setupLog = ctrl.Log.WithName("setup")
@@ -90,8 +94,9 @@ func main() {
 	}
 
 	if err = (&controllers.ApplicationConnectorReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:    mgr.GetClient(),
+		Scheme:    mgr.GetScheme(),
+		ChartPath: chartPath,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "ApplicationConnector")
 		os.Exit(1)
