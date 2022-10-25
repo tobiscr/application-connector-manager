@@ -17,7 +17,6 @@ limitations under the License.
 package controllers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/go-logr/logr"
@@ -27,7 +26,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/kyma-project/module-manager/operator/pkg/declarative"
 
@@ -61,14 +59,6 @@ func (r *ApplicationConnectorReconciler) initReconciler(mgr ctrl.Manager) error 
 		declarative.WithManifestResolver(manifestResolver),
 		declarative.WithResourcesReady(true),
 	)
-}
-
-func (r *ApplicationConnectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
-
-	// TODO(user): your logic here
-
-	return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
@@ -107,11 +97,11 @@ func (m *ManifestResolver) Get(obj types.BaseCustomObject, logger logr.Logger) (
 			fmt.Errorf("invalid type conversion for %s", client.ObjectKeyFromObject(obj))
 	}
 
-	//flags, err := structToFlags(sample.Spec)
-	//if err != nil {
-	//	return types.InstallationSpec{},
-	//		fmt.Errorf("resolving manifest failed: %w", err)
-	//}
+	flags, err := structToFlags(sample.Spec)
+	if err != nil {
+		return types.InstallationSpec{},
+			fmt.Errorf("resolving manifest failed: %w", err)
+	}
 
 	return types.InstallationSpec{
 		ChartPath: m.chartPath,

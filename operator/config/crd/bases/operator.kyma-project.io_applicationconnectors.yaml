@@ -35,6 +35,11 @@ spec:
             type: object
           spec:
             description: ApplicationConnectorSpec defines the desired state of ApplicationConnector
+            properties:
+              disableLegacyConnectivity:
+                type: string
+            required:
+            - disableLegacyConnectivity
             type: object
           status:
             description: Status defines the observed state of CustomObject.

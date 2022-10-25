@@ -26,13 +26,7 @@ import (
 
 // ApplicationConnectorSpec defines the desired state of ApplicationConnector
 type ApplicationConnectorSpec struct {
-	//DisableLegacyConnectivity string `json:"disableLegacyConnectivity"`
-}
-
-// ApplicationConnectorStatus defines the observed state of ApplicationConnector
-type ApplicationConnectorStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	DisableLegacyConnectivity string `json:"disableLegacyConnectivity"`
 }
 
 //+kubebuilder:object:root=true
@@ -43,8 +37,8 @@ type ApplicationConnector struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	//Spec   ApplicationConnectorSpec `json:"spec,omitempty"`
-	Status types.Status `json:"status,omitempty"`
+	Spec   ApplicationConnectorSpec `json:"spec,omitempty"`
+	Status types.Status             `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
@@ -58,4 +52,18 @@ type ApplicationConnectorList struct {
 
 func init() {
 	SchemeBuilder.Register(&ApplicationConnector{}, &ApplicationConnectorList{})
+}
+
+var _ types.CustomObject = &ApplicationConnector{}
+
+func (s *ApplicationConnector) GetStatus() types.Status {
+	return s.Status
+}
+
+func (s *ApplicationConnector) SetStatus(status types.Status) {
+	s.Status = status
+}
+
+func (s *ApplicationConnector) ComponentName() string {
+	return "application-connector"
 }
