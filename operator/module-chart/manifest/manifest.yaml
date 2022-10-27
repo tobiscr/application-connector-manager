@@ -4,7 +4,7 @@ apiVersion: v1
 kind: LimitRange
 metadata:
   name: kyma-default
-  namespace: kyma-integration
+  namespace: kyma-system
   labels:
     release: applicationconnector-sample
     helm.sh/chart: application-connector-1.0.0
@@ -48,7 +48,7 @@ data:
 kind: Secret
 metadata:
   name: helm-secret
-  namespace: kyma-integration
+  namespace: kyma-system
   labels:
     release: applicationconnector-sample
     helm.sh/chart: application-connector-1.0.0
@@ -129,7 +129,7 @@ metadata:
     app.kubernetes.io/instance: applicationconnector-sample
 subjects:
 - kind: User
-  name: system:serviceaccount:kyma-integration:default
+  name: system:serviceaccount:kyma-system:default
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -206,7 +206,7 @@ spec:
           - "--proxyPort=8080"
           - "--proxyPortCompass=8082"
           - "--externalAPIPort=8081"
-          - "--applicationSecretsNamespace=kyma-integration"
+          - "--applicationSecretsNamespace=kyma-system"
           - "--requestTimeout=10"
           - "--proxyTimeout=10"
           - "--proxyCacheTTL=120"
