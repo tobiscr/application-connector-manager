@@ -166,6 +166,7 @@ $(LOCALBIN):
 	mkdir -p $(LOCALBIN)
 
 ## Tool Binaries
+KUSTOMIZE_VERSION ?= v4.5.6
 KUSTOMIZE ?= $(LOCALBIN)/kustomize
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
@@ -179,9 +180,6 @@ KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/k
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
 $(KUSTOMIZE): $(LOCALBIN)
 	test -s $(LOCALBIN)/kustomize || { curl -Ss $(KUSTOMIZE_INSTALL_SCRIPT) | bash -s -- $(subst v,,$(KUSTOMIZE_VERSION)) $(LOCALBIN); }
-
-
-
 
 .PHONY: controller-gen
 controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary.
@@ -199,9 +197,13 @@ TEMPLATE_DIR ?= charts/$(MODULE_NAME)-operator
 GEN_CHART ?= sh hack/gen-chart.sh
 GEN_MODULE_TEMPLATE ?= sh hack/gen-mod-template.sh
 
+.PHONY: module-image
+module-image: docker-build docker-push ## Build the Module Image and push it to a registry defined in IMG_REGISTRY
+	echo "built and pushed module image $(IMG)"
+
 .PHONY: module-build
 module-build: kustomize kyma  ## Build the Module and push it to a registry defined in MODULE_REGISTRY
-	@$(KYMA) alpha create module kyma.project.io/module/$(MODULE_NAME) $(MODULE_VERSION) . $(MODULE_CREATION_FLAGS)
+	@$(KYMA) alpha create module kyma.project.io/module/$(MODULE_NAME) $(MODULE_VERSION) ./module-chart $(MODULE_CREATION_FLAGS)
 
 .PHONY: module-template-push
 module-template-push: crane ## Pushes the ModuleTemplate referencing the Image on MODULE_REGISTRY
@@ -209,11 +211,6 @@ module-template-push: crane ## Pushes the ModuleTemplate referencing the Image o
 	@crane append -f <(tar -f - -c ./template.yaml) -t ${MODULE_REGISTRY}/templates/$(MODULE_NAME):$(MODULE_VERSION)
 
 ##@ Tools
-
-## Location to install dependencies to
-LOCALBIN ?= $(shell pwd)/bin
-$(LOCALBIN):
-	mkdir -p $(LOCALBIN)
 
 ########## Kyma CLI ###########
 KYMA_STABILITY ?= unstable
@@ -232,14 +229,6 @@ $(KYMA):
 	$(if $(KYMA_FILE_NAME),,$(call os_error, ${OS_TYPE}, ${OS_ARCH}))
 	test -f $@ || curl -s -Lo $(KYMA) https://storage.googleapis.com/kyma-cli-$(KYMA_STABILITY)/$(KYMA_FILE_NAME)
 	chmod +x $(KYMA)
-
-########## Kustomize ###########
-KUSTOMIZE_VERSION ?= v4.5.6
-KUSTOMIZE ?= $(LOCALBIN)/kustomize
-.PHONY: kustomize
-kustomize: $(KUSTOMIZE) ## Download & Build kustomize locally if necessary.
-$(KUSTOMIZE): $(LOCALBIN)
-	GOBIN=$(LOCALBIN) go install sigs.k8s.io/kustomize/kustomize/v4@$(KUSTOMIZE_VERSION)
 
 ########## Grafana Dashboard ###########
 .PHONY: grafana-dashboard
