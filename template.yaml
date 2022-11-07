@@ -1,0 +1,57 @@
+apiVersion: operator.kyma-project.io/v1alpha1
+kind: ModuleTemplate
+metadata:
+  name: moduletemplate-application-connector
+  namespace: kcp-system
+  labels:
+    "operator.kyma-project.io/managed-by": "lifecycle-manager"
+    "operator.kyma-project.io/controller-name": "manifest"
+    "operator.kyma-project.io/module-name": "application-connector"
+  annotations:
+    "operator.kyma-project.io/module-version": "0.0.1"
+    "operator.kyma-project.io/module-provider": "internal"
+    "operator.kyma-project.io/descriptor-schema-version": "v2"
+spec:
+  target: remote
+  channel: stable
+  data:
+    apiVersion: operator.kyma-project.io/v1alpha1
+    kind: ApplicationConnector
+    metadata:
+      labels:
+        app.kubernetes.io/name: applicationconnector
+        app.kubernetes.io/instance: applicationconnector-sample
+        app.kubernetes.io/part-of: application-connector-manager
+        app.kuberentes.io/managed-by: kustomize
+        app.kubernetes.io/created-by: application-connector-manager
+      name: applicationconnector-sample
+    spec:
+      disableLegacyConnectivity : "false"
+  descriptor:
+    component:
+      componentReferences: []
+      name: kyma.project.io/module/application-connector
+      provider: internal
+      repositoryContexts:
+      - baseUrl: op-kcp-registry.localhost:8888/unsigned
+        componentNameMapping: urlPath
+        type: ociRegistry
+      resources:
+      - access:
+          digest: sha256:be17202ddbb60cc7fecd3f8f3d66d5e5dfdedab2af18bafedbc4b06a4528c9b7
+          type: localOciBlob
+        name: application-connector-operator
+        relation: local
+        type: helm-chart
+        version: 0.0.1
+      - access:
+          digest: sha256:db86408caca4c94250d8291aa79655b84146f9cc45e0da49f05a52b3722d74a0
+          type: localOciBlob
+        name: config
+        relation: local
+        type: yaml
+        version: 0.0.1
+      sources: []
+      version: 0.0.1
+    meta:
+      schemaVersion: v2
