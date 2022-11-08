@@ -24,6 +24,8 @@ vendor/*
 *.swo
 *~
 
+template.yaml
+
 mod
 bin
 charts
