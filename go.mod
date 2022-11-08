@@ -1,4 +1,4 @@
-module github.com/kyma-project/application-connector-manager/operator
+module github.com/kyma-project/application-connector-manager
 
 go 1.19
 

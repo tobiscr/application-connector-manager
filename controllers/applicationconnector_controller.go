@@ -29,7 +29,7 @@ import (
 
 	"github.com/kyma-project/module-manager/operator/pkg/declarative"
 
-	"github.com/kyma-project/application-connector-manager/operator/api/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 )
 
 const (

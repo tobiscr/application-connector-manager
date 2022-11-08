@@ -27,7 +27,7 @@ spec:
         type: ociRegistry
       resources:
       - access:
-          digest: sha256:579872afb2b10bf83b6df00b52e04659fbc805c9c8abf8e5ff172b59110cf86b
+          digest: sha256:7a894b0c0cde1011148ea719daccb2eae7ee39259f6cb009bfbe47fe28813bfa
           type: localOciBlob
         name: module-chart
         relation: local
