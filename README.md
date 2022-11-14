@@ -16,9 +16,27 @@ The configuration of released module is described as a `ModuleTemplate` Custom R
 It can be installed on Kyma Cluster managed by Moduletemplates operator.
 
 The installed Application Connector module is represented as ApplicationConnector Kubernetes CR. \
+
+```yaml
+apiVersion: operator.kyma-project.io/v1alpha1
+kind: ApplicationConnector
+metadata:
+  labels:
+    app.kubernetes.io/name: applicationconnector
+    app.kubernetes.io/instance: applicationconnector-sample
+    app.kubernetes.io/part-of: application-connector-manager
+    app.kuberentes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: application-connector-manager
+  name: applicationconnector-sample
+spec:
+  disableLegacyConnectivity : "false"
+```
+
 Any update to this CR is intercepted by Application Connector Manager and applied on Application Connector binaries.
 
-> Note: On this stage of development ApplicationConnector CRD contains only single parameter for testing.\
+
+
+> Note: On this stage of development the ApplicationConnector CRD contains only single parameter for testing.\
 > The ApplicationConnector CRD and will be extended during further development.
 
 See also:
@@ -157,7 +175,7 @@ This command builds a Docker image for Application Connector Manager and pushes 
 
 ```bash
 curl registry.localhost:5001/v2/_catalog
-{"repositories":["unsigned/component-descriptors/kyma.project.io/module/keda","unsigned/operator-images/keda-operator"]}
+{"repositories":["unsigned/component-descriptors/kyma.project.io/module/application-connector","unsigned/operator-images/application-connector-operator"]}
 ```
 
 7. Inspect the generated module template
@@ -214,11 +232,11 @@ NAMESPACE    NAME           STATE   AGE
 kcp-system   default-kyma   Ready   71s
 ```
 
-Keda Module is a known module, but not activated
+applicationconnector Module is a known module, but not activated
 ```bash
 kubectl get moduletemplates.operator.kyma-project.io -A 
 NAMESPACE    NAME                  AGE
-kcp-system   moduletemplate-keda   2m24s
+kcp-system   moduletemplate-applicationconnector   2m24s
 ```
 
 9. Give Module Manager permission to install CustomResourceDefinition (CRD) cluster-wide
@@ -242,7 +260,7 @@ add
   - "*"
 ```
 
-10. Enable Keda in Kyma
+10. Enable ApplicationConnector in Kyma
 
 Edit Kyma CR ...
 
