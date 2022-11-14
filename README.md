@@ -1,94 +1,259 @@
-# application-connector-manager
-// TODO(user): Add simple overview of use/purpose
+# Application Connector Manager
 
-## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+## Overview
 
-## Getting Started
-You’ll need a Kubernetes cluster to run against. You can use [KIND](https://sigs.k8s.io/kind) to get a local cluster for testing, or run against a remote cluster.
-**Note:** Your controller will automatically use the current context in your kubeconfig file (i.e. whatever cluster `kubectl cluster-info` shows).
+The repository contains following projects:
 
-### Running on the cluster
-1. Install Instances of Custom Resources:
+- **Application Connector Manager** - operator compatible with Lifecycle Manager that manages Application Connector module in Kyma.
+- **Application Connector Module build configuration** to deliver the functionality of Application Connector as a Kyma module
 
-```sh
-kubectl apply -f config/samples/
+> Note: Docker images for Application Connector binaries are build separately from main GitHub [Kyma repository](https://github.com/kyma-project/kyma/)
+ 
+## How it works 
+ 
+The Application Connector Module represents a specific version of Application Connector binaries delivered via Kyma release channel.\
+The configuration of released module is described as a `ModuleTemplate` Custom Resource and delivered as OCI image.\
+It can be installed on Kyma Cluster managed by Moduletemplates operator.
+
+The installed Application Connector module is represented as ApplicationConnector Kubernetes CR. \
+Any update to this CR is intercepted by Application Connector Manager and applied on Application Connector binaries.
+
+> Note: On this stage of development ApplicationConnector CRD contains only single parameter for testing.\
+> The ApplicationConnector CRD and will be extended during further development.
+
+See also:
+- [lifecycle-manager documetation](https://github.com/kyma-project/lifecycle-manager)
+- [Application connector documentation](https://kyma-project.io/docs/kyma/main/01-overview/main-areas/application-connectivity/ac-01-application-connector/) 
+- [Modularization of Kyma](https://github.com/kyma-project/community/tree/main/concepts/modularization)
+
+## Prerequisites
+
+- Access to a k8s cluster. You can use [K3d](https://k3d.io) to get a local cluster for testing, or run against a remote cluster.
+- [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [kubebuilder](https://book.kubebuilder.io/)
+
+
+```bash
+# you could use one of the following options
+
+# option 1: using brew
+brew install kubebuilder
+
+# option 2: fetch sources directly
+curl -L -o kubebuilder https://go.kubebuilder.io/dl/latest/$(go env GOOS)/$(go env GOARCH)
+chmod +x kubebuilder && mv kubebuilder /usr/local/bin/
 ```
 
-2. Build and push your image to the location specified by `IMG`:
-	
-```sh
-make docker-build docker-push IMG=<some-registry>/application-connector-manager:tag
-```
-	
-3. Deploy the controller to the cluster with the image specified by `IMG`:
+## Manual `application-connector-manager` installation
 
-```sh
-make deploy IMG=<some-registry>/application-connector-manager:tag
+1. Clone project
+
+```bash
+git clone https://github.com/kyma-project/application-connector-manager.git && cd application-connector-manager/
 ```
 
-### Uninstall CRDs
-To delete the CRDs from the cluster:
+2. Set `application-connector-manager` image name
 
-```sh
-make uninstall
+```bash
+export IMG=custom-application-connector-manager:0.0.1
+export K3D_CLUSTER_NAME=application-connector-manager-demo
 ```
 
-### Undeploy controller
-UnDeploy the controller to the cluster:
+3. Build project
 
-```sh
-make undeploy
+```bash
+make build
 ```
 
-## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
+4. Build image
 
-### How it works
-This project aims to follow the Kubernetes [Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/)
-
-It uses [Controllers](https://kubernetes.io/docs/concepts/architecture/controller/) 
-which provides a reconcile function responsible for synchronizing resources untile the desired state is reached on the cluster 
-
-### Test It Out
-1. Install the CRDs into the cluster:
-
-```sh
-make install
+```bash
+make docker-build
 ```
 
-2. Run your controller (this will run in the foreground, so switch to a new terminal if you want to leave it running):
+5. Push image to registry
 
-```sh
-make run
+<div tabs name="Push image" group="application-connector-installation">
+  <details>
+  <summary label="k3d">
+  k3d
+  </summary>
+
+   ```bash
+   k3d image import $IMG -c $K3D_CLUSTER_NAME
+   ```
+  </details>
+  <details>
+  <summary label="Docker registry">
+  Globally available Docker registry
+  </summary>
+
+   ```bash
+   make docker-push
+   ```
+
+  </details>
+</div>
+
+6. Deploy
+
+```bash
+make deploy
 ```
 
-**NOTE:** You can also run this in one step by running: `make install run`
+## Using `application-connector-manager`
 
-### Modifying the API definitions
-If you are editing the API definitions, generate the manifests such as CRs or CRDs using:
+- Create ApplicationConnector instance
 
-```sh
-make manifests
+```bash
+kubectl apply -f config/samples/operator_v1alpha1_applicationconnector.yaml
 ```
 
-**NOTE:** Run `make --help` for more information on all potential `make` targets
+- Delete ApplicationConnector instance
 
-More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
+```bash
+kubectl delete -f config/samples/operator_v1alpha1_applicationconnector.yaml
+```
 
-## License
+- Update ApplicationConnector properties
 
-Copyright 2022.
+TODO: Provide example of CR update
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+## Build and install of Application Connector module in modular Kyma on the local k3d cluster
 
-    http://www.apache.org/licenses/LICENSE-2.0
+1. Setup local k3d cluster and local Docker registry
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+```bash
+k3d cluster create kyma --registry-create registry.localhost:0.0.0.0:5001
+```
+2. Add the `etc/hosts` entry to register the local Docker registry under the `registry.localhost` name
+
+```
+127.0.0.1 registry.localhost
+```
+
+3. Export environment variables (ENVs) pointing to module and the module image registries
+
+```bash
+export IMG_REGISTRY=registry.localhost:5001/unsigned/operator-images
+export MODULE_REGISTRY=registry.localhost:5001/unsigned
+```
+
+4. Build Application Connector module 
+```bash
+make module-build
+```
+
+This command builds an OCI image for Application Connector module and pushes it to the registry and path, as defined in `MODULE_REGISTRY`.
+
+5. Build Application Connector manager image
+```bash
+make module-image
+```
+
+This command builds a Docker image for Application Connector Manager and pushes it to the registry and path, as defined in `MODULE_REGISTRY`.
+
+6. Verify if the module and the manager's image are pushed to the local registry
+
+```bash
+curl registry.localhost:5001/v2/_catalog
+{"repositories":["unsigned/component-descriptors/kyma.project.io/module/keda","unsigned/operator-images/keda-operator"]}
+```
+
+7. Inspect the generated module template
+
+The following are temporary workarounds.
+
+Edit the `template.yaml` file and:
+
+- change `target` to `control-plane`
+>**NOTE:** This is only required in the single cluster mode
+
+```yaml
+spec:
+  target: control-plane
+```
+
+- change the existing repository context in `spec.descriptor.component`:
+>**NOTE:** Because Pods inside the k3d cluster use the docker-internal port of the registry, it tries to resolve the registry against port 5000 instead of 5001. K3d has registry aliases but module-manager is not part of k3d and thus does not know how to properly alias `registry.localhost:5001`
+
+```yaml
+repositoryContexts:                                                                           
+- baseUrl: registry.localhost:5000/unsigned                                                   
+  componentNameMapping: urlPath                                                               
+  type: ociRegistry
+```
+
+
+8. Install modular Kyma on the k3d cluster
+
+This installs the latest versions of `module-manager` and `lifecycle-manager`
+
+You can use the `--template` flag to deploy the ApplicationConnector module manifest from the beginning or apply it using kubectl later.
+
+```bash
+kyma alpha deploy  --template=./template.yaml
+
+- Kustomize ready
+- Lifecycle Manager deployed
+- Module Manager deployed
+- Modules deployed
+- Kyma CR deployed
+- Kyma deployed successfully!
+
+Kyma is installed in version:
+Kyma installation took:		18 seconds
+
+Happy Kyma-ing! :)
+```
+
+Kyma installation is ready, but no module is activated yet
+```bash
+kubectl get kymas.operator.kyma-project.io -A
+NAMESPACE    NAME           STATE   AGE
+kcp-system   default-kyma   Ready   71s
+```
+
+Keda Module is a known module, but not activated
+```bash
+kubectl get moduletemplates.operator.kyma-project.io -A 
+NAMESPACE    NAME                  AGE
+kcp-system   moduletemplate-keda   2m24s
+```
+
+9. Give Module Manager permission to install CustomResourceDefinition (CRD) cluster-wide
+
+>**NOTE:** This is a temporary workaround and is only required in the single-cluster mode
+
+Module-manager must be able to apply CRDs to install modules. In the remote mode (with control-plane managing remote clusters) it gets an administrative kubeconfig, targeting the remote cluster to do so. But in local mode (single-cluster mode), it uses Service Account and does not have permission to create CRDs by default.
+
+Run the following to make sure the module manager's Service Account becomes an administrative role:
+
+```bash
+kubectl edit clusterrole module-manager-manager-role
+```
+add
+```yaml
+- apiGroups:                                                                                                                  
+  - "*"                                                                                                                       
+  resources:                                                                                                                  
+  - "*"                                                                                                                       
+  verbs:                                                                                                                      
+  - "*"
+```
+
+10. Enable Keda in Kyma
+
+Edit Kyma CR ...
+
+```bash
+kubectl edit kymas.operator.kyma-project.io -n kcp-system default-kyma
+```
+..to add ApplicationConnector module
+
+```yaml
+spec:
+  modules:
+  - name: applicationconnector
+```
 
