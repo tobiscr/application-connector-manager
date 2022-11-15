@@ -15,7 +15,7 @@ The Application Connector Module represents a specific version of Application Co
 The configuration of released module is described as a `ModuleTemplate` Custom Resource and delivered as OCI image.\
 It can be installed on Kyma Cluster managed by Moduletemplates operator.
 
-The installed Application Connector module is represented as ApplicationConnector Kubernetes CR. \
+The installed Application Connector module is represented as ApplicationConnector Kubernetes CR.
 
 ```yaml
 apiVersion: operator.kyma-project.io/v1alpha1
