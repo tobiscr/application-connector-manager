@@ -153,8 +153,8 @@ k3d cluster create kyma --registry-create registry.localhost:0.0.0.0:5001
 3. Export environment variables (ENVs) pointing to module and the module image registries
 
 ```bash
-export IMG_REGISTRY=registry.localhost:5001/unsigned/operator-images
-export MODULE_REGISTRY=registry.localhost:5001/unsigned
+export IMG_REGISTRY=registry.localhost:8888/unsigned/operator-images
+export MODULE_REGISTRY=registry.localhost:8888/unsigned
 ```
 
 4. Build Application Connector module 
@@ -174,7 +174,7 @@ This command builds a Docker image for Application Connector Manager and pushes 
 6. Verify if the module and the manager's image are pushed to the local registry
 
 ```bash
-curl registry.localhost:5001/v2/_catalog
+curl registry.localhost:8888/v2/_catalog
 {"repositories":["unsigned/component-descriptors/kyma.project.io/module/application-connector","unsigned/operator-images/application-connector-operator"]}
 ```
 
@@ -193,7 +193,7 @@ spec:
 ```
 
 - change the existing repository context in `spec.descriptor.component`:
->**NOTE:** Because Pods inside the k3d cluster use the docker-internal port of the registry, it tries to resolve the registry against port 5000 instead of 5001. K3d has registry aliases but module-manager is not part of k3d and thus does not know how to properly alias `registry.localhost:5001`
+>**NOTE:** Because Pods inside the k3d cluster use the docker-internal port of the registry, it tries to resolve the registry against port 5000 instead of 8888. K3d has registry aliases but module-manager is not part of k3d and thus does not know how to properly alias `registry.localhost:8888`
 
 ```yaml
 repositoryContexts:                                                                           

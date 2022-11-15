@@ -1,12 +1,12 @@
 # Adds namespace to all resources.
-namespace: application-connector-manager-system
+namespace: kyma-system
 
 # Value of this field is prepended to the
 # names of all resources, e.g. a deployment named
 # "wordpress" becomes "alices-wordpress".
 # Note that it should also match with the prefix (text before '-') of the namespace
 # field above.
-namePrefix: application-connector-manager-
+namePrefix: app-connector-mgr-
 
 # Labels to add to all resources and selectors.
 #labels:

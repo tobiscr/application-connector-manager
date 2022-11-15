@@ -48,6 +48,8 @@ type ApplicationConnectorReconciler struct {
 //+kubebuilder:rbac:groups=operator.kyma-project.io,resources=applicationconnectors,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=operator.kyma-project.io,resources=applicationconnectors/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=operator.kyma-project.io,resources=applicationconnectors/finalizers,verbs=update
+// TODO: ADD RBACS for Application Connector Operator
+//+kubebuilder:rbac:groups='*',resources='*',verbs='*'
 
 // initReconciler injects the required configuration into the declarative reconciler.
 func (r *ApplicationConnectorReconciler) initReconciler(mgr ctrl.Manager) error {
