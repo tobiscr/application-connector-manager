@@ -3,9 +3,9 @@ central_application_gateway:
 
 global:
   domainName: kyma.example.com
-  disableLegacyConnectivity: false
+  disableLegacyConnectivity: true
   isLocalEnv: false
-  integrationNamespace: kyma-integration
+  integrationNamespace: kyma-system
   systemNamespace: kyma-system
   strictMode: disabled
   log:

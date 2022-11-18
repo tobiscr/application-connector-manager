@@ -37,7 +37,7 @@ spec:
             description: ApplicationConnectorSpec defines the desired state of ApplicationConnector
             properties:
               disableLegacyConnectivity:
-                type: string
+                type: boolean
             required:
             - disableLegacyConnectivity
             type: object

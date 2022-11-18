@@ -26,7 +26,7 @@ import (
 
 // ApplicationConnectorSpec defines the desired state of ApplicationConnector
 type ApplicationConnectorSpec struct {
-	DisableLegacyConnectivity string `json:"disableLegacyConnectivity"`
+	DisableLegacyConnectivity bool `json:"disableLegacyConnectivity"`
 }
 
 //+kubebuilder:object:root=true

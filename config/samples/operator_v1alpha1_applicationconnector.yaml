@@ -1,6 +1,7 @@
 apiVersion: operator.kyma-project.io/v1alpha1
 kind: ApplicationConnector
 metadata:
+  namespace: kyma-system
   labels:
     app.kubernetes.io/name: applicationconnector
     app.kubernetes.io/instance: applicationconnector-sample
@@ -9,4 +10,4 @@ metadata:
     app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
 spec:
-  disableLegacyConnectivity : "false"
+  disableLegacyConnectivity : true
