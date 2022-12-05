@@ -2,20 +2,20 @@
 
 ## Overview
 
-The repository contains following projects:
+This repository contains the following projects:
 
-- **Application Connector Manager** - operator compatible with Lifecycle Manager that manages Application Connector module in Kyma.
-- **Application Connector Module build configuration** to deliver the functionality of Application Connector as a Kyma module
+- **Application Connector Manager** - operator compatible with Lifecycle Manager that manages the Application Connector module in Kyma.
+- **Application Connector Module build configuration** - delivers the functionality of Application Connector as a Kyma module
 
-> Note: Docker images for Application Connector binaries are build separately from main GitHub [Kyma repository](https://github.com/kyma-project/kyma/)
+> Note: Docker images for Application Connector binaries are built separately from the main GitHub [Kyma repository](https://github.com/kyma-project/kyma/).
  
 ## How it works 
  
-The Application Connector Module represents a specific version of Application Connector binaries delivered via Kyma release channel.\
-The configuration of released module is described as a `ModuleTemplate` Custom Resource and delivered as OCI image.\
-It can be installed on Kyma Cluster managed by Moduletemplates operator.
+The Application Connector Module represents a specific version of the Application Connector binaries delivered using the Kyma release channel.\
+The configuration of the released module is described as a ModuleTemplate custom resource (CR) and delivered as an OCI image.\
+It can be installed on the Kyma Cluster managed by Template Operator.
 
-The installed Application Connector module is represented as ApplicationConnector Kubernetes CR.
+The installed Application Connector module is represented as the ApplicationConnector Kubernetes CR.
 
 ```yaml
 apiVersion: operator.kyma-project.io/v1alpha1
@@ -32,16 +32,16 @@ spec:
   disableLegacyConnectivity : "false"
 ```
 
-Any update to this CR is intercepted by Application Connector Manager and applied on Application Connector binaries.
+Any update to this CR is intercepted by Application Connector Manager and applied to the Application Connector binaries.
 
 
 
-> Note: On this stage of development the ApplicationConnector CRD contains only single parameter for testing.\
-> The ApplicationConnector CRD and will be extended during further development.
+> Note: At this stage of development, the ApplicationConnector Custom Resource Definition (CRD) contains only one parameter for testing.\
+> The ApplicationConnector CRD will be extended during further development.
 
 See also:
-- [lifecycle-manager documetation](https://github.com/kyma-project/lifecycle-manager)
-- [Application connector documentation](https://kyma-project.io/docs/kyma/main/01-overview/main-areas/application-connectivity/ac-01-application-connector/) 
+- [lifecycle-manager documentation](https://github.com/kyma-project/lifecycle-manager#lifecycle-manager)
+- [Application Connector documentation](https://kyma-project.io/docs/kyma/main/01-overview/main-areas/application-connectivity/ac-01-application-connector/) 
 - [Modularization of Kyma](https://github.com/kyma-project/community/tree/main/concepts/modularization)
 
 ## Prerequisites
@@ -70,7 +70,7 @@ chmod +x kubebuilder && mv kubebuilder /usr/local/bin/
 git clone https://github.com/kyma-project/application-connector-manager.git && cd application-connector-manager/
 ```
 
-2. Set `application-connector-manager` image name
+2. Set the `application-connector-manager` image name
 
 ```bash
 export IMG=custom-application-connector-manager:0.0.1
@@ -121,13 +121,13 @@ make deploy
 
 ## Using `application-connector-manager`
 
-- Create ApplicationConnector instance
+- Create an ApplicationConnector instance
 
 ```bash
 kubectl apply -f config/samples/operator_v1alpha1_applicationconnector.yaml
 ```
 
-- Delete ApplicationConnector instance
+- Delete an ApplicationConnector instance
 
 ```bash
 kubectl delete -f config/samples/operator_v1alpha1_applicationconnector.yaml
@@ -137,7 +137,7 @@ kubectl delete -f config/samples/operator_v1alpha1_applicationconnector.yaml
 
 TODO: Provide example of CR update
 
-## Build and install of Application Connector module in modular Kyma on the local k3d cluster
+## Build and install the Application Connector module in modular Kyma on the local k3d cluster
 
 1. Setup local k3d cluster and local Docker registry
 
@@ -150,7 +150,7 @@ k3d cluster create kyma --registry-create registry.localhost:0.0.0.0:5001
 127.0.0.1 registry.localhost
 ```
 
-3. Export environment variables (ENVs) pointing to module and the module image registries
+3. Export environment variables (ENVs) pointing to the module and the module image registries
 
 ```bash
 export IMG_REGISTRY=registry.localhost:8888/unsigned/operator-images
@@ -162,9 +162,9 @@ export MODULE_REGISTRY=registry.localhost:8888/unsigned
 make module-build
 ```
 
-This command builds an OCI image for Application Connector module and pushes it to the registry and path, as defined in `MODULE_REGISTRY`.
+This command builds an OCI image for the Application Connector module and pushes it to the registry and path, as defined in `MODULE_REGISTRY`.
 
-5. Build Application Connector manager image
+5. Build the Application Connector manager image
 ```bash
 make module-image
 ```
@@ -180,7 +180,7 @@ curl registry.localhost:8888/v2/_catalog
 
 7. Inspect the generated module template
 
-The following are temporary workarounds.
+The following are temporary workarounds:
 
 Edit the `template.yaml` file and:
 
@@ -193,7 +193,7 @@ spec:
 ```
 
 - change the existing repository context in `spec.descriptor.component`:
->**NOTE:** Because Pods inside the k3d cluster use the docker-internal port of the registry, it tries to resolve the registry against port 5000 instead of 8888. K3d has registry aliases but module-manager is not part of k3d and thus does not know how to properly alias `registry.localhost:8888`
+>**NOTE:** Because Pods inside the k3d cluster use the docker-internal port of the registry, it tries to resolve the registry against port 5000 instead of 8888. K3d has registry aliases, but module-manager is not part of k3d and thus does not know how to properly alias `registry.localhost:8888`.
 
 ```yaml
 repositoryContexts:                                                                           
@@ -232,14 +232,14 @@ NAMESPACE    NAME           STATE   AGE
 kcp-system   default-kyma   Ready   71s
 ```
 
-applicationconnector Module is a known module, but not activated
+The `applicationconnector` module is a known module, but not activated
 ```bash
 kubectl get moduletemplates.operator.kyma-project.io -A 
 NAMESPACE    NAME                  AGE
 kcp-system   moduletemplate-applicationconnector   2m24s
 ```
 
-9. Give Module Manager permission to install CustomResourceDefinition (CRD) cluster-wide
+9. Give Module Manager permission to install the CRD cluster-wide
 
 >**NOTE:** This is a temporary workaround and is only required in the single-cluster mode
 
