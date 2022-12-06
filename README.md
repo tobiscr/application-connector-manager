@@ -5,7 +5,7 @@
 This repository contains the following projects:
 
 - **Application Connector Manager** - operator compatible with Lifecycle Manager that manages the Application Connector module in Kyma.
-- **Application Connector Module build configuration** - delivers the functionality of Application Connector as a Kyma module
+- **Application Connector Module build configuration** - delivers the functionality of Application Connector as a Kyma module.
 
 > Note: Docker images for Application Connector binaries are built separately from the main GitHub [Kyma repository](https://github.com/kyma-project/kyma/).
  
