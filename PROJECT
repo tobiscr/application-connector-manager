@@ -1,0 +1,16 @@
+domain: kyma-project.io
+layout:
+- go.kubebuilder.io/v3
+projectName: application-connector-manager
+repo: github.com/kyma-project/application-connector-manager
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: operator.kyma-project.io
+  group: operator
+  kind: ApplicationConnector
+  path: github.com/kyma-project/application-connector-manager/api/v1alpha1
+  version: v1alpha1
+version: "3"
