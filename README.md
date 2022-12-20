@@ -226,7 +226,7 @@ Kyma installation took:		18 seconds
 Happy Kyma-ing! :)
 ```
 
-Kyma installation is ready, but the moduele is not yet activated.
+Kyma installation is ready, but the module is not yet activated.
 ```bash
 kubectl get kymas.operator.kyma-project.io -A
 NAMESPACE    NAME           STATE   AGE
@@ -240,7 +240,7 @@ NAMESPACE    NAME                  AGE
 kcp-system   moduletemplate-applicationconnector   2m24s
 ```
 
-1. Give Module Manager permission to install the CRD cluster-wide.
+9. Give Module Manager permission to install the CRD cluster-wide.
 
 >**NOTE:** This is a temporary workaround and is only required in the single-cluster mode.
 
