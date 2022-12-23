@@ -1,0 +1,8 @@
+# Default owners of the repository
+* @VOID404 @akgalwas @koala7659 @franpog859 @mvshao
+
+# All files and subdirectories in /docs
+/docs/ @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko
+
+# All .md files
+*.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko
