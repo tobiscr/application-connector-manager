@@ -17,12 +17,38 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"github.com/kyma-project/module-manager/operator/pkg/types"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+type ConditionReason string
+
+type ConditionType string
+
+const (
+	StateReady      = "Ready"
+	StateError      = "Error"
+	StateProcessing = "Processing"
+	StateDeleting   = "Deleting"
+
+	ServedTrue  = "True"
+	ServedFalse = "False"
+
+	ConditionReasonDeploymentUpdateErr = ConditionReason("KedaDeploymentUpdateErr")
+	ConditionReasonVerificationErr     = ConditionReason("VerificationErr")
+	ConditionReasonVerified            = ConditionReason("Verified")
+	ConditionReasonApplyObjError       = ConditionReason("ApplyObjError")
+	ConditionReasonVerification        = ConditionReason("Verification")
+	ConditionReasonInitialized         = ConditionReason("Initialized")
+	ConditionReasonKedaDuplicated      = ConditionReason("KedaDuplicated")
+	ConditionReasonDeletion            = ConditionReason("Deletion")
+	ConditionReasonDeletionErr         = ConditionReason("DeletionErr")
+	ConditionReasonDeleted             = ConditionReason("Deleted")
+
+	ConditionTypeInstalled = ConditionType("Installed")
+	ConditionTypeDeleted   = ConditionType("Deleted")
+
+	Finalizer = "application-connector-manager.kyma-project.io/deletion-hook"
+)
 
 // ApplicationConnectorSpec defines the desired state of ApplicationConnector
 type ApplicationConnectorSpec struct {
@@ -38,7 +64,7 @@ type ApplicationConnector struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	Spec   ApplicationConnectorSpec `json:"spec,omitempty"`
-	Status types.Status             `json:"status,omitempty"`
+	Status Status                   `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
@@ -50,20 +76,14 @@ type ApplicationConnectorList struct {
 	Items           []ApplicationConnector `json:"items"`
 }
 
-func init() {
-	SchemeBuilder.Register(&ApplicationConnector{}, &ApplicationConnectorList{})
-}
-
-var _ types.CustomObject = &ApplicationConnector{}
-
-func (s *ApplicationConnector) GetStatus() types.Status {
-	return s.Status
-}
-
-func (s *ApplicationConnector) SetStatus(status types.Status) {
-	s.Status = status
-}
-
-func (s *ApplicationConnector) ComponentName() string {
-	return "application-connector"
+func (k *ApplicationConnector) UpdateStateProcessing(c ConditionType, r ConditionReason, msg string) {
+	k.Status.State = StateProcessing
+	condition := metav1.Condition{
+		Type:               string(c),
+		Status:             "Unknown",
+		LastTransitionTime: metav1.Now(),
+		Reason:             string(r),
+		Message:            msg,
+	}
+	meta.SetStatusCondition(&k.Status.Conditions, condition)
 }
