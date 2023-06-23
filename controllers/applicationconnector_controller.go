@@ -26,6 +26,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -48,6 +49,20 @@ type applicationConnectorReconciler struct {
 	log *zap.SugaredLogger
 	reconciler.Cfg
 	reconciler.K8s
+}
+
+func NewApplicationConnetorReconciler(c client.Client, r record.EventRecorder, log *zap.SugaredLogger, o []unstructured.Unstructured) ApplicationConnetorReconciler {
+	return &applicationConnectorReconciler{
+		log: log,
+		Cfg: reconciler.Cfg{
+			Finalizer: v1alpha1.Finalizer,
+			Objs:      o,
+		},
+		K8s: reconciler.K8s{
+			Client:        c,
+			EventRecorder: r,
+		},
+	}
 }
 
 func (r *applicationConnectorReconciler) mapFunction(object client.Object) []reconcile.Request {

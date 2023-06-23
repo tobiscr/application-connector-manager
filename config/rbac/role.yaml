@@ -36,6 +36,14 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - ""
+  resources:
   - serviceaccounts
   verbs:
   - '*'
@@ -48,6 +56,7 @@ rules:
   - delete
   - get
   - list
+  - patch
   - update
   - watch
 - apiGroups:
@@ -81,6 +90,7 @@ rules:
   - delete
   - get
   - list
+  - patch
   - update
   - watch
 - apiGroups:
@@ -102,6 +112,7 @@ rules:
   - list
   - patch
   - update
+  - watch
 - apiGroups:
   - networking.istio.io
   resources:
@@ -113,6 +124,7 @@ rules:
   - list
   - patch
   - update
+  - watch
 - apiGroups:
   - networking.istio.io
   resources:
@@ -124,6 +136,7 @@ rules:
   - list
   - patch
   - update
+  - watch
 - apiGroups:
   - operator.kyma-project.io
   resources:
@@ -162,3 +175,4 @@ rules:
   - list
   - patch
   - update
+  - watch

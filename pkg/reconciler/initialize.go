@@ -3,7 +3,7 @@ package reconciler
 import (
 	"context"
 
-	"github.com/kyma-project/keda-manager/api/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
@@ -39,5 +39,5 @@ func sFnInitialize(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.
 	if instanceIsBeingDeleted {
 		return switchState(sFnDeleteResources)
 	}
-	return switchState(sFnUpdateKedaDeployment)
+	return switchState(sFnUpdate)
 }

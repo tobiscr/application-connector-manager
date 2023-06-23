@@ -29,7 +29,6 @@ import (
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
-	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -49,7 +48,6 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-	utilruntime.Must(apiextensionsv1.AddToScheme(scheme))
 	utilruntime.Must(operatorv1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
@@ -119,14 +117,14 @@ func main() {
 
 	setupLog.Info(fmt.Sprintf("log level set to: %s", appConLogger.Level()))
 
-	kedaReconciler := controllers.NewKedaReconciler(
+	appConReconciler := controllers.NewApplicationConnetorReconciler(
 		mgr.GetClient(),
-		mgr.GetEventRecorderFor("keda-manager"),
+		mgr.GetEventRecorderFor("application-connector-manager"),
 		appConLogger.Sugar(),
 		data,
 	)
-	if err = kedaReconciler.SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Keda")
+	if err = appConReconciler.SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "AppliactionConnector")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

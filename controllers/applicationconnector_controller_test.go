@@ -102,7 +102,7 @@ func (h *testHelper) getApplicationConnectorState(appConnName string) (rtypes.St
 	if err != nil {
 		return emptyState, err
 	}
-	return connector.Status.State, nil
+	return rtypes.State(connector.Status.State), nil
 }
 
 func (h *testHelper) createApplicationConnector(appConnectorName string, spec v1alpha1.ApplicationConnectorSpec) {

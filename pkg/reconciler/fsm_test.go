@@ -4,10 +4,14 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	apirt "k8s.io/apimachinery/pkg/runtime"
+)
+
+const (
+	operatorName = "application-connector-manager"
 )
 
 func Test_updateObj_convert_errors(t *testing.T) {
@@ -55,7 +59,7 @@ func Test_updateObj_convert_errors(t *testing.T) {
 			toUnstructed = tt.args.toUnstructed
 			fromUnstructured = tt.args.fromUnstructed
 
-			err := updateObj(&u, nil, func(*appsv1.Deployment, interface{}) error {
+			err := unstructured.Update(&u, nil, func(*appsv1.Deployment, interface{}) error {
 				t.Log("deployment updated")
 				return nil
 			})

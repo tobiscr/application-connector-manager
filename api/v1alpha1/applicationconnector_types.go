@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -33,16 +34,14 @@ const (
 	ServedTrue  = "True"
 	ServedFalse = "False"
 
-	ConditionReasonDeploymentUpdateErr = ConditionReason("KedaDeploymentUpdateErr")
-	ConditionReasonVerificationErr     = ConditionReason("VerificationErr")
-	ConditionReasonVerified            = ConditionReason("Verified")
-	ConditionReasonApplyObjError       = ConditionReason("ApplyObjError")
-	ConditionReasonVerification        = ConditionReason("Verification")
-	ConditionReasonInitialized         = ConditionReason("Initialized")
-	ConditionReasonKedaDuplicated      = ConditionReason("KedaDuplicated")
-	ConditionReasonDeletion            = ConditionReason("Deletion")
-	ConditionReasonDeletionErr         = ConditionReason("DeletionErr")
-	ConditionReasonDeleted             = ConditionReason("Deleted")
+	ConditionReasonVerificationErr = ConditionReason("VerificationErr")
+	ConditionReasonVerified        = ConditionReason("Verified")
+	ConditionReasonApplyObjError   = ConditionReason("ApplyObjError")
+	ConditionReasonVerification    = ConditionReason("Verification")
+	ConditionReasonInitialized     = ConditionReason("Initialized")
+	ConditionReasonDeletion        = ConditionReason("Deletion")
+	ConditionReasonDeletionErr     = ConditionReason("DeletionErr")
+	ConditionReasonDeleted         = ConditionReason("Deleted")
 
 	ConditionTypeInstalled = ConditionType("Installed")
 	ConditionTypeDeleted   = ConditionType("Deleted")
@@ -86,4 +85,44 @@ func (k *ApplicationConnector) UpdateStateProcessing(c ConditionType, r Conditio
 		Message:            msg,
 	}
 	meta.SetStatusCondition(&k.Status.Conditions, condition)
+}
+
+func (k *ApplicationConnector) UpdateStateFromErr(c ConditionType, r ConditionReason, err error) {
+	k.Status.State = StateError
+	condition := metav1.Condition{
+		Type:               string(c),
+		Status:             "False",
+		LastTransitionTime: metav1.Now(),
+		Reason:             string(r),
+		Message:            err.Error(),
+	}
+	meta.SetStatusCondition(&k.Status.Conditions, condition)
+}
+
+func (k *ApplicationConnector) UpdateStateReady(c ConditionType, r ConditionReason, msg string) {
+	k.Status.State = StateReady
+	condition := metav1.Condition{
+		Type:               string(c),
+		Status:             "True",
+		LastTransitionTime: metav1.Now(),
+		Reason:             string(r),
+		Message:            msg,
+	}
+	meta.SetStatusCondition(&k.Status.Conditions, condition)
+}
+
+func (k *ApplicationConnector) UpdateStateDeletion(c ConditionType, r ConditionReason, msg string) {
+	k.Status.State = StateDeleting
+	condition := metav1.Condition{
+		Type:               string(c),
+		Status:             "Unknown",
+		LastTransitionTime: metav1.Now(),
+		Reason:             string(r),
+		Message:            msg,
+	}
+	meta.SetStatusCondition(&k.Status.Conditions, condition)
+}
+
+func init() {
+	SchemeBuilder.Register(&ApplicationConnector{}, &ApplicationConnectorList{})
 }

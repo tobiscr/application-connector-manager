@@ -18,19 +18,23 @@ package controllers
 
 import (
 	"context"
-	"path/filepath"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"testing"
-
+	"github.com/kyma-project/application-connector-manager/pkg/reconciler"
+	"github.com/kyma-project/application-connector-manager/pkg/yaml"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
+	uzap "go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/record"
+	"os"
+	"path/filepath"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	"testing"
 
 	operatorv1alpha1 "github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	//+kubebuilder:scaffold:imports
@@ -39,7 +43,7 @@ import (
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
 // http://onsi.github.io/ginkgo/ to learn more about Ginkgo.
 
-var cfg *rest.Config
+var config *rest.Config
 var k8sClient client.Client
 var testEnv *envtest.Environment
 
@@ -53,39 +57,54 @@ var _ = BeforeSuite(func() {
 
 	By("bootstrapping test environment")
 	testEnv = &envtest.Environment{
-		CRDDirectoryPaths: []string{
-			filepath.Join("..", "config", "crd", "bases"),
-			filepath.Join("..", "hack", "crd"),
-		},
+		CRDDirectoryPaths:     []string{filepath.Join("..", "config", "crd", "bases")},
 		ErrorIfCRDPathMissing: true,
 	}
 
 	var err error
-	// cfg is defined in this file globally.
-	cfg, err = testEnv.Start()
+	// config is defined in this file globally.
+	config, err = testEnv.Start()
 	Expect(err).NotTo(HaveOccurred())
-	Expect(cfg).NotTo(BeNil())
+	Expect(config).NotTo(BeNil())
 
 	err = operatorv1alpha1.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	//+kubebuilder:scaffold:scheme
 
-	k8sClient, err = client.New(cfg, client.Options{Scheme: scheme.Scheme})
+	k8sClient, err = client.New(config, client.Options{Scheme: scheme.Scheme})
 	Expect(err).NotTo(HaveOccurred())
 	Expect(k8sClient).NotTo(BeNil())
 
-	k8sManager, err := ctrl.NewManager(cfg, ctrl.Options{
+	k8sManager, err := ctrl.NewManager(config, ctrl.Options{
 		Scheme: scheme.Scheme,
 	})
 	Expect(err).ToNot(HaveOccurred())
 
-	chartPath := filepath.Join("..", "module-chart")
+	config := uzap.NewDevelopmentConfig()
+	config.EncoderConfig.TimeKey = "timestamp"
+	config.Encoding = "json"
+	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("Jan 02 15:04:05.000000000")
 
-	err = (&ApplicationConnectorReconciler{
-		Client:    k8sManager.GetClient(),
-		Scheme:    k8sManager.GetScheme(),
-		ChartPath: chartPath,
+	appConLogger, err := config.Build()
+	Expect(err).NotTo(HaveOccurred())
+
+	file, err := os.Open("../application-connector.yaml")
+	Expect(err).ShouldNot(HaveOccurred())
+
+	data, err := yaml.LoadData(file)
+	Expect(err).ShouldNot(HaveOccurred())
+
+	err = (&applicationConnectorReconciler{
+		log: appConLogger.Sugar(),
+		K8s: reconciler.K8s{
+			Client:        k8sManager.GetClient(),
+			EventRecorder: record.NewFakeRecorder(100),
+		},
+		Cfg: reconciler.Cfg{
+			Finalizer: "application-connector-manager.kyma-project.io/deletion-hook",
+			Objs:      data,
+		},
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 
@@ -98,6 +117,7 @@ var _ = BeforeSuite(func() {
 		err = k8sManager.Start(ctx)
 		Expect(err).ToNot(HaveOccurred(), "failed to run manager")
 	}()
+
 })
 
 var _ = AfterSuite(func() {

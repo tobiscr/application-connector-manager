@@ -11,6 +11,7 @@ metadata:
     app.kubernetes.io/name: central-application-connectivity-validator
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 ---
 # Source: application-connector/charts/central-application-gateway/templates/rbac.yaml
 apiVersion: v1
@@ -24,6 +25,7 @@ metadata:
     app.kubernetes.io/name: central-application-gateway
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 ---
 # Source: application-connector/charts/central-application-connectivity-validator/templates/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -36,6 +38,7 @@ metadata:
     app.kubernetes.io/name: central-application-connectivity-validator
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 rules:
 - apiGroups: ["applicationconnector.kyma-project.io"]
   resources: ["applications"]
@@ -52,6 +55,7 @@ metadata:
     app.kubernetes.io/name: central-application-gateway
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 rules:
 - apiGroups: ["applicationconnector.kyma-project.io"]
   resources: ["applications"]
@@ -71,6 +75,7 @@ metadata:
     app.kubernetes.io/name: application-connector
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 rules:
 - apiGroups: ["applicationconnector.kyma-project.io"]
   resources: ["applications"]
@@ -87,6 +92,7 @@ metadata:
     app.kubernetes.io/name: central-application-connectivity-validator
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 subjects:
 - kind: User
   name: system:serviceaccount:kyma-system:central-application-connectivity-validator
@@ -107,6 +113,7 @@ metadata:
     app.kubernetes.io/name: central-application-gateway
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 subjects:
 - kind: User
   name: system:serviceaccount:kyma-system:central-application-gateway
@@ -127,6 +134,7 @@ metadata:
     app.kubernetes.io/name: application-connector
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 subjects:
 - kind: User
   name: system:serviceaccount:kyma-system:default
@@ -149,6 +157,7 @@ metadata:
     app.kubernetes.io/name: central-application-connectivity-validator
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
   type: ClusterIP
   ports:
@@ -175,6 +184,7 @@ metadata:
     app.kubernetes.io/name: central-application-gateway
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
   type: ClusterIP
   ports:
@@ -203,6 +213,7 @@ metadata:
     app.kubernetes.io/name: central-application-connectivity-validator
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
   strategy:
     type: RollingUpdate
@@ -218,6 +229,7 @@ spec:
         sidecar.istio.io/inject: "true"
       labels:
         app: central-application-connectivity-validator
+        app.kubernetes.io/part-of: application-connector-manager
         release: application-connector
     spec:
       serviceAccountName: central-application-connectivity-validator
@@ -254,13 +266,6 @@ spec:
             port: 8081
           initialDelaySeconds: 10
           periodSeconds: 10
-        resources:
-          limits:
-            cpu: 500m
-            memory: 128Mi
-          requests:
-            cpu: 20m
-            memory: 64Mi
         ports:
           - containerPort: 8080
             name: http-proxy
@@ -283,6 +288,7 @@ metadata:
     app.kubernetes.io/name: central-application-gateway
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
   strategy:
     type: RollingUpdate
@@ -298,6 +304,7 @@ spec:
         sidecar.istio.io/inject: "true"
       labels:
         app: central-application-gateway
+        app.kubernetes.io/part-of: application-connector-manager
         release: application-connector
     spec:
       serviceAccountName: central-application-gateway
@@ -358,9 +365,10 @@ metadata:
     app.kubernetes.io/name: central-application-connectivity-validator
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
-  minReplicas: 2
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
@@ -379,9 +387,10 @@ metadata:
     app.kubernetes.io/name: central-application-gateway
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
-  minReplicas: 2
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
@@ -399,6 +408,7 @@ metadata:
     app.kubernetes.io/name: application-connector
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
   selector:
     istio: ingressgateway # use istio default ingress gateway
@@ -432,6 +442,7 @@ metadata:
     app.kubernetes.io/name: central-application-connectivity-validator
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
   hosts:
     - gateway.kyma.example.com
@@ -452,23 +463,3 @@ spec:
             port:
               number: 8080
             host: central-application-connectivity-validator
----
-# Source: application-connector/charts/central-application-gateway/templates/tests/test-connection.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: "application-connector-central-application-gateway-test-connection"
-  labels:
-    app.kubernetes.io/name: central-application-gateway
-    app.kubernetes.io/instance: application-connector
-    app.kubernetes.io/version: "1.16.0"
-    app.kubernetes.io/managed-by: application-connector-manager
-  annotations:
-    "helm.sh/hook": test-success
-spec:
-  containers:
-    - name: wget
-      image: europe-docker.pkg.dev/kyma-project/prod/external/busybox:1.34.1-v1
-      command: ['wget']
-      args: ['application-connector-central-application-gateway:']
-  restartPolicy: Never

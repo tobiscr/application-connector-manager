@@ -115,9 +115,9 @@ deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 .PHONY: render-manifest
-render-manifest: manifests kustomize ## Render keda-manager.yaml manifest.
+render-manifest: manifests kustomize ## Render application-connector-manager.yaml manifest.
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default > keda-manager.yaml
+	$(KUSTOMIZE) build config/default > application-connector-manager.yaml
 
 .PHONY: undeploy
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with IGNORE_NOT_FOUND=true to ignore resource not found errors during deletion.

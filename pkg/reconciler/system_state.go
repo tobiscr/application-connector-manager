@@ -15,7 +15,7 @@ type systemState struct {
 	snapshot v1alpha1.Status
 }
 
-func (s *systemState) saveKedaStatus() {
+func (s *systemState) saveAppConStatus() {
 	result := s.instance.Status.DeepCopy()
 	if result == nil {
 		result = &v1alpha1.Status{}
