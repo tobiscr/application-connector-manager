@@ -34,7 +34,7 @@ run-with-lifecycle-manager: \
 .PHONY: run-without-lifecycle-manager
 run-without-lifecycle-manager: ## Create k3d cluster and deploy module without the lifecycle-manager.
 run-without-lifecycle-manager: \
-    kyma \
+	kyma \
 	create-k3d \
 	create-kyma-system-ns \
 	patch-with-istio-crds \
