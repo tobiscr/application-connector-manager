@@ -43,13 +43,26 @@ import (
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
 // http://onsi.github.io/ginkgo/ to learn more about Ginkgo.
 
-var config *rest.Config
-var k8sClient client.Client
-var testEnv *envtest.Environment
+var (
+	config    *rest.Config
+	k8sClient client.Client
+	testEnv   *envtest.Environment
+
+	externalDependencyDataPath = "../hack/common/k3d-patches/patch-istio-crds.yaml"
+)
 
 func TestAPIs(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Controller Suite")
+}
+
+func builZapLogger() (*uzap.Logger, error) {
+	config := uzap.NewDevelopmentConfig()
+	config.EncoderConfig.TimeKey = "timestamp"
+	config.Encoding = "json"
+	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("Jan 02 15:04:05.000000000")
+
+	return config.Build()
 }
 
 var _ = BeforeSuite(func() {
@@ -76,17 +89,25 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	Expect(k8sClient).NotTo(BeNil())
 
+	// load and apply external dependencies
+
+	depsFile, err := os.Open(externalDependencyDataPath)
+	Expect(err).ShouldNot(HaveOccurred())
+
+	deps, err := yaml.LoadData(depsFile)
+	Expect(err).ShouldNot(HaveOccurred())
+
+	for _, u := range deps {
+		err = k8sClient.Create(context.TODO(), &u)
+		Expect(err).ShouldNot(HaveOccurred())
+	}
+
 	k8sManager, err := ctrl.NewManager(config, ctrl.Options{
 		Scheme: scheme.Scheme,
 	})
 	Expect(err).ToNot(HaveOccurred())
 
-	config := uzap.NewDevelopmentConfig()
-	config.EncoderConfig.TimeKey = "timestamp"
-	config.Encoding = "json"
-	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("Jan 02 15:04:05.000000000")
-
-	appConLogger, err := config.Build()
+	mgrLogger, err := builZapLogger()
 	Expect(err).NotTo(HaveOccurred())
 
 	file, err := os.Open("../application-connector.yaml")
@@ -96,7 +117,7 @@ var _ = BeforeSuite(func() {
 	Expect(err).ShouldNot(HaveOccurred())
 
 	err = (&applicationConnectorReconciler{
-		log: appConLogger.Sugar(),
+		log: mgrLogger.Sugar(),
 		K8s: reconciler.K8s{
 			Client:        k8sManager.GetClient(),
 			EventRecorder: record.NewFakeRecorder(100),

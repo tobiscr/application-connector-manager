@@ -3,16 +3,21 @@ package reconciler
 import (
 	"context"
 	"fmt"
-
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	apirt "k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
 const (
 	msgVerificationInProgress = "verification in progress"
+)
+
+var (
+	fromUnstructured = apirt.DefaultUnstructuredConverter.FromUnstructured
+	toUnstructed     = apirt.DefaultUnstructuredConverter.ToUnstructured
 )
 
 func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result, error) {

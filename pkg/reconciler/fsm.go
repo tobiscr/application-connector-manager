@@ -9,15 +9,9 @@ import (
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	"go.uber.org/zap"
-	apirt "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-)
-
-var (
-	fromUnstructured = apirt.DefaultUnstructuredConverter.FromUnstructured
-	toUnstructed     = apirt.DefaultUnstructuredConverter.ToUnstructured
 )
 
 type stateFn func(context.Context, *fsm, *systemState) (stateFn, *ctrl.Result, error)

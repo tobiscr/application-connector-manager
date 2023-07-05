@@ -168,6 +168,15 @@ envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
 $(ENVTEST): $(LOCALBIN)
 	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
+########## Y-Query ###########
+YQUERY ?= $(LOCALBIN)/yq
+YQ_VERSION ?= v4
+
+.PHONY: yq
+yq: $(YQUERY) ## Download yq locally if necessary.
+$(YQUERY): $(LOCALBIN)
+	test -s $(LOCALBIN)/yq || { go get github.com/mikefarah/yq/$(YQ_VERSION) ; GOBIN=$(LOCALBIN) go install github.com/mikefarah/yq/$(YQ_VERSION) ; }
+
 ########## Kyma CLI ###########
 KYMA_STABILITY ?= unstable
 

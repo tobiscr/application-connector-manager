@@ -19,9 +19,10 @@ help:
 .PHONY: run-with-lifecycle-manager
 run-with-lifecycle-manager: ## Create k3d cluster and deploy module with the lifecycle-manager.
 run-with-lifecycle-manager: \
-    kyma \
+        kyma \
 	create-k3d \
 	create-kyma-system-ns \
+	patch-with-istio-crds \
 	module-image \
 	yq-install \
 	module-build \
@@ -34,7 +35,7 @@ run-with-lifecycle-manager: \
 .PHONY: run-without-lifecycle-manager
 run-without-lifecycle-manager: ## Create k3d cluster and deploy module without the lifecycle-manager.
 run-without-lifecycle-manager: \
-	kyma \
+        kyma \
 	create-k3d \
 	create-kyma-system-ns \
 	patch-with-istio-crds \
@@ -85,7 +86,7 @@ fix-template: ## Create template-k3d.yaml based on template.yaml with right URLs
 
 .PHONY: enable-module
 enable-module: ## Patch serverless module in the right Kyma CR.
-	kubectl patch applicationconnectors.operator.kyma-project.io \
+	kubectl patch kymas.operator.kyma-project.io \
 		default-kyma \
 		-n kyma-system \
 		--type=merge \
