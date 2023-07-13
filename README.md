@@ -41,7 +41,7 @@ Any update to this CR is intercepted by Application Connector Manager and applie
 
 See also:
 - [lifecycle-manager documentation](https://github.com/kyma-project/lifecycle-manager#lifecycle-manager)
-- [Application Connector documentation](https://kyma-project.io/docs/kyma/main/01-overview/main-areas/application-connectivity/ac-01-application-connector/) 
+- [Application Connector documentation](https://kyma-project.io/docs/kyma/main/01-overview/application-connectivity/ac-01-application-connector/) 
 - [Modularization of Kyma](https://github.com/kyma-project/community/tree/main/concepts/modularization)
 
 ## Prerequisites
