@@ -247,8 +247,6 @@ spec:
           - "--eventingDestinationPath=/publish"
           - "--eventingPathPrefixEvents=/%%APP_NAME%%/events"
           - "--appNamePlaceholder=%%APP_NAME%%"
-          - "--cacheExpirationSeconds=90"
-          - "--cacheCleanupIntervalSeconds=15"
         env:
           - name: APP_LOG_FORMAT
             value: "json"
