@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
-	rtypes "github.com/kyma-project/module-manager/operator/pkg/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
@@ -19,8 +18,9 @@ import (
 )
 
 const (
-	appGatewayDeploymentName      = "central-application-gateway"
-	appConValidatorDeploymentName = "central-application-connectivity-validator"
+	appGatewayDeploymentName             = "central-application-gateway"
+	appConValidatorDeploymentName        = "central-application-connectivity-validator"
+	appCompassRuntimeAgentDeploymentName = "compass-runtime-agent"
 )
 
 var _ = Describe("ApplicationConnector controller", func() {
@@ -38,7 +38,7 @@ var _ = Describe("ApplicationConnector controller", func() {
 	})
 })
 
-func validateAppConState(ctx context.Context, expected rtypes.State, key types.NamespacedName) error {
+func validateAppConState(ctx context.Context, expected State, key types.NamespacedName) error {
 	state, err := getApplicationConnectorState(ctx, key)
 	if err != nil {
 		return err
@@ -64,7 +64,7 @@ func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
 	// both deployments should not be ready, the CR status should be in
 	// processing state
 	Eventually(validateAppConState).
-		WithArguments(ctx, rtypes.StateProcessing, instanceNsName).
+		WithArguments(ctx, StateProcessing, instanceNsName).
 		WithPolling(time.Second).
 		WithTimeout(t).
 		Should(Succeed())
@@ -76,7 +76,7 @@ func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
 	// application-connectivity-validator deployments should not be ready, the CR status should be in
 	// processing state
 	Eventually(validateAppConState).
-		WithArguments(ctx, rtypes.StateProcessing, instanceNsName).
+		WithArguments(ctx, StateProcessing, instanceNsName).
 		WithPolling(time.Second).
 		WithTimeout(t).
 		Should(Succeed())
@@ -88,7 +88,7 @@ func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
 	// both deployments should be ready, the CR status should be in
 	// ready state
 	Eventually(validateAppConState).
-		WithArguments(ctx, rtypes.StateReady, instanceNsName).
+		WithArguments(ctx, StateReady, instanceNsName).
 		WithPolling(time.Second).
 		WithTimeout(t).
 		Should(Succeed())
@@ -176,12 +176,12 @@ func simulateK8sDeploymentRdy(ctx context.Context, key types.NamespacedName) err
 	})
 }
 
-func getApplicationConnectorState(ctx context.Context, key types.NamespacedName) (rtypes.State, error) {
-	var emptyState = rtypes.State("")
+func getApplicationConnectorState(ctx context.Context, key types.NamespacedName) (State, error) {
+	var emptyState = State("")
 	var connector v1alpha1.ApplicationConnector
 	err := k8sClient.Get(ctx, key, &connector)
 	if err != nil {
 		return emptyState, err
 	}
-	return rtypes.State(connector.Status.State), nil
+	return State(connector.Status.State), nil
 }

@@ -40,6 +40,27 @@ const (
 	chartNs = "kyma-system"
 )
 
+type State string
+
+// Valid CustomObject States.
+const (
+	// StateReady signifies application-connector is ready and has been installed successfully.
+	StateReady State = "Ready"
+
+	// StateProcessing signifies application-connector is reconciling and is in the process of installation.
+	// Processing can also signal that the Installation previously encountered an error and is now recovering.
+	StateProcessing State = "Processing"
+
+	// StateError signifies an error for application-connector. This signifies that the Installation
+	// process encountered an error.
+	// Contrary to Processing, it can be expected that this state should change on the next retry.
+	StateError State = "Error"
+
+	// StateDeleting signifies application-connector is being deleted. This is the state that is used
+	// when a deletionTimestamp was detected and Finalizers are picked up.
+	StateDeleting State = "Deleting"
+)
+
 type ApplicationConnetorReconciler interface {
 	reconcile.Reconciler
 	SetupWithManager(mgr ctrl.Manager) error
