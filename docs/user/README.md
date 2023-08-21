@@ -6,13 +6,13 @@ Application Connectivity in Kyma is an area that:
 
 - Simplifies and secures the connection between external systems and Kyma
 - Stores and handles the metadata of external systems
-- Provides certificate handling for the [Eventing](../eventing/README.md) flow in the Compass scenario (mode)
+- Provides certificate handling for the [Eventing](https://github.com/kyma-project/kyma/blob/main/docs/01-overview/eventing/README.md) flow in the Compass scenario (mode)
 - Manages secure access to external systems
 - Provides monitoring and tracing capabilities to facilitate operational aspects
 
 Depending on your use case, Application Connectivity works in one of the two modes: 
 - **Standalone mode** (default) - a standalone mode where Kyma is not connected to [Compass](https://github.com/kyma-incubator/compass)
-- **Compass mode** - using [Runtime Agent](ra-01-runtime-agent-overview.md) and integration with [Compass](https://github.com/kyma-incubator/compass) to automate connection and registration of services using mTLS certificates
+- **Compass mode** - using [Runtime Agent](00-30-runtime-agent-overview.md) and integration with [Compass](https://github.com/kyma-incubator/compass) to automate connection and registration of services using mTLS certificates
 
 
 ## Application Connector module
@@ -23,9 +23,9 @@ AC allows you to connect with external solutions. No matter if you want to integ
 
 The external solution you connect to Kyma using AC is represented as an Application. There is always a one-to-one relationship between a connected solution and an Application, which helps to ensure the highest level of security and separation. This means that you must create five separate Applications in your cluster to connect five different external solutions and use their APIs and event catalogs in Kyma.
 
-Application Connector secures Eventing with a client certificate verified by the Istio Ingress Gateway in the [Compass scenario](./README.md).
+Application Connector secures Eventing with a client certificate verified by the Istio Ingress Gateway in the Compass scenario.
 
->**NOTE:** When using AC, make sure to [enable automatic Istio sidecar proxy injection](../../04-operation-guides/operations/smsh-01-istio-enable-sidecar-injection.md). For more details, see [Default Istio setup in Kyma](../../01-overview/service-mesh/smsh-02-default-istio-setup-in-kyma.md).
+>**NOTE:** When using AC, make sure to [enable automatic Istio sidecar proxy injection](https://github.com/kyma-project/kyma/blob/main/docs/04-operation-guides/operations/smsh-01-istio-enable-sidecar-injection.md). For more details, see [Default Istio setup in Kyma](https://github.com/kyma-project/kyma/blob/main/docs/01-overview/service-mesh/smsh-02-default-istio-setup-in-kyma.md).
 
 ### Features
 
@@ -34,8 +34,8 @@ Application Connector:
 - Simplifies and secures the connection between external systems and Kyma
 - Stores and handles the metadata of external APIs
 - Proxies calls sent from Kyma to external APIs registered by the connected external solution 
-- Provides certificate handling for the [Eventing](../eventing/README.md) flow in the [Compass scenario](./README.md)
-- Delivers events from the connected external solution to Eventing in the [Compass scenario](./README.md) 
+- Provides certificate handling for the [Eventing](https://github.com/kyma-project/kyma/blob/main/docs/01-overview/eventing/README.md) flow in the Compass scenario
+- Delivers events from the connected external solution to Eventing in the Compass scenario 
 - Manages secure access to external systems
 
 All the AC components scale independently, which allows you to adjust it to fit the needs of the implementation built using Kyma.
@@ -65,8 +65,6 @@ When you enable the Application Connector module, Application Connector Manager 
 
 If you want to perform some simple and more advanced tasks, check the [Application Connectivity tutorials](tutorials/README.md).
 
-To troubleshoot AC-related issues, see the [troubleshooting guides](troubleshooting-guides/README.md).
+To learn more about the architecture, the configuration parameters, custom resources (CRs) and any other references, visit [technical reference](technical-reference/README.md).
 
-To analyze Function specification and configuration files and to understand technicalities behind Serverless implementation, visit [technical reference](technical-reference/README.md).
-
-For more information on the ApplicationConnector CRs, see [Resources](resources/README.md).
+For more information on the CRs, see [Resources](resources/README.md).
