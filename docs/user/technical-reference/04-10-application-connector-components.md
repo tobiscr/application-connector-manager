@@ -1,6 +1,6 @@
 # Application Connector components
 
-![Architecture Diagram](assets/ac-application-connector-architecture.svg)
+![Architecture Diagram](../../assets/ac-application-connector-architecture.svg)
 
 ## Istio Ingress Gateway
 

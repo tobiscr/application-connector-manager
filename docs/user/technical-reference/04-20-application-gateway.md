@@ -4,7 +4,7 @@ Application Gateway sends the requests from Functions and services in Kyma to ex
 
 The following diagram illustrates how Application Gateway interacts with other modules and external APIs, which are either unsecured or secured with various security mechanisms and protected against cross-site request forgery (CSRF) attacks.
 
-![Application Gateway Diagram](assets/ac-architecture-proxy-service.svg)
+![Application Gateway Diagram](../../assets/ac-architecture-proxy-service.svg)
 
 > **NOTE:** See how the [Gateway URL differs](07-10-application-gateway-details.md#application-gateway-url) for the [Standalone and Compass modes](../README.md).
 

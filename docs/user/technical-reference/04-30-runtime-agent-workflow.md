@@ -4,7 +4,7 @@
 
 This document presents the workflow of Runtime Agent.
 
-![Runtime Agent architecture](assets/ra-runtime-agent-workflow.svg)
+![Runtime Agent architecture](../../assets/ra-runtime-agent-workflow.svg)
 
 1. Runtime Agent fetches the certificate from the [Connector](https://github.com/kyma-incubator/compass/blob/master/docs/connector/02-01-connector-service.md) to initialize connection with Compass.
 
