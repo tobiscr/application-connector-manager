@@ -6,11 +6,11 @@
 
 The Istio Ingress Gateway exposes Application Connector and other Kyma modules.
 The DNS name of the Ingress is cluster-dependent and follows the `gateway.{cluster-dns}` format. For example, `gateway.servicemanager.cluster.kyma.cx`.
-Istio Ingress Gateway secures the endpoints with certificate validation in the [Compass scenario](../../01-overview/application-connectivity/README.md). Each call must include a valid client certificate.
+Istio Ingress Gateway secures the endpoints with certificate validation in the [Compass scenario](../README.md). Each call must include a valid client certificate.
 
 ## Application Connectivity Validator
 
-Application Connectivity Validator verifies the subject of the client certificate and proxies requests to Event Publisher in the [Compass scenario](../../01-overview/application-connectivity/README.md).
+Application Connectivity Validator verifies the subject of the client certificate and proxies requests to Event Publisher in the [Compass scenario](../README.md).
 
 ## Event Publisher
 
@@ -28,7 +28,7 @@ All Applications are instances of the Application custom resource, which also st
 ## Application Gateway
 
 Application Gateway is an intermediary component between a Function or a service and an external API.
-It [proxies the requests](./ac-03-application-gateway.md) from Functions and services in Kyma to external APIs based on the configuration stored in Secrets.
+It [proxies the requests](04-20-application-gateway.md) from Functions and services in Kyma to external APIs based on the configuration stored in Secrets.
 
 Application Gateway can call services which are not secured, or are secured with:
 

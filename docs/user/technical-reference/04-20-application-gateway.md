@@ -6,7 +6,7 @@ The following diagram illustrates how Application Gateway interacts with other m
 
 ![Application Gateway Diagram](assets/ac-architecture-proxy-service.svg)
 
-> **NOTE:** See how the [Gateway URL differs](../ac-01-application-gateway-details.md#application-gateway-url) for the [Standalone and Compass modes](../../01-overview/application-connectivity/README.md).
+> **NOTE:** See how the [Gateway URL differs](07-10-application-gateway-details.md#application-gateway-url) for the [Standalone and Compass modes](../README.md).
 
 1. A Function calls Application Gateway. 
 2. Application Gateway extracts the Application name and the service name from the path. Using the extracted Application name, Application Gateway finds the respective Application custom resource and obtains the information about the registered external API, such as the API URL and security credentials. 
@@ -14,4 +14,4 @@ The following diagram illustrates how Application Gateway interacts with other m
 4. Application Gateway gets a CSRF token from the endpoint exposed by the upstream service. This step is optional and is valid only for the API which was registered with a CSRF token enabled.
 5. Application Gateway calls the target API.
 
-To learn more, read about the [Application Gateway details](../ac-01-application-gateway-details.md). 
+To learn more, read about the [Application Gateway details](07-10-application-gateway-details.md). 

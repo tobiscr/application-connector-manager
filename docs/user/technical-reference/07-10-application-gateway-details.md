@@ -6,7 +6,7 @@ Application Gateway is an intermediary component between a Function or a microse
 
 To call a remote system's API from a workload with Application Gateway, you use the URL to the `central-application-gateway.kyma-system` service at an appropriate port and with a respective suffix to access the API of a specific application.
 
-The suffix and the port number differ depending on whether you're using Kyma in the [Standalone or Compass mode](../01-overview/application-connectivity/README.md):
+The suffix and the port number differ depending on whether you're using Kyma in the [Standalone or Compass mode](../README.md):
 
 | **Kyma mode** | **Application Gateway URL** |
 |-----------|-------------------------|
@@ -21,9 +21,9 @@ The placeholders in the URLs map to the following:
 
 ## Proxying requests
 
-Application Gateway proxies requests from Functions and services in Kyma to external APIs based on the configuration stored in the [Application CR](00-custom-resources/ac-01-application.md) and Kubernetes Secrets.
+Application Gateway proxies requests from Functions and services in Kyma to external APIs based on the configuration stored in the [Application CR](../resources/06-10-application.md) and Kubernetes Secrets.
 
-For examples of configurations and Secrets, see the [tutorial on registering a secured API](../03-tutorials/00-application-connectivity/ac-04-register-secured-api.md).
+For examples of configurations and Secrets, see the [tutorial on registering a secured API](../tutorials/01-30-register-secured-api.md).
 
 > **NOTE:** All APIs defined in a single Secret use the same configuration - the same credentials, CSRF tokens, and request parameters.
 
