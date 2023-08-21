@@ -5,7 +5,7 @@ This tutorial shows how to reconnect Runtime Agent with Compass after the establ
 ## Prerequisites
 
 - [Compass](https://github.com/kyma-incubator/compass)
-- [ConfigMap created](ra-04-configure-runtime-agent-with-compass.md)
+- [ConfigMap created](../tutorials/01-90-configure-runtime-agent-with-compass.md)
 
 ## Steps
 

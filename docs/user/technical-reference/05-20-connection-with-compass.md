@@ -23,4 +23,4 @@ The connection status is preserved in the [CompassConnection](../resources/06-20
 
 If the connection with Compass fails, Runtime Agent keeps trying to connect with the token from the Secret. If the connection is established successfully, Runtime Agent ignores the Secret until the connection is lost.
 
-To see how to reconnect Runtime Agent with Compass, see the [tutorial](../tutorials/01-100-reconnect-runtie-agent-with-compass.md).
+To see how to reconnect Runtime Agent with Compass, see the [tutorial](../tutorials/01-100-reconnect-runtime-agent-with-compass.md).

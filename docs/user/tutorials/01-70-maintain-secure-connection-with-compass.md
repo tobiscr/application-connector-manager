@@ -8,7 +8,7 @@ After you have established a secure connection with Compass, you can fetch the c
 - [Compass](https://github.com/kyma-incubator/compass)
 - Registered Application
 - Runtime connected to Compass
-- [Established secure connection with Compass](ra-01-establish-secure-connection-with-compass.md)
+- [Established secure connection with Compass](01-60-establish-secure-connection-with-compass.md)
 
 ## Steps
 
@@ -73,4 +73,4 @@ After you have established a secure connection with Compass, you can fetch the c
     base64 -d {CERTIFICATE_CHAIN}
     ```
 
->**NOTE:** See how to [revoke a client certificate](ra-03-revoke-client-certificate.md).
+>**NOTE:** See how to [revoke a client certificate](01-80-revoke-client-certificate.md).

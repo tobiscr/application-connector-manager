@@ -2,12 +2,12 @@
 
 This guide shows you how to register a service of your external solution in Kyma. For this example, we use a Basic Authentication-secured API.   
 
->**NOTE:** Learn how to [register APIs secured with different security schemes or protected against cross-site request forgery (CSRF) attacks](ac-04-register-secured-api.md).
+>**NOTE:** Learn how to [register APIs secured with different security schemes or protected against cross-site request forgery (CSRF) attacks](01-30-register-secured-api.md).
 
 ## Prerequisites
 
 1. Before you start, expose the following as environment variables:
-   - Your [Application](./ac-01-create-application.md#prerequisites) name
+   - Your [Application](01-10-create-application.md#prerequisites) name
    - Username and password to access the external system
    - Name of the Secret containing the service credentials
    - Name of your service
@@ -30,7 +30,7 @@ This guide shows you how to register a service of your external solution in Kyma
      
    > **NOTE:** Replace the example values above with your actual values. 
 
-2. Enable [Istio sidecar injection](../../01-overview/service-mesh/smsh-03-istio-sidecars-in-kyma.md) in the Namespace:
+2. Enable [Istio sidecar injection](https://github.com/kyma-project/kyma/blob/main/docs/01-overview/service-mesh/smsh-03-istio-sidecars-in-kyma.md) in the Namespace:
    ```bash
    kubectl label namespace $NAMESPACE istio-injection=enabled
    ```
@@ -78,7 +78,7 @@ To check that the service was registered correctly, create a test Pod, and make 
     export GATEWAY_URL=http://central-application-gateway.kyma-system:8080/$APP_NAME/$SERVICE_DISPLAY_NAME/$TARGET_PATH
     ```
    
-    > **CAUTION:** `SERVICE_DISPLAY_NAME` in the **GATEWAY_URL** path must be in its [normalized form](./ac-04-register-secured-api.md#register-a-secured-api). This means that, for example, if you used `test-basic-auth` as the service **displayName**, you're good to go, but if you used `"Test Basic Auth"`, you must replace it with `test-basic-auth` in the path. 
+    > **CAUTION:** `SERVICE_DISPLAY_NAME` in the **GATEWAY_URL** path must be in its [normalized form](01-30-register-secured-api.md#register-a-secured-api). This means that, for example, if you used `test-basic-auth` as the service **displayName**, you're good to go, but if you used `"Test Basic Auth"`, you must replace it with `test-basic-auth` in the path. 
 
 2. Export the name of the test Pod as an environment variable:
 

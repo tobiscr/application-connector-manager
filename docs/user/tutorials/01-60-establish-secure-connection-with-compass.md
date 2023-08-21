@@ -95,4 +95,4 @@ To establish a secure connection with Compass and generate the client certificat
     base64 -d {CERTIFICATE_CHAIN}
     ```
 
-> **NOTE**: See how to [maintain a secure connection with Compass and renew a client certificate](ra-02-maintain-secure-connection-with-compass.md).
+> **NOTE**: See how to [maintain a secure connection with Compass and renew a client certificate](01-70-maintain-secure-connection-with-compass.md).
