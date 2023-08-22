@@ -1,4 +1,4 @@
-# Compass Connection
+# CompassConnection
 
 The `compassconnections.compass.kyma-project.io` CustomResourceDefinition (CRD) 
 is a detailed description of the kind of data and the format used to preserve 
