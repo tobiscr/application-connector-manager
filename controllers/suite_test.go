@@ -48,6 +48,9 @@ var (
 	k8sClient client.Client
 	testEnv   *envtest.Environment
 
+	ctx    context.Context
+	cancel context.CancelFunc
+
 	externalDependencyDataPath = "../hack/common/k3d-patches/patch-istio-crds.yaml"
 )
 
@@ -132,8 +135,7 @@ var _ = BeforeSuite(func() {
 	go func() {
 		defer GinkgoRecover()
 
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
+		ctx, cancel = context.WithCancel(context.Background())
 
 		err = k8sManager.Start(ctx)
 		Expect(err).ToNot(HaveOccurred(), "failed to run manager")
@@ -142,6 +144,8 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
+	cancel()
+
 	By("tearing down the test environment")
 	err := testEnv.Stop()
 	Expect(err).NotTo(HaveOccurred())
