@@ -104,6 +104,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	//FIXME: change to production
 	config := zap.NewDevelopmentConfig()
 	config.EncoderConfig.TimeKey = "timestamp"
 	config.Encoding = "json"
