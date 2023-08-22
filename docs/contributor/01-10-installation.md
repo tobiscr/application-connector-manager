@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-- Access to a k8s cluster.
-- [k3d](https://k3d.io) to get a local cluster for testing, or run on a remote cluster.
+- Access to a Kubernetes (v1.24 or higher) cluster
+- [k3d](https://k3d.io) to get a local cluster for testing, or run on a remote cluster
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [kubebuilder](https://book.kubebuilder.io/)
 
@@ -180,7 +180,7 @@ Edit the `template.yaml` file and:
 
 This installs the latest versions of Module Manager and Lifecycle Manager.
 
-You can use the `--template` flag to deploy the Application Connector module manifest from the beginning or apply it using kubectl later.
+Use the `--template` flag to deploy the Application Connector module manifest from the beginning or apply it using kubectl later.
 
    ```bash
    kyma alpha deploy  --template=./template.yaml

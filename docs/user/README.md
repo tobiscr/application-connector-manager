@@ -64,6 +64,6 @@ When you enable the Application Connector module, Application Connector Manager 
 
 If you want to perform some simple and more advanced tasks, check the [Application Connectivity tutorials](tutorials/README.md).
 
-To learn more about the architecture, the configuration parameters, custom resources (CRs) and any other references, visit [technical reference](technical-reference/README.md).
+To learn more about the architecture, the configuration parameters, and any other references, visit [technical reference](technical-reference/README.md).
 
 For more information on the CRs, see [Resources](resources/README.md).

@@ -13,7 +13,7 @@ This repository contains the following projects:
  
 The Application Connector module represents a specific version of the Application Connector binaries.
 The configuration of the released module is described as a ModuleTemplate custom resource (CR) and delivered as an OCI image.
-YOu can install it on the Kyma cluster managed by Template Operator.
+You can install it on the Kyma cluster managed by Template Operator.
 
 The installed Application Connector module is represented as the ApplicationConnector Kubernetes CR.
 
@@ -38,6 +38,6 @@ Any update to this CR is intercepted by Application Connector Manager and applie
 > The ApplicationConnector CRD will be extended during further development.
 
 See also:
-- [lifecycle-manager documentation](https://github.com/kyma-project/lifecycle-manager#lifecycle-manager)
-- [Application Connector documentation](docs/user/README.md) 
+- [Lifecycle Manager documentation](https://github.com/kyma-project/lifecycle-manager#lifecycle-manager)
+- [Application Connector module documentation](docs/user/README.md) 
 - [Modularization of Kyma](https://kyma-project.io/docs/kyma/latest#kyma-modules)
