@@ -1,5 +1,9 @@
 # Application Connector Manager
 
+## Status
+
+![GitHub tag checks state](https://img.shields.io/github/checks-status/kyma-project/application-connector-manager/main?label=application-connector-operator&link=https%3A%2F%2Fgithub.com%2Fkyma-project%2Fapplication-connector-manager%2Fcommits%2Fmain)
+
 ## Overview
 
 This repository contains the following projects:
