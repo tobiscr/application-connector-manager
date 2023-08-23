@@ -18,18 +18,23 @@ package controllers
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	"github.com/kyma-project/application-connector-manager/pkg/reconciler"
 	"go.uber.org/zap"
+	v2 "k8s.io/api/autoscaling/v2"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
@@ -134,6 +139,42 @@ var ommitStatusChanged = predicate.Or(
 	predicate.GenerationChangedPredicate{},
 )
 
+type hpaResourceVersionChangedPredicate struct {
+	predicate.ResourceVersionChangedPredicate
+	log *zap.SugaredLogger
+}
+
+func (h hpaResourceVersionChangedPredicate) Update(e event.UpdateEvent) bool {
+	if update := h.ResourceVersionChangedPredicate.Update(e); !update {
+		return false
+	}
+
+	var newObj v2.HorizontalPodAutoscaler
+	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(e.ObjectNew.(*unstructured.Unstructured).Object, &newObj); err != nil {
+		return true
+	}
+
+	var oldObj v2.HorizontalPodAutoscaler
+	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(e.ObjectOld.(*unstructured.Unstructured).Object, &oldObj); err != nil {
+		return true
+	}
+
+	conditionsEqual := reflect.DeepEqual(oldObj.Status.Conditions, newObj.Status.Conditions)
+	replicasEqual := oldObj.Status.CurrentReplicas == newObj.Status.CurrentReplicas
+
+	result := !conditionsEqual || !replicasEqual
+	if result {
+		h.log.With("conditionsEqual", conditionsEqual, "replicasEqual", replicasEqual).Debugf("reconciliation triggered by HPA: %s/%s", oldObj.Namespace, oldObj.Name)
+	}
+	return result
+}
+
+var hpaGroupVersionKind = schema.GroupVersionKind{
+	Group:   v2.GroupName,
+	Version: "v2",
+	Kind:    "HorizontalPodAutoscaler",
+}
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	labelSelectorPredicate, err := predicate.LabelSelectorPredicate(
@@ -152,14 +193,21 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 
 	// create functtion to register wached objects
 	watchFn := func(u unstructured.Unstructured) {
+		var objPredicate predicate.Predicate = &predicate.ResourceVersionChangedPredicate{}
+		if u.GroupVersionKind() == hpaGroupVersionKind {
+			objPredicate = hpaResourceVersionChangedPredicate{
+				log: r.log,
+			}
+		}
+
 		r.log.With("gvk", u.GroupVersionKind().String()).Infoln("adding watcher")
 		b = b.Watches(
 			&source.Kind{Type: &u},
 			handler.EnqueueRequestsFromMapFunc(r.mapFunction),
 			builder.WithPredicates(
 				predicate.And(
-					predicate.ResourceVersionChangedPredicate{},
 					labelSelectorPredicate,
+					objPredicate,
 				),
 			),
 		)

@@ -252,6 +252,13 @@ spec:
             value: "json"
           - name: APP_LOG_LEVEL
             value: "warn"
+        resources:
+          limits:
+            cpu: 100m
+            memory: 64Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi
         readinessProbe:
           httpGet:
             path: /v1/health
@@ -352,7 +359,7 @@ spec:
           allowPrivilegeEscalation: false
 ---
 # Source: application-connector/charts/central-application-connectivity-validator/templates/autoscaling.yaml
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: central-application-connectivity-validator
@@ -371,10 +378,16 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: central-application-connectivity-validator
-  targetCPUUtilizationPercentage: 80
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
 ---
 # Source: application-connector/charts/central-application-gateway/templates/hpa.yaml
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: central-application-gateway
@@ -393,7 +406,13 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: central-application-gateway
-  targetCPUUtilizationPercentage: 80
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
 ---
 # Source: application-connector/templates/application-connector-gateway.yaml
 apiVersion: networking.istio.io/v1alpha3
