@@ -17,86 +17,207 @@ limitations under the License.
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/go-logr/logr"
-	"github.com/kyma-project/module-manager/operator/pkg/types"
-	"k8s.io/client-go/rest"
-
-	"k8s.io/apimachinery/pkg/runtime"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-
-	"github.com/kyma-project/module-manager/operator/pkg/declarative"
+	"context"
+	"reflect"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/pkg/reconciler"
+	"go.uber.org/zap"
+	v2 "k8s.io/api/autoscaling/v2"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/tools/record"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/builder"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/event"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
 const (
 	chartNs = "kyma-system"
 )
 
-// ApplicationConnectorReconciler reconciles a ApplicationConnector object
-type ApplicationConnectorReconciler struct {
-	declarative.ManifestReconciler
-	client.Client
-	Scheme *runtime.Scheme
-	*rest.Config
-	ChartPath string
+type State string
+
+// Valid CustomObject States.
+const (
+	// StateReady signifies application-connector is ready and has been installed successfully.
+	StateReady State = "Ready"
+
+	// StateProcessing signifies application-connector is reconciling and is in the process of installation.
+	// Processing can also signal that the Installation previously encountered an error and is now recovering.
+	StateProcessing State = "Processing"
+
+	// StateError signifies an error for application-connector. This signifies that the Installation
+	// process encountered an error.
+	// Contrary to Processing, it can be expected that this state should change on the next retry.
+	StateError State = "Error"
+
+	// StateDeleting signifies application-connector is being deleted. This is the state that is used
+	// when a deletionTimestamp was detected and Finalizers are picked up.
+	StateDeleting State = "Deleting"
+)
+
+type ApplicationConnetorReconciler interface {
+	reconcile.Reconciler
+	SetupWithManager(mgr ctrl.Manager) error
 }
 
-//+kubebuilder:rbac:groups=operator.kyma-project.io,resources=applicationconnectors,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=operator.kyma-project.io,resources=applicationconnectors/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=operator.kyma-project.io,resources=applicationconnectors/finalizers,verbs=update
+type applicationConnectorReconciler struct {
+	log *zap.SugaredLogger
+	reconciler.Cfg
+	reconciler.K8s
+}
 
-// Application Connector charts
-//+kubebuilder:rbac:groups="applicationconnector.kyma-project.io",resources=applications,verbs=get;list;watch;create;delete;update
-//+kubebuilder:rbac:groups="",resources=configmaps,verbs=get;list;watch;create;delete;update
-//+kubebuilder:rbac:groups="",resources=namespaces,verbs=create;delete
-//+kubebuilder:rbac:groups="",resources=services,verbs=get;list;watch;create;delete;update
-//+kubebuilder:rbac:groups="*",resources=secrets,verbs=get;list;watch;create;delete;update
-//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;delete;update
-//+kubebuilder:rbac:groups=apps,resources=replicasets,verbs=list;watch;delete
-//+kubebuilder:rbac:groups="rbac.authorization.k8s.io",resources=clusterroles;clusterrolebindings,verbs=list;get;create;update;patch;delete
-//+kubebuilder:rbac:groups="",resources=limitranges,verbs=list;get;create;update;delete
-//+kubebuilder:rbac:groups="",resources=serviceaccounts,verbs=*
-//+kubebuilder:rbac:groups=autoscaling,resources=horizontalpodautoscalers,verbs=list;get;create;update;patch;delete
-//+kubebuilder:rbac:groups=networking.istio.io,resources=gateways,verbs=list;get;create;update;patch;delete
-//+kubebuilder:rbac:groups=networking.istio.io,resources=virtualservices,verbs=list;get;create;update;patch;delete
+func NewApplicationConnetorReconciler(c client.Client, r record.EventRecorder, log *zap.SugaredLogger, o []unstructured.Unstructured) ApplicationConnetorReconciler {
+	return &applicationConnectorReconciler{
+		log: log,
+		Cfg: reconciler.Cfg{
+			Finalizer: v1alpha1.Finalizer,
+			Objs:      o,
+		},
+		K8s: reconciler.K8s{
+			Client:        c,
+			EventRecorder: r,
+		},
+	}
+}
 
-// initReconciler injects the required configuration into the declarative reconciler.
-func (r *ApplicationConnectorReconciler) initReconciler(mgr ctrl.Manager) error {
-	manifestResolver := &ManifestResolver{
-		chartPath: r.ChartPath,
+func (r *applicationConnectorReconciler) mapFunction(object client.Object) []reconcile.Request {
+	var applicationConnectors v1alpha1.ApplicationConnectorList
+	err := r.List(context.Background(), &applicationConnectors)
+
+	if apierrors.IsNotFound(err) {
+		return nil
 	}
 
-	return r.Inject(mgr, &v1alpha1.ApplicationConnector{},
-		declarative.WithManifestResolver(manifestResolver),
-		declarative.WithResourcesReady(true),
-	)
+	if err != nil {
+		r.log.Error(err)
+		return nil
+	}
+
+	if len(applicationConnectors.Items) < 1 {
+		return nil
+	}
+
+	// instance is being deleted, do not notify it about changes
+	instanceIsBeingDeleted := !applicationConnectors.Items[0].GetDeletionTimestamp().IsZero()
+	if instanceIsBeingDeleted {
+		return nil
+	}
+
+	r.log.
+		With("name", object.GetName()).
+		With("ns", object.GetNamespace()).
+		With("gvk", object.GetObjectKind().GroupVersionKind()).
+		With("rscVer", object.GetResourceVersion()).
+		With("appConRscVer", applicationConnectors.Items[0].ResourceVersion).
+		Debug("redirecting")
+
+	// make sure only 1 controller will handle change
+	return []ctrl.Request{
+		{
+			NamespacedName: types.NamespacedName{
+				Namespace: applicationConnectors.Items[0].Namespace,
+				Name:      applicationConnectors.Items[0].Name,
+			},
+		},
+	}
+}
+
+var ommitStatusChanged = predicate.Or(
+	predicate.LabelChangedPredicate{},
+	predicate.AnnotationChangedPredicate{},
+	predicate.GenerationChangedPredicate{},
+)
+
+type hpaResourceVersionChangedPredicate struct {
+	predicate.ResourceVersionChangedPredicate
+	log *zap.SugaredLogger
+}
+
+func (h hpaResourceVersionChangedPredicate) Update(e event.UpdateEvent) bool {
+	if update := h.ResourceVersionChangedPredicate.Update(e); !update {
+		return false
+	}
+
+	var newObj v2.HorizontalPodAutoscaler
+	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(e.ObjectNew.(*unstructured.Unstructured).Object, &newObj); err != nil {
+		return true
+	}
+
+	var oldObj v2.HorizontalPodAutoscaler
+	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(e.ObjectOld.(*unstructured.Unstructured).Object, &oldObj); err != nil {
+		return true
+	}
+
+	conditionsEqual := reflect.DeepEqual(oldObj.Status.Conditions, newObj.Status.Conditions)
+	replicasEqual := oldObj.Status.CurrentReplicas == newObj.Status.CurrentReplicas
+
+	result := !conditionsEqual || !replicasEqual
+	if result {
+		h.log.With("conditionsEqual", conditionsEqual, "replicasEqual", replicasEqual).Debugf("reconciliation triggered by HPA: %s/%s", oldObj.Namespace, oldObj.Name)
+	}
+	return result
+}
+
+var hpaGroupVersionKind = schema.GroupVersionKind{
+	Group:   v2.GroupName,
+	Version: "v2",
+	Kind:    "HorizontalPodAutoscaler",
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *ApplicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	r.Config = mgr.GetConfig()
-	if err := r.initReconciler(mgr); err != nil {
+func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	labelSelectorPredicate, err := predicate.LabelSelectorPredicate(
+		metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"app.kubernetes.io/part-of": "application-connector-manager",
+			},
+		},
+	)
+	if err != nil {
 		return err
 	}
 
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.ApplicationConnector{}).
-		Complete(r)
-}
+	b := ctrl.NewControllerManagedBy(mgr).
+		For(&v1alpha1.ApplicationConnector{}, builder.WithPredicates(ommitStatusChanged))
 
-func structToFlags(obj interface{}) (flags types.Flags, err error) {
-	data, err := json.Marshal(obj)
+	// create functtion to register wached objects
+	watchFn := func(u unstructured.Unstructured) {
+		var objPredicate predicate.Predicate = &predicate.ResourceVersionChangedPredicate{}
+		if u.GroupVersionKind() == hpaGroupVersionKind {
+			objPredicate = hpaResourceVersionChangedPredicate{
+				log: r.log,
+			}
+		}
 
-	if err != nil {
-		return
+		r.log.With("gvk", u.GroupVersionKind().String()).Infoln("adding watcher")
+		b = b.Watches(
+			&source.Kind{Type: &u},
+			handler.EnqueueRequestsFromMapFunc(r.mapFunction),
+			builder.WithPredicates(
+				predicate.And(
+					labelSelectorPredicate,
+					objPredicate,
+				),
+			),
+		)
+	}
+	// register watch for each managed type of object
+	if err := registerWatchDistinct(r.Objs, watchFn); err != nil {
+		return err
 	}
 
-	err = json.Unmarshal(data, &flags)
-	return
+	return b.Complete(r)
 }
 
 // ManifestResolver represents the chart information for the passed Sample resource.
@@ -104,28 +225,17 @@ type ManifestResolver struct {
 	chartPath string
 }
 
-// Get returns the chart information to be processed.
-func (m *ManifestResolver) Get(obj types.BaseCustomObject, logger logr.Logger) (types.InstallationSpec, error) {
-	sample, valid := obj.(*v1alpha1.ApplicationConnector)
-	if !valid {
-		return types.InstallationSpec{},
-			fmt.Errorf("invalid type conversion for %s", client.ObjectKeyFromObject(obj))
+func (r *applicationConnectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	var instance v1alpha1.ApplicationConnector
+	if err := r.Get(ctx, req.NamespacedName, &instance); err != nil {
+		return ctrl.Result{
+			Requeue: true,
+		}, client.IgnoreNotFound(err)
 	}
 
-	flags, err := structToFlags(sample.Spec)
-	if err != nil {
-		return types.InstallationSpec{},
-			fmt.Errorf("resolving manifest failed: %w", err)
-	}
-
-	return types.InstallationSpec{
-		ChartPath: m.chartPath,
-		ChartFlags: types.ChartFlags{
-			ConfigFlags: types.Flags{
-				"Namespace":       chartNs,
-				"CreateNamespace": true, //
-			},
-			SetFlags: flags,
-		},
-	}, nil
+	stateFSM := reconciler.NewFsm(r.log, r.Cfg, reconciler.K8s{
+		Client:        r.Client,
+		EventRecorder: r.EventRecorder,
+	})
+	return stateFSM.Run(ctx, instance)
 }

@@ -1,0 +1,666 @@
+---
+# Source: application-connector/charts/central-application-connectivity-validator/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: central-application-connectivity-validator
+  namespace: kyma-system
+  labels:
+    app: central-application-connectivity-validator
+    release: application-connector
+    app.kubernetes.io/name: central-application-connectivity-validator
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+---
+# Source: application-connector/charts/central-application-gateway/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: central-application-gateway
+  namespace: kyma-system
+  labels:
+    app: central-application-gateway
+    release: application-connector
+    app.kubernetes.io/name: central-application-gateway
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+---
+# Source: application-connector/charts/central-application-connectivity-validator/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: central-application-connectivity-validator-role
+  labels:
+    app: central-application-connectivity-validator
+    release: application-connector
+    app.kubernetes.io/name: central-application-connectivity-validator
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+rules:
+- apiGroups: ["applicationconnector.kyma-project.io"]
+  resources: ["applications"]
+  verbs: ["get", "list", "watch"]
+---
+# Source: application-connector/charts/central-application-gateway/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: central-application-gateway-role
+  labels:
+    app: central-application-gateway
+    release: application-connector
+    app.kubernetes.io/name: central-application-gateway
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+rules:
+- apiGroups: ["applicationconnector.kyma-project.io"]
+  resources: ["applications"]
+  verbs: ["get"]
+- apiGroups: ["*"]
+  resources: ["secrets"]
+  verbs: ["get"]
+---
+# Source: application-connector/templates/cluster-role-binding.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: application-connector-application-connector
+  labels:
+    app: application-connector
+    release: application-connector
+    app.kubernetes.io/name: application-connector
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+rules:
+- apiGroups: ["applicationconnector.kyma-project.io"]
+  resources: ["applications"]
+  verbs: ["get", "list", "update","create", "delete", "watch"]
+---
+# Source: application-connector/charts/central-application-connectivity-validator/templates/rbac.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: central-application-connectivity-validator-rolebinding
+  labels:
+    app: central-application-connectivity-validator
+    release: application-connector
+    app.kubernetes.io/name: central-application-connectivity-validator
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+subjects:
+- kind: User
+  name: system:serviceaccount:kyma-system:central-application-connectivity-validator
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: central-application-connectivity-validator-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: application-connector/charts/central-application-gateway/templates/rbac.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: central-application-gateway-rolebinding
+  labels:
+    app: central-application-gateway
+    release: application-connector
+    app.kubernetes.io/name: central-application-gateway
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+subjects:
+- kind: User
+  name: system:serviceaccount:kyma-system:central-application-gateway
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: central-application-gateway-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: application-connector/templates/cluster-role-binding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: application-connector-application-connector
+  labels:
+    app: application-connector
+    release: application-connector
+    app.kubernetes.io/name: application-connector
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+subjects:
+- kind: User
+  name: system:serviceaccount:kyma-system:default
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: application-connector-application-connector
+---
+# Source: application-connector/charts/central-application-connectivity-validator/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: central-application-connectivity-validator
+  namespace: kyma-system
+  labels:
+    application: central-application-connectivity-validator
+    app: central-application-connectivity-validator
+    release: application-connector
+    app.kubernetes.io/name: central-application-connectivity-validator
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8081
+      protocol: TCP
+      name: http-api-port
+    - port: 8080
+      protocol: TCP
+      name: http-proxy
+  selector:
+    app: central-application-connectivity-validator
+    release: application-connector
+---
+# Source: application-connector/charts/central-application-gateway/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: central-application-gateway
+  namespace: kyma-system
+  labels:
+    application: central-application-gateway
+    app: central-application-gateway
+    release: application-connector
+    app.kubernetes.io/name: central-application-gateway
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8081
+      protocol: TCP
+      name: http-api-port
+    - port: 8080
+      protocol: TCP
+      name: http-proxy
+    - port: 8082
+      protocol: TCP
+      name: http-proxy-mps
+  selector:
+    app: central-application-gateway
+    release: application-connector
+---
+# Source: application-connector/charts/central-application-connectivity-validator/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: central-application-connectivity-validator
+  namespace: kyma-system
+  labels:
+    app: central-application-connectivity-validator
+    release: application-connector
+    app.kubernetes.io/name: central-application-connectivity-validator
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: central-application-connectivity-validator
+      release: application-connector
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: central-application-connectivity-validator
+        app.kubernetes.io/part-of: application-connector-manager
+        release: application-connector
+    spec:
+      serviceAccountName: central-application-connectivity-validator
+      containers:
+      - name: central-application-connectivity-validator
+        image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20230818-6f20d4ee
+        imagePullPolicy: IfNotPresent
+        args:
+          - "/app/centralapplicationconnectivityvalidator"
+          - "--proxyPort=8080"
+          - "--externalAPIPort=8081"
+          - "--eventingPathPrefixV1=/%%APP_NAME%%/v1/events"
+          - "--eventingPathPrefixV2=/%%APP_NAME%%/v2/events"
+          - "--eventingPublisherHost=eventing-event-publisher-proxy.kyma-system"
+          - "--eventingDestinationPath=/publish"
+          - "--eventingPathPrefixEvents=/%%APP_NAME%%/events"
+          - "--appNamePlaceholder=%%APP_NAME%%"
+        env:
+          - name: APP_LOG_FORMAT
+            value: "json"
+          - name: APP_LOG_LEVEL
+            value: "warn"
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 20m
+            memory: 64Mi
+        readinessProbe:
+          httpGet:
+            path: /v1/health
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /v1/health
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        ports:
+          - containerPort: 8080
+            name: http-proxy
+          - containerPort: 8081
+            name: http-api-port
+        securityContext:
+          runAsUser: 1000
+          privileged: false
+          allowPrivilegeEscalation: false
+---
+# Source: application-connector/charts/central-application-gateway/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: central-application-gateway
+  namespace: kyma-system
+  labels:
+    app: central-application-gateway
+    release: application-connector
+    app.kubernetes.io/name: central-application-gateway
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: central-application-gateway
+      release: application-connector
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: central-application-gateway
+        app.kubernetes.io/part-of: application-connector-manager
+        release: application-connector
+    spec:
+      serviceAccountName: central-application-gateway
+      containers:
+      - name: central-application-gateway
+        image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20230821-f9ec5ecd
+        imagePullPolicy: IfNotPresent
+        args:
+          - "/app/applicationgateway"
+          - "--proxyPort=8080"
+          - "--proxyPortCompass=8082"
+          - "--externalAPIPort=8081"
+          - "--applicationSecretsNamespace=kyma-system"
+          - "--requestTimeout=10"
+          - "--proxyTimeout=10"
+          - "--proxyCacheTTL=120"
+          - "--requestLogging=false"
+        readinessProbe:
+          httpGet:
+            path: /v1/health
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /v1/health
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 20m
+            memory: 64Mi
+        ports:
+          - containerPort: 8080
+            name: http-proxy
+          - containerPort: 8082
+            name: http-proxy-mps
+          - containerPort: 8081
+            name: http-api-port
+        securityContext:
+          runAsUser: 1000
+          privileged: false
+          allowPrivilegeEscalation: false
+---
+# Source: application-connector/charts/central-application-connectivity-validator/templates/autoscaling.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: central-application-connectivity-validator
+  namespace: kyma-system
+  labels:
+    app: central-application-connectivity-validator
+    release: application-connector
+    app.kubernetes.io/name: central-application-connectivity-validator
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  minReplicas: 1
+  maxReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: central-application-connectivity-validator
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
+# Source: application-connector/charts/central-application-gateway/templates/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: central-application-gateway
+  namespace: kyma-system
+  labels:
+    app: central-application-gateway
+    release: application-connector
+    app.kubernetes.io/name: central-application-gateway
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  minReplicas: 1
+  maxReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: central-application-gateway
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
+# Source: application-connector/templates/application-connector-gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: kyma-gateway-application-connector
+  namespace: kyma-system
+  labels:
+    release: application-connector
+    app.kubernetes.io/name: application-connector
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  selector:
+    istio: ingressgateway # use istio default ingress gateway
+  servers:
+    - port:
+        name: https-app-connector
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: MUTUAL
+        credentialName: kyma-gateway-certs
+        minProtocolVersion: TLSV1_2
+        cipherSuites:
+        - ECDHE-RSA-CHACHA20-POLY1305
+        - ECDHE-RSA-AES256-GCM-SHA384
+        - ECDHE-RSA-AES256-SHA
+        - ECDHE-RSA-AES128-GCM-SHA256
+        - ECDHE-RSA-AES128-SHA
+      hosts:
+        - "gateway.kyma.example.com"
+---
+# Source: application-connector/charts/central-application-connectivity-validator/templates/virtual-service.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: central-application-connectivity-validator
+  namespace: kyma-system
+  labels:
+    app: central-application-connectivity-validator
+    release: application-connector
+    app.kubernetes.io/name: central-application-connectivity-validator
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  hosts:
+    - gateway.kyma.example.com
+  gateways:
+    - kyma-system/kyma-gateway-application-connector
+  http:
+    - match:
+        - uri:
+            regex: ^/[^/]+/v1/metadata(/|/.*)?
+        - uri:
+            regex: ^/[^/]+/v1/events(/|/.*)?
+        - uri:
+            regex: ^/[^/]+/v2/events(/|/.*)?
+        - uri:
+            regex: ^/[^/]+/events(/|/.*)?
+      route:
+        - destination:
+            port:
+              number: 8080
+            host: central-application-connectivity-validator
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    "helm.sh/resource-policy": keep
+  name: applications.applicationconnector.kyma-project.io
+spec:
+  group: applicationconnector.kyma-project.io
+  preserveUnknownFields: false
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              properties:
+                compassMetadata:
+                  type: object
+                  required:
+                    - "authentication"
+                  properties:
+                    applicationId:
+                      type: string
+                    authentication:
+                      type: object
+                      required:
+                        - "clientIds"
+                      properties:
+                        clientIds:
+                          type: array
+                          items:
+                            type: string
+                accessLabel:
+                  type: string
+                  maxLength: 63
+                  pattern: '^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$'
+                description:
+                  type: string
+                skipInstallation:
+                  type: boolean
+                skipVerify:
+                  type: boolean
+                encodeUrl:
+                  type: boolean
+                  default: true
+                labels:
+                  nullable: true
+                  additionalProperties:
+                    type: string
+                  type: object
+                tenant:
+                  type: string
+                group:
+                  type: string
+                tags:
+                  nullable: true
+                  description: New fields used by V2 version
+                  items:
+                    type: string
+                  type: array
+                displayName:
+                  type: string
+                providerDisplayName:
+                  type: string
+                longDescription:
+                  type: string
+                services:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - "id"
+                      - "name"
+                      - "displayName"
+                      - "providerDisplayName"
+                      - "description"
+                      - "entries"
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      identifier:
+                        type: string
+                      labels:
+                        nullable: true
+                        additionalProperties:
+                          type: string
+                        description: Deprecated
+                        type: object
+                      displayName:
+                        type: string
+                      description:
+                        type: string
+                      longDescription:
+                        type: string
+                      providerDisplayName:
+                        type: string
+                      authCreateParameterSchema:
+                        description: New fields used by V2 version
+                        type: string
+                      entries:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - "type"
+                          properties:
+                            apiType:
+                              type: string
+                            type:
+                              type: string
+                              enum:
+                                - "API"
+                                - "Events"
+                            gatewayUrl:
+                              type: string
+                            centralGatewayUrl:
+                              type: string
+                            accessLabel:
+                              type: string
+                              maxLength: 63
+                              pattern: '^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$'
+                            targetUrl:
+                              type: string
+                            id:
+                              type: string
+                            name:
+                              description: New fields used by V2 version
+                              type: string
+                            requestParametersSecretName:
+                              type: string
+                            specificationUrl:
+                              type: string
+                            credentials:
+                              type: object
+                              required:
+                                - "type"
+                                - "secretName"
+                              properties:
+                                type:
+                                  type: string
+                                secretName:
+                                  type: string
+                                authenticationUrl:
+                                  type: string
+                                csrfInfo:
+                                  type: object
+                                  required:
+                                    - "tokenEndpointURL"
+                                  properties:
+                                    tokenEndpointURL:
+                                      type: string
+                      tags:
+                        type: array
+                        items:
+                          type: string
+              type: object
+            status:
+              properties:
+                installationStatus:
+                  description: Represents the status of Application release installation
+                  properties:
+                    description:
+                      type: string
+                    status:
+                      type: string
+                  required:
+                    - status
+                  type: object
+              required:
+                - installationStatus
+              type: object
+  scope: Cluster
+  names:
+    plural: applications
+    singular: application
+    kind: Application
+    shortNames:
+      - app

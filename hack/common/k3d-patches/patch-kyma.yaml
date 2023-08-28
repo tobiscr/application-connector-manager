@@ -1,0 +1,4 @@
+spec:
+  modules:
+  - name: application-connector
+    channel: beta

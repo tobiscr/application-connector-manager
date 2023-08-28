@@ -3,131 +3,150 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
-	rtypes "github.com/kyma-project/module-manager/operator/pkg/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"time"
+	"k8s.io/client-go/util/retry"
+	"k8s.io/utils/pointer"
 )
 
-type testHelper struct {
-	ctx           context.Context
-	namespaceName string
-}
+const (
+	appGatewayDeploymentName             = "central-application-gateway"
+	appConValidatorDeploymentName        = "central-application-connectivity-validator"
+	appCompassRuntimeAgentDeploymentName = "compass-runtime-agent"
+)
 
 var _ = Describe("ApplicationConnector controller", func() {
+
+	defaultTestTimeout := 60 * time.Second
+	defaultAppCon := applicationConnector("test", "kyma-system", v1alpha1.ApplicationConnectorSpec{})
+
 	Context("When creating fresh instance", func() {
-		const (
-			namespaceName                                  = "kyma-system"
-			appConnectorName                               = "test"
-			applicationGatewayDeploymentName               = "central-application-gateway"
-			applicationConnectivityValidatorDeploymentName = "central-application-connectivity-validator"
+		DescribeTable(
+			"The application-connector is created properly with given specification",
+			// the table function that will be executed for each entry
+			testInstance,
+			Entry("with default arguments", defaultTestTimeout, defaultAppCon),
 		)
-
-		var (
-			appConnectorSpec = v1alpha1.ApplicationConnectorSpec{
-				DisableLegacyConnectivity: true,
-			}
-
-			//appConnectorUpdateSpec = v1alpha1.ApplicationConnectorSpec{
-			//	DisableLegacyConnectivity: false,
-			//}
-		)
-
-		It("The status should be Success", func() {
-			h := testHelper{
-				ctx:           context.Background(),
-				namespaceName: namespaceName,
-			}
-
-			h.createNamespace()
-
-			// operations like C(R)UD can be tested in separated tests,
-			// but we have time-consuming flow and decided do it in one test
-			shouldCreateApplicationConnector(h, appConnectorName, applicationGatewayDeploymentName, applicationConnectivityValidatorDeploymentName, appConnectorSpec)
-
-			//shouldPropagateAppConnectorCrdSpecProperties(h, applicationGatewayDeploymentName, applicationConnectivityValidatorDeploymentName, appConnectorSpec)
-
-			//TODO: disabled because of bug in operator (https://github.com/kyma-project/module-manager/issues/94)
-			//shouldUpdateAppConnector(h, appConnectorName, applicationGatewayDeploymentName)
-			//shouldDeleteAppConnector(h, appConnectorName)
-		})
 	})
 })
 
-func shouldCreateApplicationConnector(h testHelper, appConnectorName, appGatewayDeploymentName, appConValidatorDeploymentName string, appConnecorSpec v1alpha1.ApplicationConnectorSpec) {
-	// act
-	h.createApplicationConnector(appConnectorName, appConnecorSpec)
-
-	// we have to update deployment status manually
-	h.updateDeploymentStatus(appGatewayDeploymentName)
-	h.updateDeploymentStatus(appConValidatorDeploymentName)
-
-	// assert
-	Eventually(h.createGetApplicationConnectorStateFunc(appConnectorName)).
-		WithPolling(time.Second * 2).
-		WithTimeout(time.Second * 20).
-		Should(Equal(rtypes.StateProcessing))
-}
-
-func (h *testHelper) createGetApplicationConnectorStateFunc(appConnectorName string) func() (rtypes.State, error) {
-	return func() (rtypes.State, error) {
-		return h.getApplicationConnectorState(appConnectorName)
-	}
-}
-
-func (h *testHelper) createGetNStatusFunc(namespaceName string) func() (rtypes.State, error) {
-	return func() (rtypes.State, error) {
-		return h.getNamespaceStatus(namespaceName)
-	}
-}
-
-func (h *testHelper) getNamespaceStatus(namespaceName string) (rtypes.State, error) {
-	return rtypes.StateReady, nil
-}
-
-func (h *testHelper) getApplicationConnectorState(appConnName string) (rtypes.State, error) {
-	var emptyState = rtypes.State("")
-	var connector v1alpha1.ApplicationConnector
-	key := types.NamespacedName{
-		Name:      appConnName,
-		Namespace: h.namespaceName,
-	}
-	err := k8sClient.Get(h.ctx, key, &connector)
+func validateAppConState(ctx context.Context, expected State, key types.NamespacedName) error {
+	state, err := getApplicationConnectorState(ctx, key)
 	if err != nil {
-		return emptyState, err
+		return err
 	}
-	return connector.Status.State, nil
+	if state != expected {
+		return fmt.Errorf("invalid state")
+	}
+	return nil
 }
 
-func (h *testHelper) createApplicationConnector(appConnectorName string, spec v1alpha1.ApplicationConnectorSpec) {
-	By(fmt.Sprintf("Creating crd: %s", appConnectorName))
-	appconnector := v1alpha1.ApplicationConnector{
+func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
+	ctx, cancel := context.WithTimeout(context.Background(), t)
+	defer cancel()
+
+	By(fmt.Sprintf("create namespace: %s", ac.Namespace))
+	ns := namespace(ac.Namespace)
+	Expect(k8sClient.Create(ctx, &ns)).To(Succeed())
+
+	By(fmt.Sprintf("create application-connector instance: %s/%s", ac.Namespace, ac.Name))
+	Expect(k8sClient.Create(ctx, &ac)).To(Succeed())
+
+	instanceNsName := types.NamespacedName{Name: ac.Name, Namespace: ac.Namespace}
+	// both deployments should not be ready, the CR status should be in
+	// processing state
+	Eventually(validateAppConState).
+		WithArguments(ctx, StateProcessing, instanceNsName).
+		WithPolling(time.Second).
+		WithTimeout(t).
+		Should(Succeed())
+
+	By("simulate k8s reaction - update application-gateway deployment and create replica-set")
+	appGatewayNsName := types.NamespacedName{Name: appGatewayDeploymentName, Namespace: ac.Namespace}
+	Expect(simulateK8sDeploymentRdy(ctx, appGatewayNsName)).To(Succeed())
+
+	// application-connectivity-validator deployments should not be ready, the CR status should be in
+	// processing state
+	Eventually(validateAppConState).
+		WithArguments(ctx, StateProcessing, instanceNsName).
+		WithPolling(time.Second).
+		WithTimeout(t).
+		Should(Succeed())
+
+	By("simulate k8s reaction - update application-connectivity-validator deployment and create replica-set")
+	appConValidatorDeploymentName := types.NamespacedName{Name: appConValidatorDeploymentName, Namespace: ac.Namespace}
+	Expect(simulateK8sDeploymentRdy(ctx, appConValidatorDeploymentName)).To(Succeed())
+
+	// both deployments should be ready, the CR status should be in
+	// ready state
+	Eventually(validateAppConState).
+		WithArguments(ctx, StateReady, instanceNsName).
+		WithPolling(time.Second).
+		WithTimeout(t).
+		Should(Succeed())
+}
+
+func namespace(name string) corev1.Namespace {
+	return corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      appConnectorName,
-			Namespace: h.namespaceName,
+			Name: name,
+		},
+	}
+}
+
+func applicationConnector(name, nsName string, spec v1alpha1.ApplicationConnectorSpec) v1alpha1.ApplicationConnector {
+	return v1alpha1.ApplicationConnector{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: nsName,
 			Labels: map[string]string{
 				"operator.kyma-project.io/kyma-name": "test",
 			},
 		},
 		Spec: spec,
 	}
-	Expect(k8sClient.Create(h.ctx, &appconnector)).To(Succeed())
-	By(fmt.Sprintf("Crd created: %s", appConnectorName))
 }
 
-func (h *testHelper) updateDeploymentStatus(deploymentName string) {
-	By(fmt.Sprintf("Updating deployment status: %s", deploymentName))
+func replicaSet(d appsv1.Deployment) appsv1.ReplicaSet {
+	return appsv1.ReplicaSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fmt.Sprintf("%s-replica-set", d.Name),
+			Namespace: d.Namespace,
+			Labels: map[string]string{
+				"app": d.Name,
+			},
+			OwnerReferences: []metav1.OwnerReference{
+				{
+					APIVersion: "apps/v1",
+					Kind:       "Deployment",
+					Name:       d.Name,
+					UID:        d.GetUID(),
+					Controller: pointer.Bool(true),
+				},
+			},
+		},
+		// dummy values
+		Spec: appsv1.ReplicaSetSpec{
+			Replicas: pointer.Int32(1),
+			Selector: d.Spec.Selector,
+			Template: d.Spec.Template,
+		},
+	}
+}
+
+func simulateK8sDeploymentRdy(ctx context.Context, key types.NamespacedName) error {
 	var deployment appsv1.Deployment
-	Eventually(h.createGetKubernetesObjectFunc(deploymentName, &deployment)).
-		WithPolling(time.Second * 2).
-		WithTimeout(time.Second * 10).
-		Should(BeTrue())
+	if err := k8sClient.Get(ctx, key, &deployment); err != nil {
+		return err
+	}
 
 	deployment.Status.Conditions = append(deployment.Status.Conditions, appsv1.DeploymentCondition{
 		Type:    appsv1.DeploymentAvailable,
@@ -136,80 +155,33 @@ func (h *testHelper) updateDeploymentStatus(deploymentName string) {
 		Message: "test-message",
 	})
 	deployment.Status.Replicas = 1
-	Expect(k8sClient.Status().Update(h.ctx, &deployment)).To(Succeed())
 
-	replicaSetName := h.createReplicaSetForDeployment(deployment)
+	err := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
+		return k8sClient.Status().Update(ctx, &deployment)
+	})
+	if err != nil {
+		return err
+	}
 
-	var replicaSet appsv1.ReplicaSet
-	Eventually(h.createGetKubernetesObjectFunc(replicaSetName, &replicaSet)).
-		WithPolling(time.Second * 2).
-		WithTimeout(time.Second * 10).
-		Should(BeTrue())
+	rs := replicaSet(deployment)
+	if err := k8sClient.Create(ctx, &rs); err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
 
-	replicaSet.Status.ReadyReplicas = 1
-	replicaSet.Status.Replicas = 1
-	Expect(k8sClient.Status().Update(h.ctx, &replicaSet)).To(Succeed())
+	rs.Status.ReadyReplicas = 1
+	rs.Status.Replicas = 1
 
-	By(fmt.Sprintf("Deployment status updated: %s", deploymentName))
+	return retry.RetryOnConflict(retry.DefaultBackoff, func() error {
+		return k8sClient.Status().Update(ctx, &rs)
+	})
 }
 
-func (h *testHelper) createGetKubernetesObjectFunc(serviceAccountName string, obj client.Object) func() (bool, error) {
-	return func() (bool, error) {
-		key := types.NamespacedName{
-			Name:      serviceAccountName,
-			Namespace: h.namespaceName,
-		}
-		err := k8sClient.Get(h.ctx, key, obj)
-		if err != nil {
-			return false, err
-		}
-		return true, err
+func getApplicationConnectorState(ctx context.Context, key types.NamespacedName) (State, error) {
+	var emptyState = State("")
+	var connector v1alpha1.ApplicationConnector
+	err := k8sClient.Get(ctx, key, &connector)
+	if err != nil {
+		return emptyState, err
 	}
-}
-
-func (h *testHelper) createReplicaSetForDeployment(deployment appsv1.Deployment) string {
-	replicaSetName := fmt.Sprintf("%s-replica-set", deployment.Name)
-	By(fmt.Sprintf("Creating replica set (for deployment): %s", replicaSetName))
-	var (
-		trueValue = true
-		one       = int32(1)
-	)
-	replicaSet := appsv1.ReplicaSet{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      replicaSetName,
-			Namespace: h.namespaceName,
-			Labels: map[string]string{
-				"app": deployment.Name,
-			},
-			OwnerReferences: []metav1.OwnerReference{
-				{
-					APIVersion: "apps/v1",
-					Kind:       "Deployment",
-					Name:       deployment.Name,
-					UID:        deployment.GetUID(),
-					Controller: &trueValue,
-				},
-			},
-		},
-		// dummy values
-		Spec: appsv1.ReplicaSetSpec{
-			Replicas: &one,
-			Selector: deployment.Spec.Selector,
-			Template: deployment.Spec.Template,
-		},
-	}
-	Expect(k8sClient.Create(h.ctx, &replicaSet)).To(Succeed())
-	By(fmt.Sprintf("Replica set (for deployment) created: %s", replicaSetName))
-	return replicaSetName
-}
-
-func (h *testHelper) createNamespace() {
-	By(fmt.Sprintf("Creating namespace: %s", h.namespaceName))
-	namespace := corev1.Namespace{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: h.namespaceName,
-		},
-	}
-	Expect(k8sClient.Create(h.ctx, &namespace)).To(Succeed())
-	By(fmt.Sprintf("Namespace created: %s", h.namespaceName))
+	return State(connector.Status.State), nil
 }
