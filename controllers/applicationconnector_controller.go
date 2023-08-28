@@ -41,10 +41,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
-const (
-	chartNs = "kyma-system"
-)
-
 type State string
 
 // Valid CustomObject States.
@@ -218,11 +214,6 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 	}
 
 	return b.Complete(r)
-}
-
-// ManifestResolver represents the chart information for the passed Sample resource.
-type ManifestResolver struct {
-	chartPath string
 }
 
 func (r *applicationConnectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {

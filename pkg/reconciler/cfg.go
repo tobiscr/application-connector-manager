@@ -14,10 +14,10 @@ type Cfg struct {
 	Objs []unstructured.Unstructured
 }
 
-func (c *Cfg) centralApplicationConnectivityValidatorDeployment() (*unstructured.Unstructured, error) {
-	return unstructured.IsDeployment("central-application-connectivity-validator").First(c.Objs)
-}
-
-func (c *Cfg) centralApplicationGatewayDeployment() (*unstructured.Unstructured, error) {
-	return unstructured.IsDeployment("central-application-gateway").First(c.Objs)
-}
+//func (c *Cfg) centralApplicationConnectivityValidatorDeployment() (*unstructured.Unstructured, error) {
+//	return unstructured.IsDeployment("central-application-connectivity-validator").First(c.Objs)
+//}
+//
+//func (c *Cfg) centralApplicationGatewayDeployment() (*unstructured.Unstructured, error) {
+//	return unstructured.IsDeployment("central-application-gateway").First(c.Objs)
+//}
