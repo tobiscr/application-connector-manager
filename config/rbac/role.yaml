@@ -36,11 +36,35 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - nodes
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumes
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
   - pods
   verbs:
   - get
   - list
   - patch
+- apiGroups:
+  - ""
+  resourceNames:
+  - cluster-client-certificates
+  - compass-agent-configuration
+  resources:
+  - secrets
+  verbs:
+  - delete
+  - get
 - apiGroups:
   - ""
   resources:
@@ -125,6 +149,24 @@ rules:
   - update
   - watch
 - apiGroups:
+  - compass.kyma-project.io
+  resources:
+  - compassconnections
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - metrics.k8s.io
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+- apiGroups:
   - networking.istio.io
   resources:
   - gateways
@@ -179,6 +221,19 @@ rules:
   resources:
   - clusterrolebindings
   - clusterroles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
   verbs:
   - create
   - delete

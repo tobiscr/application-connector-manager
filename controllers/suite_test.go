@@ -73,8 +73,10 @@ var _ = BeforeSuite(func() {
 
 	By("bootstrapping test environment")
 	testEnv = &envtest.Environment{
-		CRDDirectoryPaths:     []string{filepath.Join("..", "config", "crd", "bases")},
-		ErrorIfCRDPathMissing: true,
+		CRDDirectoryPaths: []string{
+			filepath.Join("..", "config", "crd", "bases"),
+			externalDependencyDataPath,
+		}, ErrorIfCRDPathMissing: true,
 	}
 
 	var err error
@@ -91,19 +93,6 @@ var _ = BeforeSuite(func() {
 	k8sClient, err = client.New(config, client.Options{Scheme: scheme.Scheme})
 	Expect(err).NotTo(HaveOccurred())
 	Expect(k8sClient).NotTo(BeNil())
-
-	// load and apply external dependencies
-
-	depsFile, err := os.Open(externalDependencyDataPath)
-	Expect(err).ShouldNot(HaveOccurred())
-
-	deps, err := yaml.LoadData(depsFile)
-	Expect(err).ShouldNot(HaveOccurred())
-
-	for _, u := range deps {
-		err = k8sClient.Create(context.TODO(), &u)
-		Expect(err).ShouldNot(HaveOccurred())
-	}
 
 	k8sManager, err := ctrl.NewManager(config, ctrl.Options{
 		Scheme: scheme.Scheme,

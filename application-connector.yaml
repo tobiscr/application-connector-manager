@@ -484,8 +484,6 @@ spec:
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  annotations:
-    "helm.sh/resource-policy": keep
   name: applications.applicationconnector.kyma-project.io
 spec:
   group: applicationconnector.kyma-project.io
@@ -664,3 +662,562 @@ spec:
     kind: Application
     shortNames:
       - app
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: compassconnections.compass.kyma-project.io
+spec:
+  group: compass.kyma-project.io
+  names:
+    kind: CompassConnection
+    listKind: CompassConnectionList
+    plural: compassconnections
+    singular: compassconnection
+  scope: Cluster
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              properties:
+                managementInfo:
+                  properties:
+                    connectorUrl:
+                      description: 'URL used for maintaining the secure connection.'
+                      type: string
+                    directorUrl:
+                      description: 'URL used for fetching Applications.'
+                      type: string
+                  required:
+                    - connectorUrl
+                    - directorUrl
+                  type: object
+                refreshCredentialsNow:
+                  description: 'If set to `true`, ignores certificate expiration date and refreshes in the next round.'
+                  type: boolean
+                resyncNow:
+                  description: 'If set to `true`, ignores `APP_MINIMAL_COMPASS_SYNC_TIME` and syncs in the next round.'
+                  type: boolean
+              required:
+                - managementInfo
+              type: object
+            status:
+              properties:
+                connectionState:
+                  type: string
+                connectionStatus:
+                  description: 'Represents the status of the connection to
+                    Compass.'
+                  properties:
+                    certificateStatus:
+                      description: 'Specifies the certificate issue and expiration dates.'
+                      properties:
+                        acquired:
+                          description: 'Specifies when the certificate was acquired.'
+                          format: date-time
+                          nullable: true
+                          type: string
+                        notAfter:
+                          description: 'Specifies when the certificate stops being valid.'
+                          format: date-time
+                          nullable: true
+                          type: string
+                        notBefore:
+                          description: 'Specifies when the certificate becomes valid.'
+                          format: date-time
+                          nullable: true
+                          type: string
+                      type: object
+                    error:
+                      type: string
+                    established:
+                      description: 'Specifies when the connection was established.'
+                      format: date-time
+                      nullable: true
+                      type: string
+                    lastSuccess:
+                      description: 'Specifies the date of the last successful synchronization with the Connector.'
+                      format: date-time
+                      nullable: true
+                      type: string
+                    lastSync:
+                      description: 'Specifies the date of the last synchronization attempt.'
+                      format: date-time
+                      nullable: true
+                      type: string
+                    renewed:
+                      description: 'Specifies the date of the last certificate renewal.'
+                      format: date-time
+                      nullable: true
+                      type: string
+                  required:
+                    - certificateStatus
+                  type: object
+                synchronizationStatus:
+                  description: 'Provides the status of the synchronization with the Director.'
+                  nullable: true
+                  properties:
+                    error:
+                      type: string
+                    lastAttempt:
+                      description: 'Specifies the date of the last synchronization attempt with the Director.'
+                      format: date-time
+                      nullable: true
+                      type: string
+                    lastSuccessfulApplication:
+                      description: 'Specifies the date of the last successful application of resources fetched from Compass.'
+                      format: date-time
+                      nullable: true
+                      type: string
+                    lastSuccessfulFetch:
+                      description: 'Specifies the date of the last successful fetch of resources from the Director.'
+                      format: date-time
+                      nullable: true
+                      type: string
+                  type: object
+              required:
+                - connectionState
+                - connectionStatus
+              type: object
+          required:
+            - spec
+          type: object
+      served: true
+      storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/name: compass-runtime-agent
+    release: compass-runtime-agent
+  name: compass-runtime-agent
+  namespace: kyma-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - create
+      - get
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - get
+      - update
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/name: compass-runtime-agent
+    release: compass-runtime-agent
+  name: compass-runtime-agent-client-cert-role
+  namespace: kyma-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - get
+      - update
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/name: compass-runtime-agent
+    release: compass-runtime-agent
+  name: compass-runtime-agent
+rules:
+  - apiGroups:
+      - compass.kyma-project.io
+    resources:
+      - compassconnections
+    verbs:
+      - create
+      - get
+      - list
+      - update
+      - delete
+      - watch
+  - apiGroups:
+      - applicationconnector.kyma-project.io
+    resources:
+      - applications
+    verbs:
+      - get
+      - list
+      - create
+      - update
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - persistentvolumes
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - metrics.k8s.io
+    resources:
+      - nodes
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - ""
+    resourceNames:
+      - compass-agent-configuration
+      - cluster-client-certificates
+      - app-connector-certs
+    resources:
+      - secrets
+    verbs:
+      - get
+      - delete
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
+  name: compass-runtime-agent
+  namespace: kyma-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
+  name: compass-runtime-agent
+  namespace: kyma-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: compass-runtime-agent
+subjects:
+  - kind: ServiceAccount
+    name: compass-runtime-agent
+    namespace: kyma-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
+  name: compass-runtime-agent-client-cert-rolebinding
+  namespace: kyma-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: compass-runtime-agent-client-cert-role
+subjects:
+  - kind: ServiceAccount
+    name: compass-runtime-agent
+    namespace: kyma-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
+  name: compass-runtime-agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: compass-runtime-agent
+subjects:
+  - kind: ServiceAccount
+    name: compass-runtime-agent
+    namespace: kyma-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
+  name: compass-runtime-agent
+  namespace: kyma-system
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-director-proxy
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+  selector:
+    app: compass-runtime-agent
+    release: compass-runtime-agent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
+  name: compass-runtime-agent-health
+  namespace: kyma-system
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-health
+      port: 8090
+      protocol: TCP
+      targetPort: 8090
+    - name: proxy-status
+      port: 15020
+      protocol: TCP
+      targetPort: 15020
+  selector:
+    app: compass-runtime-agent
+    release: compass-runtime-agent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+  name: compass-runtime-agent-service
+  namespace: kyma-system
+spec:
+  type: ClusterIP
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 443
+  selector:
+    control-plane: compass-runtime-agent
+    controller-tools.k8s.io: "1.0"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
+  name: compass-runtime-agent
+  namespace: kyma-system
+spec:
+  gateways:
+    - kyma-system/kyma-gateway
+  hosts:
+    - compass-runtime-agent.kyma.example.com
+  http:
+    - match:
+        - uri:
+            exact: /healthz
+      route:
+        - destination:
+            host: compass-runtime-agent-health
+            port:
+              number: 8090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: compass-runtime-agent
+    app.kubernetes.io/name: compass-runtime-agent
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+    release: compass-runtime-agent
+  name: compass-runtime-agent
+  namespace: kyma-system
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: compass-runtime-agent
+      release: compass-runtime-agent
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      creationTimestamp: null
+      labels:
+        app: compass-runtime-agent
+        release: compass-runtime-agent
+    spec:
+      containers:
+        - args:
+            - /app/compass-runtime-agent
+          env:
+            - name: APP_AGENT_CONFIGURATION_SECRET
+              value: kyma-system/compass-agent-configuration
+            - name: APP_CONTROLLER_SYNC_PERIOD
+              value: 180s
+            - name: APP_MINIMAL_COMPASS_SYNC_TIME
+              value: 15s
+            - name: APP_CERT_VALIDITY_RENEWAL_THRESHOLD
+              value: "0.3"
+            - name: APP_CLUSTER_CERTIFICATES_SECRET
+              value: kyma-system/cluster-client-certificates
+            - name: APP_CA_CERTIFICATES_SECRET
+              value: istio-system/kyma-gateway-certs-cacert
+            - name: APP_SKIP_COMPASS_TLS_VERIFY
+              value: "true"
+            - name: APP_SKIP_APPS_TLS_VERIFY
+              value: "false"
+            - name: APP_GATEWAY_PORT
+              value: "8080"
+            - name: APP_UPLOAD_SERVICE_URL
+            - name: APP_QUERY_LOGGING
+              value: "false"
+            - name: APP_METRICS_LOGGING_TIME_INTERVAL
+              value: 30m
+            - name: APP_RUNTIME_EVENTS_URL
+              value: https://gateway.c-33b8d5b.dev.kyma.ondemand.com
+            - name: APP_RUNTIME_CONSOLE_URL
+              value: https://console.c-33b8d5b.dev.kyma.ondemand.com
+            - name: APP_DIRECTOR_PROXY_PORT
+              value: "8081"
+            - name: APP_DIRECTOR_PROXY_INSECURE_SKIP_VERIFY
+              value: "true"
+            - name: APP_HEALTH_PORT
+              value: "8090"
+            - name: APP_CA_CERT_SECRET_TO_MIGRATE
+              value: istio-system/app-connector-certs
+            - name: APP_CA_CERT_SECRET_KEYS_TO_MIGRATE
+              value: '["cacert"]'
+            - name: APP_AGENT_CONFIGURATION_SECRET_TO_MIGRATE
+              value: compass-system/compass-agent-configuration
+            - name: APP_CLUSTER_CERTIFICATES_SECRET_TO_MIGRATE
+              value: compass-system/cluster-client-certificates
+            - name: APP_CENTRAL_GATEWAY_SERVICE_URL
+              value: http://central-application-gateway.kyma-system.svc.cluster.local:8082
+          image: europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:v20230724-3559a1b6
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8090
+              scheme: HTTP
+            initialDelaySeconds: 50
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: compass-runtime-agent
+          ports:
+            - containerPort: 8090
+              name: http-health
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 8090
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            procMount: Default
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsGroup: 65535
+        runAsNonRoot: true
+        runAsUser: 65535
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: compass-runtime-agent
+      serviceAccountName: compass-runtime-agent
+      terminationGracePeriodSeconds: 30
