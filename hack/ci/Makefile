@@ -21,12 +21,12 @@ module-build: ## Build the Module, push it to a registry and print it based on t
 		MODULE_VERSION=${MODULE_VERSION}-${MODULE_SHA} \
 
 	@echo "\n~~~~~~~~~~~~BEGINING OF MODULE TEMPLATE~~~~~~~~~~~~~~"
-	@cat ${PROJECT_ROOT}/template.yaml
+	@cat ${PROJECT_ROOT}/moduletemplate.yaml
 	@echo "\n~~~~~~~~~~~~~~~END OF MODULE TEMPLATE~~~~~~~~~~~~~~~~"
 
 .PHONY: integration-test
 integration-test: ## Run integration tests
-	cd ${PROJECT_ROOT}/test && go run main.go
+	@echo "\n Not implemented \n"
 
 .PHONY: k3d-lm-integration-test
 k3d-lm-integration-test: ## Run integration tests with lifecycle-manager.

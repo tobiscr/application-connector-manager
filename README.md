@@ -183,7 +183,7 @@ curl registry.localhost:8888/v2/_catalog
 
 The following are temporary workarounds:
 
-Edit the `template.yaml` file and:
+Edit the `moduletemplate.yaml` file and:
 
 - change `target` to `control-plane`
 >**NOTE:** This is only required in the single cluster mode.
@@ -211,7 +211,7 @@ This installs the latest versions of `module-manager` and `lifecycle-manager`.
 You can use the `--template` flag to deploy the ApplicationConnector module manifest from the beginning or apply it using kubectl later.
 
 ```bash
-kyma alpha deploy  --template=./template.yaml
+kyma alpha deploy  --template=./moduletemplate.yaml
 
 - Kustomize ready
 - Lifecycle Manager deployed

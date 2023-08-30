@@ -3,9 +3,8 @@ package reconciler
 import (
 	"context"
 	"errors"
-
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
-	"k8s.io/utils/pointer"
+	"k8s.io/utils/ptr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -24,7 +23,7 @@ func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Resul
 			Debug("applying")
 
 		err := r.Patch(ctx, &obj, client.Apply, &client.PatchOptions{
-			Force:        pointer.Bool(true),
+			Force:        ptr.To[bool](true),
 			FieldManager: "application-connector-manager",
 		})
 

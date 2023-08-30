@@ -77,8 +77,8 @@ verify-kyma: ## Wait for Kyma CR to be in Ready state.
 	@./verify_kyma_status.sh
 
 .PHONY: fix-template
-fix-template: ## Create template-k3d.yaml based on template.yaml with right URLs.
-	@cat ${PROJECT_ROOT}/template.yaml \
+fix-template: ## Create template-k3d.yaml based on moduletemplate.yaml with right URLs.
+	@cat ${PROJECT_ROOT}/moduletemplate.yaml \
 	| sed -e 's/remote/control-plane/g' \
 		-e 's/${REGISTRY_PORT}/5000/g' \
 	      	-e 's/localhost/k3d-${REGISTRY_NAME}.localhost/g' \

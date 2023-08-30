@@ -14,13 +14,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
-	"k8s.io/utils/pointer"
+	"k8s.io/utils/ptr"
 )
 
 const (
-	appGatewayDeploymentName             = "central-application-gateway"
-	appConValidatorDeploymentName        = "central-application-connectivity-validator"
-	appCompassRuntimeAgentDeploymentName = "compass-runtime-agent"
+	appGatewayDeploymentName      = "central-application-gateway"
+	appConValidatorDeploymentName = "central-application-connectivity-validator"
 )
 
 var _ = Describe("ApplicationConnector controller", func() {
@@ -129,13 +128,13 @@ func replicaSet(d appsv1.Deployment) appsv1.ReplicaSet {
 					Kind:       "Deployment",
 					Name:       d.Name,
 					UID:        d.GetUID(),
-					Controller: pointer.Bool(true),
+					Controller: ptr.To[bool](true),
 				},
 			},
 		},
 		// dummy values
 		Spec: appsv1.ReplicaSetSpec{
-			Replicas: pointer.Int32(1),
+			Replicas: ptr.To[int32](1),
 			Selector: d.Spec.Selector,
 			Template: d.Spec.Template,
 		},

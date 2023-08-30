@@ -17,7 +17,7 @@ const (
 
 var (
 	fromUnstructured = apirt.DefaultUnstructuredConverter.FromUnstructured
-	toUnstructed     = apirt.DefaultUnstructuredConverter.ToUnstructured
+	//toUnstructed     = apirt.DefaultUnstructuredConverter.ToUnstructured
 )
 
 func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result, error) {

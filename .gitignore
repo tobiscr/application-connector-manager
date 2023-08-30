@@ -25,6 +25,7 @@ vendor/*
 *~
 
 template.yaml
+moduletemplate.yaml
 
 mod
 bin
