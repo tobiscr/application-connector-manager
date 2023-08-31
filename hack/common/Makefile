@@ -48,7 +48,7 @@ run-without-lifecycle-manager: \
 
 .PHONY: create-k3d
 create-k3d: ## Create k3d with kyma CRDs.
-	${KYMA} provision k3d --registry-port ${REGISTRY_PORT} --name ${CLUSTER_NAME} --ci
+	${KYMA} provision k3d --registry-port ${REGISTRY_PORT} --name ${CLUSTER_NAME} -p 8080:80@loadbalancer -p 8443:443@loadbalancer --ci
 
 .PHONY: delete-k3d
 delete-k3d: ## Delete k3d with kyma CRDs.
@@ -64,7 +64,7 @@ patch-with-istio-crds: ## Delete k3d kyma cluster.
 
 .PHONY: create-k3d
 create-k3d: ## Create k3d with kyma CRDs.
-	${KYMA} provision k3d --registry-port ${REGISTRY_PORT} --name ${CLUSTER_NAME} --ci
+	${KYMA} provision k3d --registry-port ${REGISTRY_PORT} --name ${CLUSTER_NAME} -p 8080:80@loadbalancer -p 8443:443@loadbalancer --ci
 
 ##@ Module management
 
