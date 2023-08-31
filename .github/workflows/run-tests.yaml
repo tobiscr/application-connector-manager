@@ -1,8 +1,10 @@
 name: Run unit tests
 on:
   push:
-    # only trigger on branches, not on tags
-    branches: '**'
+    branches: [ "main" ]
+  pull_request:
+    # Trigger for Pull Request
+    branches: [ "main" ]
 permissions:
   contents: read
 jobs:
