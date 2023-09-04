@@ -914,6 +914,7 @@ rules:
     resourceNames:
       - compass-agent-configuration
       - cluster-client-certificates
+      - app-connector-certs
     resources:
       - secrets
     verbs:
