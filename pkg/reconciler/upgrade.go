@@ -40,8 +40,8 @@ var compassRtAgentPredicate unstructured.Predicate = func(u unstructured.Unstruc
 	return gvk.Kind == "Deployment" && gvk.Group == "apps" && gvk.Version == "v1" && u.GetName() == "compass-runtime-agent"
 }
 
-func sFnCompassRtAgentScaleToZero(_ context.Context, _ *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
-	u, err := compassRtAgentPredicate.First(s.objs)
+func sFnCompassRtAgentScaleToZero(_ context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.Result, error) {
+	u, err := compassRtAgentPredicate.First(r.Objs)
 	if err != nil {
 		return stopWithErrorAndNoRequeue(err)
 	}
