@@ -10,7 +10,6 @@ import (
 	"k8s.io/utils/ptr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	_ "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
 var (
@@ -24,11 +23,17 @@ func sFnPreUpdate(ctx context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.R
 	var secret v1.Secret
 	err := r.Get(ctx, keyCompassAgentCfg, &secret)
 
+	var replicas int32 = 1
 	if errors.IsNotFound(err) {
-		return switchState(sFnCompassRtAgentScaleToZero)
+		replicas = 0
 	}
 
+	u, err := compassRtAgentPredicate.First(r.Objs)
 	if err != nil {
+		return stopWithErrorAndNoRequeue(err)
+	}
+
+	if err := unstructured.Update(u, replicas, updateDeploymentScaling); err != nil {
 		return stopWithErrorAndNoRequeue(err)
 	}
 
@@ -37,20 +42,10 @@ func sFnPreUpdate(ctx context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.R
 
 var compassRtAgentPredicate unstructured.Predicate = func(u unstructured.Unstructured) bool {
 	gvk := u.GetObjectKind().GroupVersionKind()
-	return gvk.Kind == "Deployment" && gvk.Group == "apps" && gvk.Version == "v1" && u.GetName() == "compass-runtime-agent"
-}
-
-func sFnCompassRtAgentScaleToZero(_ context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.Result, error) {
-	u, err := compassRtAgentPredicate.First(r.Objs)
-	if err != nil {
-		return stopWithErrorAndNoRequeue(err)
-	}
-
-	if err := unstructured.Update(u, 0, updateDeploymentScaling); err != nil {
-		return stopWithErrorAndNoRequeue(err)
-	}
-
-	return switchState(sFnUpdate)
+	return gvk.Kind == "Deployment" &&
+		gvk.Group == "apps" &&
+		gvk.Version == "v1" &&
+		u.GetName() == "compass-runtime-agent"
 }
 
 func updateDeploymentScaling(d appv1.Deployment, replicas int32) error {
