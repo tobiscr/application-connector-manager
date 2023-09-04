@@ -24,6 +24,7 @@ import (
 	"github.com/kyma-project/application-connector-manager/pkg/reconciler"
 	"go.uber.org/zap"
 	v2 "k8s.io/api/autoscaling/v2"
+	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -165,11 +166,14 @@ func (h hpaResourceVersionChangedPredicate) Update(e event.UpdateEvent) bool {
 	return result
 }
 
-var hpaGroupVersionKind = schema.GroupVersionKind{
-	Group:   v2.GroupName,
-	Version: "v2",
-	Kind:    "HorizontalPodAutoscaler",
-}
+var (
+	hpaGroupVersionKind = schema.GroupVersionKind{
+		Group:   v2.GroupName,
+		Version: "v2",
+		Kind:    "HorizontalPodAutoscaler",
+	}
+	kindSecret = source.Kind{Type: &corev1.Secret{}}
+)
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -212,6 +216,18 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 	if err := registerWatchDistinct(r.Objs, watchFn); err != nil {
 		return err
 	}
+
+	// register compass-runtime-agent secret
+	b = b.Watches(
+		&kindSecret,
+		handler.EnqueueRequestsFromMapFunc(r.mapFunction),
+		builder.WithPredicates(
+			&predicateCompassRtAgentGenChange{
+				objectName: "compass-agent-configuration",
+				namespace:  "kyma-system",
+				log:        r.log,
+			},
+		))
 
 	return b.Complete(r)
 }

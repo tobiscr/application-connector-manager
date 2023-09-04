@@ -48,7 +48,7 @@ var compassRtAgentPredicate unstructured.Predicate = func(u unstructured.Unstruc
 		u.GetName() == "compass-runtime-agent"
 }
 
-func updateDeploymentScaling(d appv1.Deployment, replicas int32) error {
+func updateDeploymentScaling(d *appv1.Deployment, replicas int32) error {
 	d.Spec.Replicas = ptr.To(replicas)
 	return nil
 }
