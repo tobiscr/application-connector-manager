@@ -223,7 +223,7 @@ metadata:
   name: compass-runtime-agent-priority-class
 value: 2000000
 globalDefault: false
-description: "Scheduling priority of compass-runtime-agent-priority-class component. By default, compass-runtime-agent-priority-class should not be blocked by unschedulable user workloads."
+description: "Scheduling priority of compass-runtime-agent component. By default, compass-runtime-agent should not be blocked by unschedulable user workloads."
 ---
 # Source: application-connector/charts/central-application-connectivity-validator/templates/deployment.yaml
 apiVersion: apps/v1
