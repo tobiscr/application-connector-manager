@@ -19,7 +19,7 @@ var (
 	}
 )
 
-func sFnPreUpdate(ctx context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.Result, error) {
+func sFnManageCompassRtAgent(ctx context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.Result, error) {
 	var secret v1.Secret
 	err := r.Get(ctx, keyCompassAgentCfg, &secret)
 
@@ -28,7 +28,7 @@ func sFnPreUpdate(ctx context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.R
 		replicas = 0
 	}
 
-	u, err := compassRtAgentPredicate.First(r.Objs)
+	u, err := unstructured.IsDeployment("compass-runtime-agent").First(r.Objs)
 	if err != nil {
 		return stopWithErrorAndNoRequeue(err)
 	}
@@ -38,14 +38,6 @@ func sFnPreUpdate(ctx context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.R
 	}
 
 	return switchState(sFnUpdate)
-}
-
-var compassRtAgentPredicate unstructured.Predicate = func(u unstructured.Unstructured) bool {
-	gvk := u.GetObjectKind().GroupVersionKind()
-	return gvk.Kind == "Deployment" &&
-		gvk.Group == "apps" &&
-		gvk.Version == "v1" &&
-		u.GetName() == "compass-runtime-agent"
 }
 
 func updateDeploymentScaling(d *appv1.Deployment, replicas int32) error {

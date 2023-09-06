@@ -39,5 +39,6 @@ func sFnInitialize(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.
 	if instanceIsBeingDeleted {
 		return switchState(sFnDeleteResources)
 	}
-	return switchState(sFnPreUpdate)
+
+	return switchState(sFnManageCompassRtAgent)
 }

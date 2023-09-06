@@ -23,13 +23,11 @@ func hasName(u Unstructured, name string) bool {
 }
 
 func IsDeploymentKind(u Unstructured) bool {
-	return u.GetKind() == "Deployment" &&
-		u.GetAPIVersion() == "apps/v1"
+	return u.GetKind() == "Deployment" && u.GetAPIVersion() == "apps/v1"
 }
 
 func IsDeployment(name string) Predicate {
 	return func(u Unstructured) bool {
 		return IsDeploymentKind(u) && hasName(u, name)
 	}
-
 }
