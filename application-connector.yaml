@@ -1247,3 +1247,4 @@ spec:
       serviceAccount: compass-runtime-agent
       serviceAccountName: compass-runtime-agent
       terminationGracePeriodSeconds: 30
+      priorityClassName: compass-runtime-agent-priority-class
