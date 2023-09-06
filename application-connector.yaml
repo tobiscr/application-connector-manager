@@ -201,6 +201,30 @@ spec:
     app: central-application-gateway
     release: application-connector
 ---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: central-application-gateway-priority-class
+value: 2000000
+globalDefault: false
+description: "Scheduling priority of central-application-gateway component. By default, central-application-gateway should not be blocked by unschedulable user workloads."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: central-application-connectivity-validator-priority-class
+value: 2000000
+globalDefault: false
+description: "Scheduling priority of central-application-connectivity-validator component. By default, central-application-connectivity-validator should not be blocked by unschedulable user workloads."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: compass-runtime-agent-priority-class
+value: 2000000
+globalDefault: false
+description: "Scheduling priority of compass-runtime-agent component. By default, compass-runtime-agent should not be blocked by unschedulable user workloads."
+---
 # Source: application-connector/charts/central-application-connectivity-validator/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -280,6 +304,7 @@ spec:
           runAsUser: 1000
           privileged: false
           allowPrivilegeEscalation: false
+      priorityClassName: central-application-connectivity-validator-priority-class
 ---
 # Source: application-connector/charts/central-application-gateway/templates/deployment.yaml
 apiVersion: apps/v1
@@ -357,6 +382,7 @@ spec:
           runAsUser: 1000
           privileged: false
           allowPrivilegeEscalation: false
+      priorityClassName: central-application-gateway-priority-class
 ---
 # Source: application-connector/charts/central-application-connectivity-validator/templates/autoscaling.yaml
 apiVersion: autoscaling/v2
@@ -1221,3 +1247,4 @@ spec:
       serviceAccount: compass-runtime-agent
       serviceAccountName: compass-runtime-agent
       terminationGracePeriodSeconds: 30
+      priorityClassName: compass-runtime-agent-priority-class
