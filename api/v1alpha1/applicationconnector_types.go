@@ -51,7 +51,8 @@ const (
 
 // ApplicationConnectorSpec defines the desired state of ApplicationConnector
 type ApplicationConnectorSpec struct {
-	DisableLegacyConnectivity bool `json:"disableLegacyConnectivity"`
+	SyncPeriod string `json:"syncPeriod"`
+	//APP_MINIMAL_COMPASS_SYNC_TIME
 }
 
 //+kubebuilder:object:root=true

@@ -38,7 +38,6 @@ run-without-lifecycle-manager: \
         kyma \
 	create-k3d \
 	create-kyma-system-ns \
-	patch-with-istio-crds \
 	module-image \
 	deploy \
 	apply-appcon \

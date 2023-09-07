@@ -36,10 +36,10 @@ spec:
           spec:
             description: ApplicationConnectorSpec defines the desired state of ApplicationConnector
             properties:
-              disableLegacyConnectivity:
-                type: boolean
+              syncPeriod:
+                type: string
             required:
-            - disableLegacyConnectivity
+            - syncPeriod
             type: object
           status:
             properties:

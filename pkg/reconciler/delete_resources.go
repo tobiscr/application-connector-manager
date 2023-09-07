@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	defaultDeletionStrategy = safeDeletionStrategy
+	defaultDeletionStrategy = cascadeDeletionStrategy
 )
 
 var (

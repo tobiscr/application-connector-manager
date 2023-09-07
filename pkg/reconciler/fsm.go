@@ -12,13 +12,19 @@ import (
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
+	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
 type stateFn func(context.Context, *fsm, *systemState) (stateFn, *ctrl.Result, error)
 
+type Watch = func(src source.Source, eventhandler handler.EventHandler, predicates ...predicate.Predicate) error
+
 type K8s struct {
 	client.Client
 	record.EventRecorder
+	Watch
 }
 
 type Fsm interface {
@@ -30,6 +36,7 @@ type fsm struct {
 	log *zap.SugaredLogger
 	K8s
 	Cfg
+	dependencyACK *bool
 }
 
 func (m *fsm) stateFnName() string {
@@ -73,11 +80,12 @@ loop:
 	}, err
 }
 
-func NewFsm(log *zap.SugaredLogger, cfg Cfg, k8s K8s) Fsm {
+func NewFsm(log *zap.SugaredLogger, cfg Cfg, k8s K8s, depsACK *bool) Fsm {
 	return &fsm{
-		fn:  sFnTakeSnapshot,
-		Cfg: cfg,
-		log: log,
-		K8s: k8s,
+		fn:            sFnTakeSnapshot,
+		Cfg:           cfg,
+		log:           log,
+		K8s:           k8s,
+		dependencyACK: depsACK,
 	}
 }

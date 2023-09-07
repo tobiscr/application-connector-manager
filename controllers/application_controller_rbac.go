@@ -26,3 +26,5 @@ package controllers
 //+kubebuilder:rbac:groups=networking.istio.io,resources=gateways,verbs=list;get;create;update;patch;delete;watch
 //+kubebuilder:rbac:groups=networking.istio.io,resources=virtualservices,verbs=list;get;create;update;patch;delete;watch
 //+kubebuilder:rbac:groups=apiextensions.k8s.io,resources=customresourcedefinitions,verbs=list;watch;delete;create;patch;get
+
+//+kubebuilder:rbac:groups=apiextensions.k8s.io,resources=customresourcedefinitions,verbs=get;list;watch

@@ -38,6 +38,7 @@ import (
 	operatorv1alpha1 "github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	"github.com/kyma-project/application-connector-manager/controllers"
 	"github.com/kyma-project/application-connector-manager/pkg/yaml"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -49,6 +50,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(operatorv1alpha1.AddToScheme(scheme))
+	utilruntime.Must(apiextensionsv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 

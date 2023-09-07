@@ -68,10 +68,14 @@ type ApplicationConnetorReconciler interface {
 	SetupWithManager(mgr ctrl.Manager) error
 }
 
+type Watch = func(src source.Source, eventhandler handler.EventHandler, predicates ...predicate.Predicate) error
+
 type applicationConnectorReconciler struct {
 	log *zap.SugaredLogger
 	reconciler.Cfg
 	reconciler.K8s
+	Watch
+	DepsACK bool
 }
 
 func NewApplicationConnetorReconciler(c client.Client, r record.EventRecorder, log *zap.SugaredLogger, o []unstructured.Unstructured) ApplicationConnetorReconciler {
@@ -229,7 +233,13 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 			},
 		))
 
-	return b.Complete(r)
+	controller, err := b.Build(r)
+	if err != nil {
+		return err
+	}
+
+	r.Watch = controller.Watch
+	return nil
 }
 
 func (r *applicationConnectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -240,9 +250,14 @@ func (r *applicationConnectorReconciler) Reconcile(ctx context.Context, req ctrl
 		}, client.IgnoreNotFound(err)
 	}
 
-	stateFSM := reconciler.NewFsm(r.log, r.Cfg, reconciler.K8s{
-		Client:        r.Client,
-		EventRecorder: r.EventRecorder,
-	})
+	stateFSM := reconciler.NewFsm(
+		r.log,
+		r.Cfg,
+		reconciler.K8s{
+			Client:        r.Client,
+			EventRecorder: r.EventRecorder,
+			Watch:         r.Watch,
+		},
+		&r.DepsACK)
 	return stateFSM.Run(ctx, instance)
 }
