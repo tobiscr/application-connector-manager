@@ -36,6 +36,38 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - nodes
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumes
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - ""
+  resourceNames:
+  - cluster-client-certificates
+  - compass-agent-configuration
+  resources:
+  - secrets
+  verbs:
+  - delete
+  - get
+- apiGroups:
+  - ""
+  resources:
   - serviceaccounts
   verbs:
   - '*'
@@ -48,6 +80,7 @@ rules:
   - delete
   - get
   - list
+  - patch
   - update
   - watch
 - apiGroups:
@@ -60,6 +93,17 @@ rules:
   - get
   - list
   - update
+  - watch
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
   - watch
 - apiGroups:
   - applicationconnector.kyma-project.io
@@ -81,6 +125,7 @@ rules:
   - delete
   - get
   - list
+  - patch
   - update
   - watch
 - apiGroups:
@@ -102,6 +147,25 @@ rules:
   - list
   - patch
   - update
+  - watch
+- apiGroups:
+  - compass.kyma-project.io
+  resources:
+  - compassconnections
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - metrics.k8s.io
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
 - apiGroups:
   - networking.istio.io
   resources:
@@ -113,6 +177,7 @@ rules:
   - list
   - patch
   - update
+  - watch
 - apiGroups:
   - networking.istio.io
   resources:
@@ -124,6 +189,7 @@ rules:
   - list
   - patch
   - update
+  - watch
 - apiGroups:
   - operator.kyma-project.io
   resources:
@@ -162,3 +228,29 @@ rules:
   - list
   - patch
   - update
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scheduling.k8s.io
+  resources:
+  - priorityclasses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
