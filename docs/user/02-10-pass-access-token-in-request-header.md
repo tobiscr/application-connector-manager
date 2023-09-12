@@ -1,6 +1,6 @@
 # Pass an access token in a request header
 
-Application Connector supports passing the access token directly in the request.
+The Application Gateway service supports passing the access token directly in the request.
 
 ## Passing the access token
 

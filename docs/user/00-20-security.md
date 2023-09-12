@@ -2,7 +2,7 @@
 
 ## Client certificates
 
-To provide maximum security, in the [Compass mode](README.md), Application Connector uses the TLS protocol with Client Authentication enabled. As a result, whoever wants to connect to Application Connector must present a valid client certificate, which is dedicated to a specific Application. In this way, the traffic is fully encrypted and the client has a valid identity.
+To provide maximum security, in the [Compass mode](README.md), Application Connector uses the mutual TLS protocol with Client Authentication enabled. As a result, whoever wants to connect to Application Connector must present a valid client certificate, which is dedicated to a specific Application. In this way, the traffic is fully encrypted and the client has a valid identity.
 
 ### TLS certificate verification for external systems
 

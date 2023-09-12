@@ -1,6 +1,6 @@
 # Enable Kyma with Runtime Agent
 
-[Runtime Agent](00-30-runtime-agent-overview.md) is a component that is used in the [Compass mode](README.md) of Application Connectivity. 
+[Runtime Agent](00-30-runtime-agent-overview.md) is a part of the Application Connector module that is used in the [Compass mode](README.md) of Application Connectivity. 
 By default, Kyma uses the [standalone Application Connectivity mode](README.md), which does not support integration with Compass.
 Because of this, on installation, you must:
 - Disable the components used in the standalone mode by setting the **global.disableLegacyConnectivity** value to `true`, and 
