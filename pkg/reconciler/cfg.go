@@ -12,6 +12,7 @@ type Cfg struct {
 	// the objects are module component parts; objects are applied
 	// on the cluster one by one with given order
 	Objs []unstructured.Unstructured
+	Deps []unstructured.Unstructured
 }
 
 //func (c *Cfg) centralApplicationConnectivityValidatorDeployment() (*unstructured.Unstructured, error) {

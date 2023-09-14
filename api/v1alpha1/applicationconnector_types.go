@@ -42,6 +42,7 @@ const (
 	ConditionReasonDeletion        = ConditionReason("Deletion")
 	ConditionReasonDeletionErr     = ConditionReason("DeletionErr")
 	ConditionReasonDeleted         = ConditionReason("Deleted")
+	ConditionReasonDependencyErr   = ConditionReason("DependencyError")
 
 	ConditionTypeInstalled = ConditionType("Installed")
 	ConditionTypeDeleted   = ConditionType("Deleted")

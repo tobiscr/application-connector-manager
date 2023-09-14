@@ -78,12 +78,13 @@ type applicationConnectorReconciler struct {
 	DepsACK bool
 }
 
-func NewApplicationConnetorReconciler(c client.Client, r record.EventRecorder, log *zap.SugaredLogger, o []unstructured.Unstructured) ApplicationConnetorReconciler {
+func NewApplicationConnetorReconciler(c client.Client, r record.EventRecorder, log *zap.SugaredLogger, o1 []unstructured.Unstructured, o2 []unstructured.Unstructured) ApplicationConnetorReconciler {
 	return &applicationConnectorReconciler{
 		log: log,
 		Cfg: reconciler.Cfg{
 			Finalizer: v1alpha1.Finalizer,
-			Objs:      o,
+			Objs:      o1,
+			Deps:      o2,
 		},
 		K8s: reconciler.K8s{
 			Client:        c,
@@ -242,6 +243,8 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 	return nil
 }
 
+var requCounter = 0
+
 func (r *applicationConnectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	var instance v1alpha1.ApplicationConnector
 	if err := r.Get(ctx, req.NamespacedName, &instance); err != nil {
@@ -251,13 +254,15 @@ func (r *applicationConnectorReconciler) Reconcile(ctx context.Context, req ctrl
 	}
 
 	stateFSM := reconciler.NewFsm(
-		r.log,
+		r.log.With("reqID", requCounter),
 		r.Cfg,
 		reconciler.K8s{
 			Client:        r.Client,
 			EventRecorder: r.EventRecorder,
 			Watch:         r.Watch,
+			MapFunc:       r.mapFunction,
 		},
 		&r.DepsACK)
+	requCounter++
 	return stateFSM.Run(ctx, instance)
 }

@@ -2,27 +2,76 @@ package reconciler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
 const (
 	defaultDeletionStrategy = cascadeDeletionStrategy
 )
 
-var (
-	DeletionErr = fmt.Errorf("deletion error")
-)
+func updateFinalizers(deps []unstructured.Unstructured, finalizer string) (result []unstructured.Unstructured) {
+	for _, obj := range deps {
+		newObj := obj.DeepCopy()
+		if !controllerutil.RemoveFinalizer(newObj, finalizer) {
+			// omit object
+			continue
+		}
 
-func sFnDeleteResources(_ context.Context, _ *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
+		result = append(result, *newObj)
+	}
+	return
+}
+
+var ErrDeletionFailed = errors.New("installation error")
+
+type list = func(context.Context, client.ObjectList, ...client.ListOption) error
+
+func listUnstruct(ctx context.Context, gvk schema.GroupVersionKind, list list) ([]unstructured.Unstructured, error) {
+	var u unstructured.UnstructuredList
+	u.SetGroupVersionKind(gvk)
+
+	err := list(ctx, &u, &client.ListOptions{
+		Namespace: "kyma-system",
+	})
+
+	return u.Items, err
+}
+
+func listDependencies(ctx context.Context, list list) ([]unstructured.Unstructured, error) {
+	var out []unstructured.Unstructured
+	for _, gvk := range []schema.GroupVersionKind{
+		{
+			Group:   "networking.istio.io",
+			Version: "v1alpha3",
+			Kind:    "VirtualService",
+		},
+		{
+			Group:   "networking.istio.io",
+			Version: "v1alpha3",
+			Kind:    "Gateway",
+		},
+	} {
+		result, err := listUnstruct(ctx, gvk, list)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, result...)
+	}
+	return out, nil
+}
+
+func sFnDeleteResources(ctx context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	if !isDeleting(s) {
 		s.instance.UpdateStateDeletion(
 			v1alpha1.ConditionTypeInstalled,
@@ -33,8 +82,43 @@ func sFnDeleteResources(_ context.Context, _ *fsm, s *systemState) (stateFn, *ct
 		return stopWithRequeue()
 	}
 
-	// TODO: thinkg about deletion configuration
-	return switchState(deletionStrategyBuilder(defaultDeletionStrategy))
+	// to remove finalizers operate directly on k8s objects
+
+	deps, err := listDependencies(ctx, m.List)
+	if err != nil {
+		s.instance.UpdateStateFromErr(
+			v1alpha1.ConditionTypeInstalled,
+			v1alpha1.ConditionReasonDeletionErr,
+			ErrDeletionFailed,
+		)
+		return stopWithErrorAndNoRequeue(err)
+	}
+
+	updated := updateFinalizers(deps, "application-connector-manager.kyma-project.io/deletion-hook")
+	if len(updated) == 0 {
+		return switchState(deletionStrategyBuilder(defaultDeletionStrategy))
+	}
+
+	var isError bool
+	for _, obj := range updated {
+		err := m.Update(ctx, &obj)
+		if err != nil {
+			m.log.With("err", err).Error("unable to remove finalizer")
+			isError = true
+		}
+	}
+	// no errors
+	if !isError {
+		return stopWithRequeue()
+	}
+
+	s.instance.UpdateStateFromErr(
+		v1alpha1.ConditionTypeInstalled,
+		v1alpha1.ConditionReasonDeletionErr,
+		ErrDeletionFailed,
+	)
+
+	return stopWithErrorAndNoRequeue(fmt.Errorf("%w: unable to remove dependency finalizer[s]", ErrDeletionFailed))
 }
 
 type deletionStrategy string
@@ -89,7 +173,7 @@ type filterFunc func(unstructured.Unstructured) bool
 
 func deleteResourcesWithFilter(ctx context.Context, r *fsm, s *systemState, filterFunc ...filterFunc) (stateFn, *ctrl.Result, error) {
 	var err error
-	for _, obj := range r.Objs {
+	for _, obj := range append(r.Objs, r.Deps...) {
 		if !fitToFilters(obj, filterFunc...) {
 			r.log.
 				With("objName", obj.GetName()).
@@ -115,7 +199,7 @@ func deleteResourcesWithFilter(ctx context.Context, r *fsm, s *systemState, filt
 		s.instance.UpdateStateFromErr(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonDeletionErr,
-			DeletionErr,
+			ErrDeletionFailed,
 		)
 		// stop state machine with an error and requeue reconciliation in 1min
 		return stopWithErrorAndNoRequeue(err)
@@ -134,7 +218,7 @@ func fitToFilters(u unstructured.Unstructured, filterFunc ...filterFunc) bool {
 }
 
 func checkCRDOrphanResources(ctx context.Context, r *fsm) error {
-	for _, obj := range r.Objs {
+	for _, obj := range append(r.Objs, r.Deps...) {
 		if !isCRD(obj) {
 			continue
 		}

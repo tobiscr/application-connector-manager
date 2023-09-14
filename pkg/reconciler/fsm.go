@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+	"sync"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	"go.uber.org/zap"
@@ -25,6 +26,7 @@ type K8s struct {
 	client.Client
 	record.EventRecorder
 	Watch
+	handler.MapFunc
 }
 
 type Fsm interface {
@@ -51,21 +53,30 @@ func (m *fsm) stateFnName() string {
 	return shortName
 }
 
+var mux sync.Mutex
+
 func (m *fsm) Run(ctx context.Context, v v1alpha1.ApplicationConnector) (ctrl.Result, error) {
 	state := systemState{instance: v}
 	var err error
 	var result *ctrl.Result
+	mux.Lock()
 loop:
-	for m.fn != nil && err == nil {
+	for {
 		select {
 		case <-ctx.Done():
 			err = ctx.Err()
 			break loop
 		default:
-			m.log.Info(fmt.Sprintf("switching state: %s", m.stateFnName()))
+			stateFnName := m.stateFnName()
 			m.fn, result, err = m.fn(ctx, m, &state)
+			newStateFnName := m.stateFnName()
+			m.log.With("result", result, "err", err, "mFnIsNill", m.fn == nil).Info(fmt.Sprintf("switching state from %s to %s", stateFnName, newStateFnName))
+			if m.fn == nil || err != nil {
+				break loop
+			}
 		}
 	}
+	mux.Unlock()
 
 	m.log.With("error", err).
 		With("result", result).

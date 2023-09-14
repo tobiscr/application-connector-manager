@@ -15,7 +15,7 @@ var (
 
 func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	var isError bool
-	for _, obj := range r.Objs {
+	for _, obj := range append(r.Objs, r.Deps...) {
 		r.log.
 			With("gvk", obj.GetObjectKind().GroupVersionKind()).
 			With("name", obj.GetName()).

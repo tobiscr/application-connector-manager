@@ -106,6 +106,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	file2, err := os.Open("application-connector-dependencies.yaml")
+	if err != nil {
+		setupLog.Error(err, "unable to open k8s data")
+	}
+	data2, err := yaml.LoadData(file2)
+	if err != nil {
+		setupLog.Error(err, "unable to load k8s data")
+		os.Exit(1)
+	}
+
 	//FIXME: change to production
 	config := zap.NewDevelopmentConfig()
 	config.EncoderConfig.TimeKey = "timestamp"
@@ -125,6 +135,7 @@ func main() {
 		mgr.GetEventRecorderFor("application-connector-manager"),
 		appConLogger.Sugar(),
 		data,
+		data2,
 	)
 	if err = appConReconciler.SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "AppliactionConnector")

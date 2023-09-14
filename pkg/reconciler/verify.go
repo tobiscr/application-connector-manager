@@ -3,6 +3,8 @@ package reconciler
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	appsv1 "k8s.io/api/apps/v1"
@@ -16,21 +18,42 @@ const (
 )
 
 var (
-	fromUnstructured = apirt.DefaultUnstructuredConverter.FromUnstructured
-	//toUnstructed     = apirt.DefaultUnstructuredConverter.ToUnstructured
+	fromUnstructured     = apirt.DefaultUnstructuredConverter.FromUnstructured
+	defaultRequeDuration = time.Minute * 1
 )
 
-func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
-	deployments := inventory(map[string]bool{})
+func validateDeployment(obj unstructured.Unstructured) (bool, error) {
+	var deployment appsv1.Deployment
+	if err := fromUnstructured(obj.Object, &deployment); err != nil {
+		return false, err
+	}
 
-loopObj:
+	for _, cond := range deployment.Status.Conditions {
+		if cond.Type == appsv1.DeploymentAvailable && cond.Status == v1.ConditionTrue {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+type validate = func(unstructured.Unstructured) (bool, error)
+
+func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
+	inventory := inventory(map[string]bool{})
+
 	for _, obj := range s.objs {
-		if !unstructured.IsDeploymentKind(obj) {
+		var validate validate
+
+		if unstructured.IsDeploymentKind(obj) {
+			validate = validateDeployment
+		}
+
+		if validate == nil {
 			continue
 		}
 
-		var deployment appsv1.Deployment
-		if err := fromUnstructured(obj.Object, &deployment); err != nil {
+		valid, err := validate(obj)
+		if err != nil {
 			s.instance.UpdateStateFromErr(
 				v1alpha1.ConditionTypeInstalled,
 				v1alpha1.ConditionReasonVerificationErr,
@@ -39,31 +62,24 @@ loopObj:
 			return stopWithErrorAndNoRequeue(err)
 		}
 
-		key := fmt.Sprintf("%s/%s", deployment.GetNamespace(), deployment.GetName())
-		deployments[key] = false
-
-		for _, cond := range deployment.Status.Conditions {
-			if cond.Type == appsv1.DeploymentAvailable && cond.Status == v1.ConditionTrue {
-				deployments[key] = true
-				continue loopObj
-			}
-		}
+		key := fmt.Sprintf("%s/%s/%s", obj.GetNamespace(), obj.GetKind(), obj.GetName())
+		inventory[key] = valid
 	}
 
-	if !deployments.ready() {
+	if !inventory.ready() {
 		s.instance.UpdateStateProcessing(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonVerification,
 			msgVerificationInProgress,
 		)
 
-		ready, total := deployments.count()
+		ready, total := inventory.count()
 		m.log.Infof("deployments not ready: [%d/%d]", ready, total)
 		return stopWithNoRequeue()
 	}
 
 	if s.instance.Status.State == "Ready" {
-		return nil, nil, nil
+		return stopWithRequeueAfter(defaultRequeDuration)
 	}
 
 	s.instance.UpdateStateReady(
@@ -71,5 +87,5 @@ loopObj:
 		v1alpha1.ConditionReasonVerified,
 		"application-connector-manager ready",
 	)
-	return stopWithNoRequeue()
+	return stopWithRequeueAfter(defaultRequeDuration)
 }

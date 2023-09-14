@@ -3,13 +3,13 @@ package yaml
 import (
 	"io"
 
-	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
 func LoadData(r io.Reader) ([]unstructured.Unstructured, error) {
 	results := make([]unstructured.Unstructured, 0)
-	decoder := yaml.NewDecoder(r)
+	decoder := yaml.NewYAMLOrJSONDecoder(r, 2048)
 
 	for {
 		var obj map[string]interface{}
