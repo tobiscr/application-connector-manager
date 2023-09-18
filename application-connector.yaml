@@ -1088,33 +1088,6 @@ spec:
     control-plane: compass-runtime-agent
     controller-tools.k8s.io: "1.0"
 ---
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  labels:
-    app: compass-runtime-agent
-    app.kubernetes.io/name: compass-runtime-agent
-    app.kubernetes.io/managed-by: application-connector-manager
-    app.kubernetes.io/instance: application-connector
-    app.kubernetes.io/part-of: application-connector-manager
-    release: application-connector
-  name: compass-runtime-agent
-  namespace: kyma-system
-spec:
-  gateways:
-    - kyma-system/kyma-gateway
-  hosts:
-    - compass-runtime-agent.kyma.example.com
-  http:
-    - match:
-        - uri:
-            exact: /healthz
-      route:
-        - destination:
-            host: compass-runtime-agent-health
-            port:
-              number: 8090
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
