@@ -36,10 +36,6 @@ func IsDeploymentKind(u Unstructured) bool {
 	return u.GetKind() == "Deployment" && u.GetAPIVersion() == "apps/v1"
 }
 
-func IsVirtualServiceKind(u Unstructured) bool {
-	return u.GetKind() == "VirtualService" && u.GetAPIVersion() == "networking.istio.io/v1alpha3"
-}
-
 func IsDeployment(name string) Predicate {
 	return func(u Unstructured) bool {
 		return IsDeploymentKind(u) && hasName(u, name)
