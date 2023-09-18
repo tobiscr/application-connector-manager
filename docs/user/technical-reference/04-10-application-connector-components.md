@@ -12,11 +12,6 @@ Istio Ingress Gateway secures the endpoints with certificate validation in the [
 
 Application Connectivity Validator verifies the subject of the client certificate and proxies the received events to Event Publisher in the [Compass scenario](../README.md).
 
-## Event Publisher
-
-Event Publisher sends events to Eventing with metadata that indicates the source of the event.
-This allows routing events to Functions and services based on their source Application.
-
 ## Application
 
 An Application represents an external solution connected to Kyma. It handles the integration with other components, such as Eventing.
