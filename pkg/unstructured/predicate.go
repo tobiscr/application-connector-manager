@@ -18,16 +18,6 @@ func (p Predicate) First(u []Unstructured) (*Unstructured, error) {
 	return nil, fmt.Errorf("%w: no object for given predicate", ErrNotFound)
 }
 
-func (p Predicate) All(u []Unstructured) ([]Unstructured, error) {
-	result := make([]Unstructured, 0)
-	for _, u := range u {
-		if p(u) {
-			result = append(result, u)
-		}
-	}
-	return result, nil
-}
-
 func hasName(u Unstructured, name string) bool {
 	return u.GetName() == name
 }
