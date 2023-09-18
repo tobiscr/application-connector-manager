@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	InstallationErr = errors.New("installation error")
+	ErrInstallationFailed = errors.New("installation failed")
 )
 
 func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
@@ -42,7 +42,7 @@ func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Resul
 	s.instance.UpdateStateFromErr(
 		v1alpha1.ConditionTypeInstalled,
 		v1alpha1.ConditionReasonApplyObjError,
-		InstallationErr,
+		ErrInstallationFailed,
 	)
 	return stopWithNoRequeue()
 }
