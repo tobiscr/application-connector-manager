@@ -49,9 +49,61 @@ const (
 	Finalizer = "application-connector-manager.kyma-project.io/deletion-hook"
 )
 
+type HPASpec struct {
+	IsEnabled       bool   `json:"enable"`
+	CpuUsagePercent string `json:"cpuUsagePercent"`
+	MinReplicas     string `json:"minReplicas"`
+	MaxReplicas     string `json:"maxReplicas"`
+}
+
+type AppGatewaySpec struct {
+	ProxyPort          string  `json:"proxyPort"`
+	ProxyPortCompass   string  `json:"proxyPortCompass"`
+	ProxyCacheTTL      string  `json:"proxyCacheTTL"`
+	ExternalAPIPort    string  `json:"externalAPIPort"`
+	ProxyTimeout       string  `json:"proxyTimeout"`
+	RequestTimeout     string  `json:"requestTimeout"`
+	AppSecretNamespace string  `json:"appSecretNamespace"`
+	LogLevel           string  `json:"logLevel"`
+	AutoscalingSpec    HPASpec `json:"autoscaling"`
+}
+
+type AppConnValidatorSpec struct {
+	ProxyPort                string  `json:"proxyPort"`
+	ExternalAPIPort          string  `json:"externalAPIPort"`
+	EventingPathPrefixV1     string  `json:"eventingPathPrefixV1"`
+	EventingPathPrefixV2     string  `json:"eventingPathPrefixV2"`
+	EventingPathPrefixEvents string  `json:"eventingPathPrefixEvents"`
+	EventingPublisherHost    string  `json:"eventingPublisherHost"` // namespaced name
+	EventingDestinationPath  string  `json:"eventingDestinationPath"`
+	LogLevel                 string  `json:"logLevel"`
+	LogFormat                string  `json:"logFormat"`
+	AutoscalingSpec          HPASpec `json:"autoscaling"`
+}
+
+type RuntimeAgentSpec struct {
+	SkipCompassTLSVerify       bool   `json:"skipCompassTLSVerify"`
+	SkipAppsTLSVerify          bool   `json:"skipAppsTLSVerify"`
+	SkipDirectorProxyTLSVerify bool   `json:"skipDirectorProxyTLSVerify"`
+	QueryLogging               bool   `json:"queryLogging"`
+	MetricsLoggingTimeInterval string `json:"metricsLoggingTimeInterval"`
+	ControllerSyncPeriod       string `json:"controllerSyncPeriod"`
+	MinConfigSyncTime          string `json:"minimalConfigSyncTime"`
+	ValidityRenewalThreshold   string `json:"validityRenewalThreshold"`
+	ConfigSecretName           string `json:"configSecretName"` // namespaced name
+	ClientSecretName           string `json:"clientSecretName"` // namespaced name
+	CASecretName               string `json:"CASecretName"`     // namespaced name
+	GatewayPort                string `json:"gatewayPort"`
+	CentralGatewayServiceUrl   string `json:"centralGatewayServiceUrl"`
+	UploadServiceUrl           string `json:"uploadServiceUrl"`
+}
+
 // ApplicationConnectorSpec defines the desired state of ApplicationConnector
 type ApplicationConnectorSpec struct {
-	DisableLegacyConnectivity bool `json:"disableLegacyConnectivity"`
+	ApplicationGatewaySpec AppGatewaySpec       `json:"appGateway"`
+	AppConValidatorSpec    AppConnValidatorSpec `json:"appConnValidator"`
+	RuntimeAgentSpec       RuntimeAgentSpec     `json:"runtimeAgent"`
+	DomainName             string               `json:"domainName"`
 }
 
 //+kubebuilder:object:root=true
