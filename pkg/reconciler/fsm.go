@@ -56,7 +56,7 @@ func (m *fsm) stateFnName() string {
 var mux sync.Mutex
 
 func (m *fsm) Run(ctx context.Context, v v1alpha1.ApplicationConnector) (ctrl.Result, error) {
-	state := systemState{instance: v}
+	state := systemState{Instance: v}
 	var err error
 	var result *ctrl.Result
 	mux.Lock()

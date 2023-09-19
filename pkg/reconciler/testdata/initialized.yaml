@@ -1,0 +1,152 @@
+---
+instance: >
+  apiVersion: operator.kyma-project.io/v1alpha1
+  kind: ApplicationConnector
+  metadata:
+    namespace: kyma-system
+    labels:
+      app.kubernetes.io/name: applicationconnector
+      app.kubernetes.io/instance: applicationconnector-sample
+      app.kubernetes.io/part-of: application-connector-manager
+      app.kuberentes.io/managed-by: kustomize
+      app.kubernetes.io/created-by: application-connector-manager
+    name: applicationconnector-sample
+  spec:
+    syncPeriod: "90s"
+---
+objs:
+  - >
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app: compass-runtime-agent
+        app.kubernetes.io/name: compass-runtime-agent
+        app.kubernetes.io/managed-by: application-connector-manager
+        app.kubernetes.io/instance: application-connector
+        app.kubernetes.io/part-of: application-connector-manager
+        release: compass-runtime-agent
+      name: compass-runtime-agent
+      namespace: kyma-system
+    spec:
+      progressDeadlineSeconds: 600
+      replicas: 1
+      revisionHistoryLimit: 10
+      selector:
+        matchLabels:
+          app: compass-runtime-agent
+          release: compass-runtime-agent
+      strategy:
+        rollingUpdate:
+          maxSurge: 25%
+          maxUnavailable: 25%
+        type: RollingUpdate
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "true"
+          creationTimestamp: null
+          labels:
+            app: compass-runtime-agent
+            release: compass-runtime-agent
+        spec:
+          containers:
+            - args:
+                - /app/compass-runtime-agent
+              env:
+                - name: APP_AGENT_CONFIGURATION_SECRET
+                  value: kyma-system/compass-agent-configuration
+                - name: APP_CONTROLLER_SYNC_PERIOD
+                  value: 180s
+                - name: APP_MINIMAL_COMPASS_SYNC_TIME
+                  value: 15s
+                - name: APP_CERT_VALIDITY_RENEWAL_THRESHOLD
+                  value: "0.3"
+                - name: APP_CLUSTER_CERTIFICATES_SECRET
+                  value: kyma-system/cluster-client-certificates
+                - name: APP_CA_CERTIFICATES_SECRET
+                  value: istio-system/kyma-gateway-certs-cacert
+                - name: APP_SKIP_COMPASS_TLS_VERIFY
+                  value: "true"
+                - name: APP_SKIP_APPS_TLS_VERIFY
+                  value: "false"
+                - name: APP_GATEWAY_PORT
+                  value: "8080"
+                - name: APP_UPLOAD_SERVICE_URL
+                - name: APP_QUERY_LOGGING
+                  value: "false"
+                - name: APP_METRICS_LOGGING_TIME_INTERVAL
+                  value: 30m
+                - name: APP_RUNTIME_EVENTS_URL
+                  value: https://gateway.c-33b8d5b.dev.kyma.ondemand.com
+                - name: APP_RUNTIME_CONSOLE_URL
+                  value: https://console.c-33b8d5b.dev.kyma.ondemand.com
+                - name: APP_DIRECTOR_PROXY_PORT
+                  value: "8081"
+                - name: APP_DIRECTOR_PROXY_INSECURE_SKIP_VERIFY
+                  value: "true"
+                - name: APP_HEALTH_PORT
+                  value: "8090"
+                - name: APP_CA_CERT_SECRET_TO_MIGRATE
+                  value: istio-system/app-connector-certs
+                - name: APP_CA_CERT_SECRET_KEYS_TO_MIGRATE
+                  value: '["cacert"]'
+                - name: APP_AGENT_CONFIGURATION_SECRET_TO_MIGRATE
+                  value: compass-system/compass-agent-configuration
+                - name: APP_CLUSTER_CERTIFICATES_SECRET_TO_MIGRATE
+                  value: compass-system/cluster-client-certificates
+                - name: APP_CENTRAL_GATEWAY_SERVICE_URL
+                  value: http://central-application-gateway.kyma-system.svc.cluster.local:8082
+              image: europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:v20230724-3559a1b6
+              imagePullPolicy: IfNotPresent
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /healthz
+                  port: 8090
+                  scheme: HTTP
+                initialDelaySeconds: 50
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 1
+              name: compass-runtime-agent
+              ports:
+                - containerPort: 8090
+                  name: http-health
+                  protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /healthz
+                  port: 8090
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 1
+                timeoutSeconds: 1
+              resources: {}
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                privileged: false
+                procMount: Default
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext:
+            runAsGroup: 65535
+            runAsNonRoot: true
+            runAsUser: 65535
+            seccompProfile:
+              type: RuntimeDefault
+          serviceAccount: compass-runtime-agent
+          serviceAccountName: compass-runtime-agent
+          terminationGracePeriodSeconds: 30
+          priorityClassName: compass-runtime-agent-priority-class
+

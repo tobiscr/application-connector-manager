@@ -73,7 +73,7 @@ func listDependencies(ctx context.Context, list list) ([]unstructured.Unstructur
 
 func sFnDeleteResources(ctx context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	if !isDeleting(s) {
-		s.instance.UpdateStateDeletion(
+		s.Instance.UpdateStateDeletion(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonDeletion,
 			"deletion in progress",
@@ -86,7 +86,7 @@ func sFnDeleteResources(ctx context.Context, m *fsm, s *systemState) (stateFn, *
 
 	deps, err := listDependencies(ctx, m.List)
 	if err != nil {
-		s.instance.UpdateStateFromErr(
+		s.Instance.UpdateStateFromErr(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonDeletionErr,
 			ErrDeletionFailed,
@@ -112,7 +112,7 @@ func sFnDeleteResources(ctx context.Context, m *fsm, s *systemState) (stateFn, *
 		return stopWithRequeue()
 	}
 
-	s.instance.UpdateStateFromErr(
+	s.Instance.UpdateStateFromErr(
 		v1alpha1.ConditionTypeInstalled,
 		v1alpha1.ConditionReasonDeletionErr,
 		ErrDeletionFailed,
@@ -152,7 +152,7 @@ func sFnUpstreamDeletionState(ctx context.Context, r *fsm, s *systemState) (stat
 
 func sFnSafeDeletionState(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	if err := checkCRDOrphanResources(ctx, r); err != nil {
-		s.instance.UpdateStateFromErr(
+		s.Instance.UpdateStateFromErr(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonDeletionErr,
 			err,
@@ -196,7 +196,7 @@ func deleteResourcesWithFilter(ctx context.Context, r *fsm, s *systemState, filt
 	}
 
 	if err != nil {
-		s.instance.UpdateStateFromErr(
+		s.Instance.UpdateStateFromErr(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonDeletionErr,
 			ErrDeletionFailed,
@@ -274,7 +274,7 @@ func getCRDStoredVersion(crd apiextensionsv1.CustomResourceDefinition) string {
 }
 
 func isDeleting(s *systemState) bool {
-	condition := meta.FindStatusCondition(s.instance.Status.Conditions, string(v1alpha1.ConditionTypeInstalled))
+	condition := meta.FindStatusCondition(s.Instance.Status.Conditions, string(v1alpha1.ConditionTypeInstalled))
 	if condition == nil {
 		return false
 	}

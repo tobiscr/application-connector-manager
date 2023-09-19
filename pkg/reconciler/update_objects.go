@@ -21,7 +21,7 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 		stopWithErrorAndNoRequeue(err)
 	}
 
-	d := compassRtAgentDTO{syncPeriod: s.instance.Spec.SyncPeriod}
+	d := compassRtAgentDTO{syncPeriod: s.Instance.Spec.SyncPeriod}
 	if err := unstructured.Update(u, d, updateSyncPeriod); err != nil {
 		stopWithErrorAndNoRequeue(err)
 	}

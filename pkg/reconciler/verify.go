@@ -19,7 +19,7 @@ const (
 
 var (
 	fromUnstructured     = apirt.DefaultUnstructuredConverter.FromUnstructured
-	defaultRequeDuration = time.Minute * 1
+	defaultRequeDuration = time.Minute * 2
 )
 
 func validateDeployment(obj unstructured.Unstructured) (bool, error) {
@@ -54,7 +54,7 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 
 		valid, err := validate(obj)
 		if err != nil {
-			s.instance.UpdateStateFromErr(
+			s.Instance.UpdateStateFromErr(
 				v1alpha1.ConditionTypeInstalled,
 				v1alpha1.ConditionReasonVerificationErr,
 				err,
@@ -67,7 +67,7 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 	}
 
 	if !inventory.ready() {
-		s.instance.UpdateStateProcessing(
+		s.Instance.UpdateStateProcessing(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonVerification,
 			msgVerificationInProgress,
@@ -78,11 +78,11 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 		return stopWithNoRequeue()
 	}
 
-	if s.instance.Status.State == "Ready" {
+	if s.Instance.Status.State == "Ready" {
 		return stopWithRequeueAfter(defaultRequeDuration)
 	}
 
-	s.instance.UpdateStateReady(
+	s.Instance.UpdateStateReady(
 		v1alpha1.ConditionTypeInstalled,
 		v1alpha1.ConditionReasonVerified,
 		"application-connector-manager ready",

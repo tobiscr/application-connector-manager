@@ -12,7 +12,7 @@ import (
 func sFnEmmitEventfunc(next stateFn, result *ctrl.Result, err error) stateFn {
 	return func(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 		// compare if any condition change
-		for _, condition := range s.instance.Status.Conditions {
+		for _, condition := range s.Instance.Status.Conditions {
 			// check if condition exists in memento status
 			memorizedCondition := meta.FindStatusCondition(s.snapshot.Conditions, condition.Type)
 			// ignore unchanged conditions
@@ -23,10 +23,10 @@ func sFnEmmitEventfunc(next stateFn, result *ctrl.Result, err error) stateFn {
 				continue
 			}
 			m.Event(
-				&s.instance,
+				&s.Instance,
 				eventType(condition),
 				condition.Reason,
-				fmt.Sprintf("%s: %s/%s", condition.Message, s.instance.Namespace, s.instance.Name),
+				fmt.Sprintf("%s: %s/%s", condition.Message, s.Instance.Namespace, s.Instance.Name),
 			)
 		}
 		return next, result, err

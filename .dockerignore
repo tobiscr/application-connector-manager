@@ -6,5 +6,6 @@
 !pkg
 !controllers
 !application-connector.yaml
+!application-connector-dependencies.yaml
 !go.sum
 !go.mod
