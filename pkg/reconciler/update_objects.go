@@ -18,12 +18,12 @@ type compassRtAgentDTO struct {
 func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	u, err := unstructured.IsDeployment("compass-runtime-agent").First(r.Objs)
 	if err != nil {
-		stopWithErrorAndNoRequeue(err)
+		return stopWithErrorAndNoRequeue(err)
 	}
 
 	d := compassRtAgentDTO{syncPeriod: s.Instance.Spec.SyncPeriod}
 	if err := unstructured.Update(u, d, updateSyncPeriod); err != nil {
-		stopWithErrorAndNoRequeue(err)
+		return stopWithErrorAndNoRequeue(err)
 	}
 
 	return switchState(sFnApply)
