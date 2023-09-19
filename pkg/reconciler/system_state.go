@@ -7,7 +7,7 @@ import (
 
 // the state of controlled system (k8s cluster)
 type systemState struct {
-	Instance v1alpha1.ApplicationConnector `json:"instance"`
+	instance v1alpha1.ApplicationConnector
 	// the state of module component parts on cluster used detect
 	// module readiness
 	objs []unstructured.Unstructured
@@ -16,7 +16,7 @@ type systemState struct {
 }
 
 func (s *systemState) saveAppConStatus() {
-	result := s.Instance.Status.DeepCopy()
+	result := s.instance.Status.DeepCopy()
 	if result == nil {
 		result = &v1alpha1.Status{}
 	}

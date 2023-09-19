@@ -39,7 +39,7 @@ func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Resul
 		return switchState(sFnVerify)
 	}
 
-	s.Instance.UpdateStateFromErr(
+	s.instance.UpdateStateFromErr(
 		v1alpha1.ConditionTypeInstalled,
 		v1alpha1.ConditionReasonApplyObjError,
 		ErrInstallationFailed,

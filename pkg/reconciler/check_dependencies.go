@@ -53,12 +53,12 @@ func checkDeps(crds []v1.CustomResourceDefinition, gks ...schema.GroupKind) erro
 func sFnCheckDependencies(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	var crds v1.CustomResourceDefinitionList
 	if err := r.List(ctx, &crds); err != nil {
-		s.Instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
+		s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
 		return stopWithErrorAndNoRequeue(err)
 	}
 
 	if err := checkDeps(crds.Items, istioGKS...); err != nil {
-		s.Instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
+		s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
 		return stopWithRequeueAfter(time.Second * 10)
 	}
 
@@ -79,7 +79,7 @@ func sFnRegisterDependencyWatch(_ context.Context, r *fsm, s *systemState) (stat
 	)
 
 	if err != nil {
-		s.Instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
+		s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
 		return stopWithErrorAndNoRequeue(err)
 	}
 
@@ -90,7 +90,7 @@ func sFnRegisterDependencyWatch(_ context.Context, r *fsm, s *systemState) (stat
 		}, handler.EnqueueRequestsFromMapFunc(r.MapFunc), labelSelectorPredicate)
 
 		if err != nil {
-			s.Instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
+			s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
 			return stopWithErrorAndNoRequeue(err)
 		}
 	}

@@ -9,20 +9,20 @@ import (
 )
 
 func sFnInitialize(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
-	instanceIsBeingDeleted := !s.Instance.GetDeletionTimestamp().IsZero()
-	instanceHasFinalizer := controllerutil.ContainsFinalizer(&s.Instance, r.Finalizer)
+	instanceIsBeingDeleted := !s.instance.GetDeletionTimestamp().IsZero()
+	instanceHasFinalizer := controllerutil.ContainsFinalizer(&s.instance, r.Finalizer)
 
 	// in case instance does not have finalizer - add it and update instance
 	if !instanceIsBeingDeleted && !instanceHasFinalizer {
 		r.log.Debug("adding finalizer")
-		controllerutil.AddFinalizer(&s.Instance, r.Finalizer)
+		controllerutil.AddFinalizer(&s.instance, r.Finalizer)
 
-		err := r.Update(ctx, &s.Instance)
+		err := r.Update(ctx, &s.instance)
 		if err != nil {
 			return stopWithErrorAndNoRequeue(err)
 		}
 
-		s.Instance.UpdateStateProcessing(
+		s.instance.UpdateStateProcessing(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonInitialized,
 			"initialized",
@@ -30,7 +30,7 @@ func sFnInitialize(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.
 		return stopWithRequeue()
 	}
 	// in case instance has no finalizer and instance is being deleted - end reconciliation
-	if instanceIsBeingDeleted && !controllerutil.ContainsFinalizer(&s.Instance, r.Finalizer) {
+	if instanceIsBeingDeleted && !controllerutil.ContainsFinalizer(&s.instance, r.Finalizer) {
 		r.log.Debug("instance is being deleted")
 		// stop state machine
 		return nil, nil, nil

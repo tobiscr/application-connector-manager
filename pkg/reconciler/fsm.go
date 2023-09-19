@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
-	"strings"
 	"sync"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
@@ -19,6 +18,10 @@ import (
 )
 
 type stateFn func(context.Context, *fsm, *systemState) (stateFn, *ctrl.Result, error)
+
+func (f stateFn) name() string {
+	return runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
+}
 
 type Watch = func(src source.Source, eventhandler handler.EventHandler, predicates ...predicate.Predicate) error
 
@@ -41,22 +44,10 @@ type fsm struct {
 	dependencyACK *bool
 }
 
-func (m *fsm) stateFnName() string {
-	fullName := runtime.FuncForPC(reflect.ValueOf(m.fn).Pointer()).Name()
-	splitFullName := strings.Split(fullName, ".")
-
-	if len(splitFullName) < 3 {
-		return fullName
-	}
-
-	shortName := splitFullName[2]
-	return shortName
-}
-
 var mux sync.Mutex
 
 func (m *fsm) Run(ctx context.Context, v v1alpha1.ApplicationConnector) (ctrl.Result, error) {
-	state := systemState{Instance: v}
+	state := systemState{instance: v}
 	var err error
 	var result *ctrl.Result
 	mux.Lock()
@@ -67,9 +58,9 @@ loop:
 			err = ctx.Err()
 			break loop
 		default:
-			stateFnName := m.stateFnName()
+			stateFnName := m.fn.name()
 			m.fn, result, err = m.fn(ctx, m, &state)
-			newStateFnName := m.stateFnName()
+			newStateFnName := m.fn.name()
 			m.log.With("result", result, "err", err, "mFnIsNill", m.fn == nil).Info(fmt.Sprintf("switching state from %s to %s", stateFnName, newStateFnName))
 			if m.fn == nil || err != nil {
 				break loop

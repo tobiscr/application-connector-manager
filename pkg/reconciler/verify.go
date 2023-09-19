@@ -54,7 +54,7 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 
 		valid, err := validate(obj)
 		if err != nil {
-			s.Instance.UpdateStateFromErr(
+			s.instance.UpdateStateFromErr(
 				v1alpha1.ConditionTypeInstalled,
 				v1alpha1.ConditionReasonVerificationErr,
 				err,
@@ -67,7 +67,7 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 	}
 
 	if !inventory.ready() {
-		s.Instance.UpdateStateProcessing(
+		s.instance.UpdateStateProcessing(
 			v1alpha1.ConditionTypeInstalled,
 			v1alpha1.ConditionReasonVerification,
 			msgVerificationInProgress,
@@ -78,11 +78,11 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 		return stopWithNoRequeue()
 	}
 
-	if s.Instance.Status.State == "Ready" {
+	if s.instance.Status.State == "Ready" {
 		return stopWithRequeueAfter(defaultRequeDuration)
 	}
 
-	s.Instance.UpdateStateReady(
+	s.instance.UpdateStateReady(
 		v1alpha1.ConditionTypeInstalled,
 		v1alpha1.ConditionReasonVerified,
 		"application-connector-manager ready",

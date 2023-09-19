@@ -9,9 +9,9 @@ import (
 )
 
 func sFnRemoveFinalizer(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
-	controllerutil.RemoveFinalizer(&s.Instance, r.Finalizer)
+	controllerutil.RemoveFinalizer(&s.instance, r.Finalizer)
 
-	err := r.Update(ctx, &s.Instance)
+	err := r.Update(ctx, &s.instance)
 	if client.IgnoreNotFound(err) != nil {
 		return nil, &ctrl.Result{Requeue: true}, err
 	}
