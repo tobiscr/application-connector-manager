@@ -10,4 +10,42 @@ metadata:
     app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
 spec:
-  disableLegacyConnectivity : true
+  domain: kyma.example.com
+  appConnValidator:
+    proxyPort: ""
+    externalAPIPort: ""
+    eventingPathPsrefixV1: ""
+    eventingPathPrefixV2: ""
+    eventingPathPrefixEvents: ""
+    eventingPublisherHost: ""
+    eventingDestinationPath: ""
+    logLevel: ""
+    logFormat: ""
+  appGateway:
+    proxyPort: ""
+    proxyPortCompass: ""
+    proxyCacheTTL: ""
+    externalAPIPort: ""
+    proxyTimeout: ""
+    requestTimeout: ""
+    appSecretNamespace: ""
+    logLevel: ""
+  runtimeAgent:
+    configSecretName: "kyma-system/compass-agent-configuration"
+    CASecretName: "istio-system/kyma-gateway-certs-cacert"
+    clientSecretName: "kyma-system/cluster-client-certificates"
+    controllerSyncPeriod: "180s"
+    minimalConfigSyncTime: "15s"
+    metricsLoggingTimeInterval: "30m"
+    certValidityRenewalThreshold: "0.3"
+    gatewayPort: "8080"
+    centralGatewayServiceUrl: "http://central-application-gateway.kyma-system.svc.cluster.local:8082"
+    runtimeEventsURL: "http://gateway.kyma.example.com"
+    runtimeConsoleUrl: "http://console.kyma.example.com"
+    directorProxyPort: "8081"
+    healthcheckPort: "8090"
+    proxyStatusPort: "15020"
+    skipCompassTLSVerify: "true"
+    skipAppsTLSVerify: "true"
+    skipDirectorProxyTLSVerify: "true"
+    queryLogging: "true"

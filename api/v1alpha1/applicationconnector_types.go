@@ -49,60 +49,65 @@ const (
 	Finalizer = "application-connector-manager.kyma-project.io/deletion-hook"
 )
 
-type HPASpec struct {
-	IsEnabled       bool   `json:"enable"`
-	CpuUsagePercent string `json:"cpuUsagePercent"`
-	MinReplicas     string `json:"minReplicas"`
-	MaxReplicas     string `json:"maxReplicas"`
+type HorizontalScalingSpec struct {
+	Enabled         bool   `json:"enable,omitempty"`
+	CpuUsagePercent string `json:"cpuUsagePercent,omitempty"`
+	MinReplicas     string `json:"minReplicas,omitempty"`
+	MaxReplicas     string `json:"maxReplicas,omitempty"`
 }
 
 type AppGatewaySpec struct {
-	ProxyPort          string  `json:"proxyPort"`
-	ProxyPortCompass   string  `json:"proxyPortCompass"`
-	ProxyCacheTTL      string  `json:"proxyCacheTTL"`
-	ExternalAPIPort    string  `json:"externalAPIPort"`
-	ProxyTimeout       string  `json:"proxyTimeout"`
-	RequestTimeout     string  `json:"requestTimeout"`
-	AppSecretNamespace string  `json:"appSecretNamespace"`
-	LogLevel           string  `json:"logLevel"`
-	AutoscalingSpec    HPASpec `json:"autoscaling"`
+	ProxyPort          string                `json:"proxyPort,omitempty"`
+	ProxyPortCompass   string                `json:"proxyPortCompass,omitempty"`
+	ProxyCacheTTL      string                `json:"proxyCacheTTL,omitempty"`
+	ExternalAPIPort    string                `json:"externalAPIPort,omitempty"`
+	ProxyTimeout       string                `json:"proxyTimeout,omitempty"`
+	RequestTimeout     string                `json:"requestTimeout,omitempty"`
+	AppSecretNamespace string                `json:"appSecretNamespace,omitempty"`
+	LogLevel           string                `json:"logLevel,omitempty"`
+	AutoscalingSpec    HorizontalScalingSpec `json:"autoscaling,omitempty"`
 }
 
 type AppConnValidatorSpec struct {
-	ProxyPort                string  `json:"proxyPort"`
-	ExternalAPIPort          string  `json:"externalAPIPort"`
-	EventingPathPrefixV1     string  `json:"eventingPathPrefixV1"`
-	EventingPathPrefixV2     string  `json:"eventingPathPrefixV2"`
-	EventingPathPrefixEvents string  `json:"eventingPathPrefixEvents"`
-	EventingPublisherHost    string  `json:"eventingPublisherHost"` // namespaced name
-	EventingDestinationPath  string  `json:"eventingDestinationPath"`
-	LogLevel                 string  `json:"logLevel"`
-	LogFormat                string  `json:"logFormat"`
-	AutoscalingSpec          HPASpec `json:"autoscaling"`
+	ProxyPort                string                `json:"proxyPort,omitempty"`
+	ExternalAPIPort          string                `json:"externalAPIPort,omitempty"`
+	AppNamePlaceholder       string                `json:"appNamePlaceholder,omitempty"`
+	EventingPathPrefixV1     string                `json:"eventingPathPrefixV1,omitempty"`
+	EventingPathPrefixV2     string                `json:"eventingPathPrefixV2,omitempty"`
+	EventingPathPrefixEvents string                `json:"eventingPathPrefixEvents,omitempty"`
+	EventingPublisherHost    string                `json:"eventingPublisherHost,omitempty"` // namespaced name
+	EventingDestinationPath  string                `json:"eventingDestinationPath,omitempty"`
+	LogLevel                 string                `json:"logLevel,omitempty"`
+	LogFormat                string                `json:"logFormat,omitempty"`
+	AutoscalingSpec          HorizontalScalingSpec `json:"autoscaling,omitempty"`
 }
 
 type RuntimeAgentSpec struct {
-	SkipCompassTLSVerify       bool   `json:"skipCompassTLSVerify"`
-	SkipAppsTLSVerify          bool   `json:"skipAppsTLSVerify"`
-	SkipDirectorProxyTLSVerify bool   `json:"skipDirectorProxyTLSVerify"`
-	QueryLogging               bool   `json:"queryLogging"`
-	MetricsLoggingTimeInterval string `json:"metricsLoggingTimeInterval"`
-	ControllerSyncPeriod       string `json:"controllerSyncPeriod"`
-	MinConfigSyncTime          string `json:"minimalConfigSyncTime"`
-	ValidityRenewalThreshold   string `json:"validityRenewalThreshold"`
-	ConfigSecretName           string `json:"configSecretName"` // namespaced name
-	ClientSecretName           string `json:"clientSecretName"` // namespaced name
-	CASecretName               string `json:"CASecretName"`     // namespaced name
-	GatewayPort                string `json:"gatewayPort"`
-	CentralGatewayServiceUrl   string `json:"centralGatewayServiceUrl"`
-	UploadServiceUrl           string `json:"uploadServiceUrl"`
+	ConfigSecretName             string          `json:"configSecretName,omitempty"` // namespaced name
+	ClientSecretName             string          `json:"clientSecretName,omitempty"` // namespaced name
+	CASecretName                 string          `json:"CASecretName,omitempty"`     // namespaced name
+	ControllerSyncPeriod         metav1.Duration `json:"controllerSyncPeriod,omitempty"`
+	MinConfigSyncTime            string          `json:"minimalConfigSyncTime,omitempty"`
+	MetricsLoggingTimeInterval   metav1.Duration `json:"metricsLoggingTimeInterval,omitempty"`
+	CertValidityRenewalThreshold string          `json:"certValidityRenewalThreshold,omitempty"`
+	GatewayPort                  string          `json:"gatewayPort,omitempty"` // int
+	CentralGatewayServiceUrl     string          `json:"centralGatewayServiceUrl,omitempty"`
+	RuntimeEventsURL             string          `json:"runtimeEventsURL,omitempty"`
+	RuntimeConsoleURL            string          `json:"runtimeConsoleUrl,omitempty"`
+	DirectorProxyPort            string          `json:"directorProxyPort,omitempty"` // int
+	HealthcheckPort              string          `json:"healthcheckPort,omitempty"`   // int
+	SkipCompassTLSVerify         bool            `json:"skipCompassTLSVerify,omitempty"`
+	SkipAppsTLSVerify            bool            `json:"skipAppsTLSVerify,omitempty"`
+	SkipDirectorProxyTLSVerify   bool            `json:"skipDirectorProxyTLSVerify,omitempty"`
+	QueryLogging                 bool            `json:"queryLogging,omitempty"`
 }
 
-// ApplicationConnectorSpec defines the desired state of ApplicationConnector
+// ApplicationConnectorSpec contains configuration of ApplicationConnector module and its state
+
 type ApplicationConnectorSpec struct {
-	ApplicationGatewaySpec AppGatewaySpec       `json:"appGateway"`
-	AppConValidatorSpec    AppConnValidatorSpec `json:"appConnValidator"`
-	RuntimeAgentSpec       RuntimeAgentSpec     `json:"runtimeAgent"`
+	ApplicationGatewaySpec AppGatewaySpec       `json:"appGateway,omitempty"`
+	AppConValidatorSpec    AppConnValidatorSpec `json:"appConnValidator,omitempty"`
+	RuntimeAgentSpec       RuntimeAgentSpec     `json:"runtimeAgent,omitempty"`
 	DomainName             string               `json:"domainName"`
 }
 
@@ -114,8 +119,8 @@ type ApplicationConnector struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   ApplicationConnectorSpec `json:"spec,omitempty"`
-	Status Status                   `json:"status,omitempty"`
+	Spec   ApplicationConnectorSpec   `json:"spec,omitempty"`
+	Status ApplicationConnectorStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true

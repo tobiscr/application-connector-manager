@@ -4,7 +4,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type Status struct {
+type ApplicationConnectorStatus struct {
 	State      string             `json:"state"`
 	Served     string             `json:"served"`
 	Conditions []metav1.Condition `json:"conditions,omitempty"`

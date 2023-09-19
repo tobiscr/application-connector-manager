@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.9.2
+    controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
   name: applicationconnectors.operator.kyma-project.io
 spec:
@@ -34,12 +34,112 @@ spec:
           metadata:
             type: object
           spec:
-            description: ApplicationConnectorSpec defines the desired state of ApplicationConnector
             properties:
-              disableLegacyConnectivity:
-                type: boolean
+              appConnValidator:
+                properties:
+                  appNamePlaceholder:
+                    type: string
+                  autoscaling:
+                    properties:
+                      cpuUsagePercent:
+                        type: string
+                      enable:
+                        type: boolean
+                      maxReplicas:
+                        type: string
+                      minReplicas:
+                        type: string
+                    type: object
+                  eventingDestinationPath:
+                    type: string
+                  eventingPathPrefixEvents:
+                    type: string
+                  eventingPathPrefixV1:
+                    type: string
+                  eventingPathPrefixV2:
+                    type: string
+                  eventingPublisherHost:
+                    type: string
+                  externalAPIPort:
+                    type: string
+                  logFormat:
+                    type: string
+                  logLevel:
+                    type: string
+                  proxyPort:
+                    type: string
+                type: object
+              appGateway:
+                properties:
+                  appSecretNamespace:
+                    type: string
+                  autoscaling:
+                    properties:
+                      cpuUsagePercent:
+                        type: string
+                      enable:
+                        type: boolean
+                      maxReplicas:
+                        type: string
+                      minReplicas:
+                        type: string
+                    type: object
+                  externalAPIPort:
+                    type: string
+                  logLevel:
+                    type: string
+                  proxyCacheTTL:
+                    type: string
+                  proxyPort:
+                    type: string
+                  proxyPortCompass:
+                    type: string
+                  proxyTimeout:
+                    type: string
+                  requestTimeout:
+                    type: string
+                type: object
+              domainName:
+                type: string
+              runtimeAgent:
+                properties:
+                  CASecretName:
+                    type: string
+                  centralGatewayServiceUrl:
+                    type: string
+                  certValidityRenewalThreshold:
+                    type: string
+                  clientSecretName:
+                    type: string
+                  configSecretName:
+                    type: string
+                  controllerSyncPeriod:
+                    type: string
+                  directorProxyPort:
+                    type: string
+                  gatewayPort:
+                    type: string
+                  healthcheckPort:
+                    type: string
+                  metricsLoggingTimeInterval:
+                    type: string
+                  minimalConfigSyncTime:
+                    type: string
+                  queryLogging:
+                    type: boolean
+                  runtimeConsoleUrl:
+                    type: string
+                  runtimeEventsURL:
+                    type: string
+                  skipAppsTLSVerify:
+                    type: boolean
+                  skipCompassTLSVerify:
+                    type: boolean
+                  skipDirectorProxyTLSVerify:
+                    type: boolean
+                type: object
             required:
-            - disableLegacyConnectivity
+            - domainName
             type: object
           status:
             properties:
