@@ -19,6 +19,10 @@ import (
 
 type stateFn func(context.Context, *fsm, *systemState) (stateFn, *ctrl.Result, error)
 
+func (f stateFn) String() string {
+	return f.name()
+}
+
 func (f stateFn) name() string {
 	return runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
 }

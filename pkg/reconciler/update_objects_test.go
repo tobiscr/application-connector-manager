@@ -2,23 +2,21 @@ package reconciler
 
 import (
 	"context"
-	"testing"
+	"fmt"
 	"time"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	modtest "github.com/kyma-project/application-connector-manager/pkg/reconciler/testing"
+	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/types"
 )
 
-var (
-	updateTimeout = time.Second * 5
-)
+var _ = Describe("ACM sFnUpdate", func() {
 
-func Test_sFnUpdate(t *testing.T) {
-	// load all test data from testdata/update
-	objs, err := modtest.LoadTestData(modtest.SfnUpdate)
-	if err != nil {
-		t.Fatalf("unable to extract test data: %s", err)
-	}
+	var testData map[string][]unstructured.Unstructured
+	updateTimeout := time.Second * 5
 
 	defaultState := &systemState{
 		instance: v1alpha1.ApplicationConnector{
@@ -28,53 +26,45 @@ func Test_sFnUpdate(t *testing.T) {
 		},
 	}
 
-	type args struct {
-		r *fsm
-		s *systemState
-	}
-
-	tests := []struct {
-		name           string
-		args           args
-		wantNextFnName string
-		wantErr        bool
-	}{
-		{
-			name: "happy path",
-			args: args{
-				s: defaultState,
-				r: &fsm{
-					Cfg: Cfg{
-						Objs: objs[modtest.TdUpdateAcmValid],
-					},
-				},
-			},
-			wantNextFnName: modtest.NamesFnApply,
-		},
-		{
-			name: "missing deployment",
-			args: args{
-				s: defaultState,
-				r: &fsm{},
-			},
-			wantNextFnName: modtest.NamesFnUpdateStatus,
-		},
-	}
+	testData, err := modtest.LoadTestData(modtest.SfnUpdate)
+	Expect(err).Should(BeNil(), fmt.Errorf("unable to extract test data: %s", err))
 
 	ctx, cancel := context.WithTimeout(context.Background(), updateTimeout)
 	defer cancel()
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			sFn, _, err := sFnUpdate(ctx, tt.args.r, tt.args.s)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("sFnUpdate() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+	DescribeTable(
+		"update state function",
+		testUpdate,
+		Entry(
+			"happy path",
+			ctx,
+			&fsm{Cfg: Cfg{Objs: testData[modtest.TdUpdateAcmValid]}},
+			defaultState,
+			testUpdateOptions{
+				MatchExpectedErr: BeNil(),
+				MatchNextFnState: equalStateFunction(sFnApply),
+			},
+		),
+		Entry(
+			"no deployment",
+			ctx,
+			&fsm{},
+			defaultState,
+			testUpdateOptions{
+				MatchExpectedErr: BeNil(),
+				MatchNextFnState: equalStateFunction(sFnUpdateStatus(nil, nil)),
+			},
+		),
+	)
+})
 
-			if tt.wantNextFnName != sFn.name() {
-				t.Errorf("sFnUpdate() sFn = %s, want %s", sFn.name(), tt.wantNextFnName)
-			}
-		})
-	}
+type testUpdateOptions struct {
+	MatchExpectedErr types.GomegaMatcher
+	MatchNextFnState types.GomegaMatcher
+}
+
+func testUpdate(ctx context.Context, r *fsm, s *systemState, ops testUpdateOptions) {
+	sFn, _, err := sFnUpdate(ctx, r, s)
+	Expect(err).To(ops.MatchExpectedErr)
+	Expect(sFn).To(ops.MatchNextFnState)
 }
