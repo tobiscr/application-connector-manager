@@ -4,7 +4,7 @@ Application Gateway is an intermediary component between a Function or a microse
 
 ## Application Gateway URL
 
-To call a remote system's API from a workload with Application Gateway, you use the URL to the `central-application-gateway.kyma-system` service at an appropriate port and with a respective suffix to access the API of a specific application.
+To call a remote system's API from a workload with Application Gateway, you use the URL to the `central-application-gateway.kyma-system` service at an appropriate port and with a respective suffix to access the API of a specific Application.
 
 The suffix and the port number differ depending on whether you're using Kyma in the [Standalone or Compass mode](../README.md):
 
@@ -45,7 +45,7 @@ In addition, the `User-Agent` header is set to an empty value not specified in t
 
 ## Response rewriting
 
-Application Gateway performs response rewriting in situations when during a call to the external system, the target responds with a redirect (`3xx` status code) that points to the URL with the same host and a different path.
+Application Gateway performs response rewriting in situations when, during a call to the external system, the target responds with a redirect (`3xx` status code) that points to the URL with the same host and a different path.
 In such a case, the `Location` header is modified so that the original target path is replaced with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end. 
 The modified `Location` header has the following format: `{APP_GATEWAY_URL}:{APP_GATEWAY_PORT}/{APP_NAME}/{SERVICE_NAME}/{SUB-PATH}`.
 

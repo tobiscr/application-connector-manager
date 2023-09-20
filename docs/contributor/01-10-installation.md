@@ -93,25 +93,25 @@ Run:
 
 ## Using Application Connector Manager
 
-- Create an ApplicationConnector instance
+- Create an ApplicationConnector instance.
 
    ```bash
    kubectl apply -f config/samples/operator_v1alpha1_applicationconnector.yaml
    ```
 
-- Delete an ApplicationConnector instance
+- Delete an ApplicationConnector instance.
 
    ```bash
    kubectl delete -f config/samples/operator_v1alpha1_applicationconnector.yaml
    ```
 
-- Update the ApplicationConnector properties
+- Update the ApplicationConnector properties.
 
 TODO: Provide example of CR update
 
 ## Build and install the Application Connector module on the local k3d cluster
 
-1. Setup local k3d cluster and local Docker registry.
+1. Set up a local k3d cluster and a local Docker registry.
 
    ```bash
    k3d cluster create kyma --registry-create registry.localhost:0.0.0.0:5001

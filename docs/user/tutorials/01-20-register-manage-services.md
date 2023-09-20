@@ -6,7 +6,7 @@ This guide shows you how to register a service of your external solution in Kyma
 
 ## Prerequisites
 
-1. Before you start, expose the following as environment variables:
+1. Before you start, expose the following values as environment variables:
    - Your [Application](01-10-create-application.md#prerequisites) name
    - Username and password to access the external system
    - Name of the Secret containing the service credentials
@@ -110,7 +110,7 @@ To check that the service was registered correctly, create a test Pod, and make 
     EOF
     ```
 
-4. Wait for the Pod to be in state `Running`. To check that the Pod is ready, run this command and wait for the response:
+4. Wait for the Pod to be in the state `Running`. To check that the Pod is ready, run this command and wait for the response:
 
     ```bash
     kubectl wait --for=condition=Ready pod $POD_NAME -n $NAMESPACE

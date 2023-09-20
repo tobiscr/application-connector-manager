@@ -4,7 +4,7 @@
 
 ## Istio Ingress Gateway
 
-The Istio Ingress Gateway exposes Application Connector and other Kyma modules.
+Istio Ingress Gateway exposes Application Connector and other Kyma modules.
 The DNS name of the Ingress is cluster-dependent and follows the `gateway.{cluster-dns}` format. For example, `gateway.servicemanager.cluster.kyma.cx`.
 Istio Ingress Gateway secures the endpoints with certificate validation in the [Compass scenario](../README.md). Each call must include a valid client certificate.
 
@@ -37,4 +37,4 @@ Additionally, Application Gateway supports cross-site request forgery (CSRF) tok
 
 ## Kubernetes Secret
 
-The Kubernetes Secret is a Kubernetes object which stores sensitive data, such as the OAuth credentials.
+The Kubernetes Secret is a Kubernetes object that stores sensitive data, such as OAuth credentials.

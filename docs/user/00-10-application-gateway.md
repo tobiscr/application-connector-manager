@@ -16,7 +16,7 @@ Application Gateway can call services which are not secured, or are secured with
 
 Additionally, Application Gateway supports cross-site request forgery (CSRF) tokens as an optional layer of API protection.
 
-Application Gateway calls the registered APIs accordingly, basing on the security type specified for the API in the Application CR.
+Application Gateway calls the registered APIs accordingly, based on the security type specified for the API in the Application CR.
 
 ## Provide a custom access token
 

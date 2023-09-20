@@ -16,13 +16,13 @@ Depending on your use case, Application Connectivity works in one of the two mod
 
 ## Application Connector module
 
-The Application Connector module allows you to install, uninstall and configure all features of the Kyma's Application Connector on your Kubernetes cluster, using the Application Connector Manager service.
+The Application Connector module allows you to install, uninstall, and configure all features of Kyma's Application Connector on your Kubernetes cluster using the Application Connector Manager service.
 
 Application Connector allows you to connect your workflows deployed on Kyma with external solutions. No matter if you want to integrate an on-premise or a cloud system, the integration process does not change, which allows you to avoid any configuration or network-related problems.
 
 The external solution you connect to Kyma using Application Connector is represented as an Application. There is always a one-to-one relationship between a connected solution and an Application, which helps to ensure the highest level of security and separation. This means that you must create five separate Applications in your cluster to connect five different external solutions and use their APIs and event catalogs in Kyma.
 
-Application Connector secures Eventing with a client certificate verified by the Istio Ingress Gateway in the Compass scenario.
+Application Connector secures Eventing with a client certificate verified by Istio Ingress Gateway in the Compass scenario.
 
 >**CAUTION:** To run Application Connector, first you must [install the Istio module](https://kyma-project.io/#/02-get-started/08-install-uninstall-upgrade-kyma-module?id=install-kyma-with-a-module). Without it, Application Connector remains in the error state.
 

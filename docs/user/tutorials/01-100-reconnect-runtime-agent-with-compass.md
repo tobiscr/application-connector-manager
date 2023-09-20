@@ -15,4 +15,4 @@ To force Runtime Agent to reconnect using the parameters from the Secret, delete
 kubectl delete compassconnection compass-connection
 ```
 
-After the Connection CR is removed, Runtime Agent will try to connect to Compass using the token from the Secret.
+After the Connection CR is removed, Runtime Agent tries to connect to Compass using the token from the Secret.

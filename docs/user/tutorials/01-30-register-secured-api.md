@@ -28,9 +28,9 @@ The **entries** object must contain the following fields:
 | Field                           | Description                                                  |
 | ------------------------------- | ------------------------------------------------------------ |
 | **credentials**                 | Optional object containing credentials used for authentication. Must be specified for secured APIs. |
-| **targetUrl**                   | URL to the API                                               |
+| **targetUrl**                   | URL to the API.                                               |
 | **type**                        | Entry type. Use the `API` type when registering an API.        |
-| **requestParametersSecretName** | Optional name of a Secret with additional request parameters and headers |
+| **requestParametersSecretName** | Optional name of a Secret with additional request parameters and headers. |
 
 #### Credentials
 
@@ -38,7 +38,7 @@ The **credentials** object must contain the following fields:
 
 | Field                 | Description                                                                 |
 | --------------------- |-----------------------------------------------------------------------------|
-| **secretName**        | Name of a Secret storing credentials                                        |
+| **secretName**        | Name of a Secret storing credentials.                                        |
 | **type**              | Authentication method type. Supported values: `Basic`, `OAuth`, `OAuthWithCert `, `CertificateGen`.  |
 | **authenticationUrl** | Optional OAuth token URL, valid only for the `OAuth` and `OAuthWithCert` types. |
 
@@ -212,7 +212,7 @@ This is an example of the **service** object for an API secured with both Basic 
       type: API
 ```
 
-> **NOTE:** It is assumed that the CSRF token endpoint service uses the same credentials as the target API.
+> **NOTE:** The example assumes that the CSRF token endpoint service uses the same credentials as the target API.
 
 This is an example of the Secret containing credentials: 
 
