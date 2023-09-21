@@ -61,18 +61,9 @@ type AppGatewaySpec struct {
 	LogLevel       LogLevel `json:"logLevel"`
 }
 
-type EventingSpec struct {
-	PathPrefixV1     string `json:"pathPrefixV1"`
-	PathPrefixV2     string `json:"pathPrefixV2"`
-	PathPrefixEvents string `json:"pathPrefixEvents"`
-	PublisherHost    string `json:"publisherHost"`
-	DestinationPath  string `json:"destinationPath"`
-}
-
 type AppConnValidatorSpec struct {
-	EventingConfig EventingSpec `json:"eventingConfig"`
-	LogLevel       LogLevel     `json:"logLevel"`
-	LogFormat      LogFormat    `json:"logFormat"`
+	LogLevel  LogLevel  `json:"logLevel"`
+	LogFormat LogFormat `json:"logFormat"`
 }
 
 type RuntimeAgentSpec struct {
@@ -88,7 +79,7 @@ type ApplicationConnectorSpec struct {
 	// +kubebuilder:default:={ proxyTimeout: "10", requestTimeout: "10", logLevel: "info" }
 	ApplicationGatewaySpec AppGatewaySpec `json:"appGateway"`
 	// +optional
-	// +kubebuilder:default:={ eventingConfig: { pathPrefixV1: "/%%APP_NAME%%/v1/events", pathPrefixV2: "/%%APP_NAME%%/v2/events", pathPrefixEvents: "/%%APP_NAME%%/events", publisherHost: "eventing-event-publisher-proxy.kyma-system", destinationPath: "/publish" }, logLevel: "info", logFormat: "json" }
+	// +kubebuilder:default:={ logLevel: "info", logFormat: "json" }
 	AppConValidatorSpec AppConnValidatorSpec `json:"appConnValidator"`
 	// +optional
 	// +kubebuilder:default:={ controllerSyncPeriod: "90s", minimalConfigSyncTime: "15s", certValidityRenewalThreshold: "0.3" }

@@ -37,34 +37,9 @@ spec:
             properties:
               appConnValidator:
                 default:
-                  eventingConfig:
-                    destinationPath: /publish
-                    pathPrefixEvents: /%%APP_NAME%%/events
-                    pathPrefixV1: /%%APP_NAME%%/v1/events
-                    pathPrefixV2: /%%APP_NAME%%/v2/events
-                    publisherHost: eventing-event-publisher-proxy.kyma-system
                   logFormat: json
                   logLevel: info
                 properties:
-                  eventingConfig:
-                    properties:
-                      destinationPath:
-                        type: string
-                      pathPrefixEvents:
-                        type: string
-                      pathPrefixV1:
-                        type: string
-                      pathPrefixV2:
-                        type: string
-                      publisherHost:
-                        type: string
-                    required:
-                    - destinationPath
-                    - pathPrefixEvents
-                    - pathPrefixV1
-                    - pathPrefixV2
-                    - publisherHost
-                    type: object
                   logFormat:
                     enum:
                     - json
@@ -78,7 +53,6 @@ spec:
                     - error
                     type: string
                 required:
-                - eventingConfig
                 - logFormat
                 - logLevel
                 type: object

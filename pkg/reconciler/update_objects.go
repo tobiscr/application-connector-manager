@@ -37,7 +37,7 @@ func envVarUpdate(envs []corev1.EnvVar, newEnv corev1.EnvVar) update {
 		envIndex := slices.IndexFunc(
 			envs,
 			func(env corev1.EnvVar) bool { return newEnv.Name == env.Name })
-		// return error if env variable is was not found
+		// return error if env variable was not found
 		if envIndex == -1 {
 			return fmt.Errorf(`'%s' env variable: %w`, newEnv.Name, unstructured.ErrNotFound)
 		}
@@ -63,13 +63,13 @@ func updateSyncPeriod(d *appv1.Deployment, dto compassRtAgentDTO) error {
 			compassRtAgentEnvs,
 			corev1.EnvVar{
 				Name:  "APP_CONTROLLER_SYNC_PERIOD",
-				Value: dto.syncPeriod.String(),
+				Value: dto.syncPeriod.Duration.String(),
 			}),
 		envVarUpdate(
 			compassRtAgentEnvs,
 			corev1.EnvVar{
 				Name:  "APP_MINIMAL_COMPASS_SYNC_TIME",
-				Value: dto.syncPeriod.String(),
+				Value: dto.syncPeriod.Duration.String(),
 			}),
 	}
 	// perform update
