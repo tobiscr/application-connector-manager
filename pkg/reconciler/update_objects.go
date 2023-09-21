@@ -8,11 +8,12 @@ import (
 	"golang.org/x/exp/slices"
 	appv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
 type compassRtAgentDTO struct {
-	syncPeriod string
+	syncPeriod metav1.Duration
 }
 
 func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
@@ -21,7 +22,7 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 		return stopWithErrorAndNoRequeue(err)
 	}
 
-	d := compassRtAgentDTO{syncPeriod: s.instance.Spec.SyncPeriod}
+	d := compassRtAgentDTO{syncPeriod: s.instance.Spec.RuntimeAgentSpec.ControllerSyncPeriod}
 	if err := unstructured.Update(u, d, updateSyncPeriod); err != nil {
 		return stopWithErrorAndNoRequeue(err)
 	}
@@ -62,13 +63,13 @@ func updateSyncPeriod(d *appv1.Deployment, dto compassRtAgentDTO) error {
 			compassRtAgentEnvs,
 			corev1.EnvVar{
 				Name:  "APP_CONTROLLER_SYNC_PERIOD",
-				Value: dto.syncPeriod,
+				Value: dto.syncPeriod.String(),
 			}),
 		envVarUpdate(
 			compassRtAgentEnvs,
 			corev1.EnvVar{
 				Name:  "APP_MINIMAL_COMPASS_SYNC_TIME",
-				Value: dto.syncPeriod,
+				Value: dto.syncPeriod.String(),
 			}),
 	}
 	// perform update

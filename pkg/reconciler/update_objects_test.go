@@ -11,6 +11,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var _ = Describe("ACM sFnUpdate", func() {
@@ -21,7 +22,9 @@ var _ = Describe("ACM sFnUpdate", func() {
 	defaultState := &systemState{
 		instance: v1alpha1.ApplicationConnector{
 			Spec: v1alpha1.ApplicationConnectorSpec{
-				SyncPeriod: "10s",
+				RuntimeAgentSpec: v1alpha1.RuntimeAgentSpec{
+					ControllerSyncPeriod: metav1.Duration{Duration: time.Second * 10},
+				},
 			},
 		},
 	}

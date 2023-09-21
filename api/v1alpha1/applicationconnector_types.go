@@ -42,7 +42,6 @@ const (
 	ConditionReasonDeletion        = ConditionReason("Deletion")
 	ConditionReasonDeletionErr     = ConditionReason("DeletionErr")
 	ConditionReasonDeleted         = ConditionReason("Deleted")
-	ConditionReasonDependencyErr   = ConditionReason("DependencyError")
 
 	ConditionTypeInstalled = ConditionType("Installed")
 	ConditionTypeDeleted   = ConditionType("Deleted")
@@ -50,9 +49,45 @@ const (
 	Finalizer = "application-connector-manager.kyma-project.io/deletion-hook"
 )
 
-// ApplicationConnectorSpec defines the desired state of ApplicationConnector
+// +kubebuilder:validation:Enum=debug;info;warn;error
+type LogLevel string
+
+// +kubebuilder:validation:Enum=json;console
+type LogFormat string
+
+type AppGatewaySpec struct {
+	ProxyTimeout   string   `json:"proxyTimeout,omitempty"`
+	RequestTimeout string   `json:"requestTimeout,omitempty"`
+	LogLevel       LogLevel `json:"logLevel,omitempty"`
+}
+
+type EventingSpec struct {
+	PathPrefixV1     string `json:"pathPrefixV1,omitempty"`
+	PathPrefixV2     string `json:"pathPrefixV2,omitempty"`
+	PathPrefixEvents string `json:"pathPrefixEvents,omitempty"`
+	PublisherHost    string `json:"publisherHost,omitempty"`
+	DestinationPath  string `json:"destinationPath,omitempty"`
+}
+
+type AppConnValidatorSpec struct {
+	EventingConfig EventingSpec `json:"eventingConfig,omitempty"`
+	LogLevel       LogLevel     `json:"logLevel,omitempty"`
+	LogFormat      LogFormat    `json:"logFormat,omitempty"`
+}
+
+type RuntimeAgentSpec struct {
+	ControllerSyncPeriod         metav1.Duration `json:"controllerSyncPeriod,omitempty"`
+	MinConfigSyncTime            string          `json:"minimalConfigSyncTime,omitempty"`
+	CertValidityRenewalThreshold string          `json:"certValidityRenewalThreshold,omitempty"`
+}
+
+// ApplicationConnectorSpec contains configuration of ApplicationConnector module and its state
+
 type ApplicationConnectorSpec struct {
-	SyncPeriod string `json:"syncPeriod"`
+	ApplicationGatewaySpec AppGatewaySpec       `json:"appGateway,omitempty"`
+	AppConValidatorSpec    AppConnValidatorSpec `json:"appConnValidator,omitempty"`
+	RuntimeAgentSpec       RuntimeAgentSpec     `json:"runtimeAgent,omitempty"`
+	DomainName             string               `json:"domainName"`
 }
 
 //+kubebuilder:object:root=true

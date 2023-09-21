@@ -34,12 +34,62 @@ spec:
           metadata:
             type: object
           spec:
-            description: ApplicationConnectorSpec defines the desired state of ApplicationConnector
             properties:
-              syncPeriod:
+              appConnValidator:
+                properties:
+                  eventingConfig:
+                    properties:
+                      destinationPath:
+                        type: string
+                      pathPrefixEvents:
+                        type: string
+                      pathPrefixV1:
+                        type: string
+                      pathPrefixV2:
+                        type: string
+                      publisherHost:
+                        type: string
+                    type: object
+                  logFormat:
+                    enum:
+                    - json
+                    - console
+                    type: string
+                  logLevel:
+                    enum:
+                    - debug
+                    - info
+                    - warn
+                    - error
+                    type: string
+                type: object
+              appGateway:
+                properties:
+                  logLevel:
+                    enum:
+                    - debug
+                    - info
+                    - warn
+                    - error
+                    type: string
+                  proxyTimeout:
+                    type: string
+                  requestTimeout:
+                    type: string
+                type: object
+              domainName:
                 type: string
+              runtimeAgent:
+                properties:
+                  certValidityRenewalThreshold:
+                    type: string
+                  controllerSyncPeriod:
+                    type: string
+                  minimalConfigSyncTime:
+                    type: string
+                type: object
             required:
-            - syncPeriod
+            - domainName
             type: object
           status:
             properties:
