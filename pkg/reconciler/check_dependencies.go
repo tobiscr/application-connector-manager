@@ -6,8 +6,9 @@ import (
 	"time"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/pkg/common/types"
 	"golang.org/x/exp/slices"
-	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -16,34 +17,35 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
-var (
-	ErrIstioNotFound = errors.New("ISTIO not found")
-	istioGKS         = []schema.GroupKind{
-		{
-			Group: "networking.istio.io",
-			Kind:  "VirtualService",
-		},
-		{
-			Group: "networking.istio.io",
-			Kind:  "Gateway",
-		},
-	}
-)
+var ErrIstioNotFound = errors.New("ISTIO not found")
 
-func checkDeps(crds []v1.CustomResourceDefinition, gks ...schema.GroupKind) error {
+func checkDeps(crds []apiextensionsv1.CustomResourceDefinition, gks ...schema.GroupVersionKind) error {
 	var ackCount int
 	for _, crd := range crds {
-		isGK := func(gk schema.GroupKind) bool {
+		isGK := func(gk schema.GroupVersionKind) bool {
 			return gk.Group == crd.Spec.Group && gk.Kind == crd.Spec.Names.Kind
 		}
+		// check if one expected dependency version is served on cluster
+		isVersion := func(v apiextensionsv1.CustomResourceDefinitionVersion) bool {
+			for _, gkv := range gks {
+				matches := v.Served && gkv.Version == v.Name
+				if matches {
+					return true
+				}
+			}
+			return false
+		}
 
-		if isOneOfGKS := slices.ContainsFunc(gks, isGK); !isOneOfGKS {
+		isServedVersion := slices.ContainsFunc(crd.Spec.Versions, isVersion)
+		isOneOfGKS := slices.ContainsFunc(gks, isGK)
+
+		if !isOneOfGKS || !isServedVersion {
 			continue
 		}
 		ackCount++
 	}
 
-	dependencyCount := len(istioGKS)
+	dependencyCount := len(types.Dependencies)
 	if ackCount != dependencyCount {
 		return ErrIstioNotFound
 	}
@@ -51,13 +53,13 @@ func checkDeps(crds []v1.CustomResourceDefinition, gks ...schema.GroupKind) erro
 }
 
 func sFnCheckDependencies(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
-	var crds v1.CustomResourceDefinitionList
+	var crds apiextensionsv1.CustomResourceDefinitionList
 	if err := r.List(ctx, &crds); err != nil {
 		s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
 		return stopWithErrorAndNoRequeue(err)
 	}
 
-	if err := checkDeps(crds.Items, istioGKS...); err != nil {
+	if err := checkDeps(crds.Items, types.Dependencies...); err != nil {
 		s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
 		return stopWithRequeueAfter(time.Second * 10)
 	}

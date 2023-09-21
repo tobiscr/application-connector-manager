@@ -30,7 +30,7 @@ func lastIndexOf(s string, of rune) int {
 func (m *stateFnNameMatcher) Match(actual any) (success bool, err error) {
 	actualFn, ok := actual.(stateFn)
 	if !ok {
-		return false, fmt.Errorf("stateFnNameMatcher expects string")
+		return false, fmt.Errorf("stateFnNameMatcher expects stateFn")
 	}
 
 	r := regexp.MustCompile(".func[0-9]*|.glob")

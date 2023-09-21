@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/pkg/common/types"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -51,16 +52,8 @@ func listUnstruct(ctx context.Context, gvk schema.GroupVersionKind, list list) (
 func listDependencies(ctx context.Context, list list) ([]unstructured.Unstructured, error) {
 	var out []unstructured.Unstructured
 	for _, gvk := range []schema.GroupVersionKind{
-		{
-			Group:   "networking.istio.io",
-			Version: "v1alpha3",
-			Kind:    "VirtualService",
-		},
-		{
-			Group:   "networking.istio.io",
-			Version: "v1alpha3",
-			Kind:    "Gateway",
-		},
+		types.VirtualService,
+		types.Gateway,
 	} {
 		result, err := listUnstruct(ctx, gvk, list)
 		if err != nil {
@@ -83,7 +76,6 @@ func sFnDeleteResources(ctx context.Context, m *fsm, s *systemState) (stateFn, *
 	}
 
 	// to remove finalizers operate directly on k8s objects
-
 	deps, err := listDependencies(ctx, m.List)
 	if err != nil {
 		s.instance.UpdateStateFromErr(
