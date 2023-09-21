@@ -37,62 +37,40 @@ spec:
             properties:
               appConnValidator:
                 properties:
-                  appNamePlaceholder:
-                    type: string
-                  autoscaling:
+                  eventingConfig:
                     properties:
-                      cpuUsagePercent:
+                      destinationPath:
                         type: string
-                      enable:
-                        type: boolean
-                      maxReplicas:
+                      pathPrefixEvents:
                         type: string
-                      minReplicas:
+                      pathPrefixV1:
+                        type: string
+                      pathPrefixV2:
+                        type: string
+                      publisherHost:
                         type: string
                     type: object
-                  eventingDestinationPath:
-                    type: string
-                  eventingPathPrefixEvents:
-                    type: string
-                  eventingPathPrefixV1:
-                    type: string
-                  eventingPathPrefixV2:
-                    type: string
-                  eventingPublisherHost:
-                    type: string
-                  externalAPIPort:
-                    type: string
                   logFormat:
+                    enum:
+                    - json
+                    - console
                     type: string
                   logLevel:
-                    type: string
-                  proxyPort:
+                    enum:
+                    - debug
+                    - info
+                    - warn
+                    - error
                     type: string
                 type: object
               appGateway:
                 properties:
-                  appSecretNamespace:
-                    type: string
-                  autoscaling:
-                    properties:
-                      cpuUsagePercent:
-                        type: string
-                      enable:
-                        type: boolean
-                      maxReplicas:
-                        type: string
-                      minReplicas:
-                        type: string
-                    type: object
-                  externalAPIPort:
-                    type: string
                   logLevel:
-                    type: string
-                  proxyCacheTTL:
-                    type: string
-                  proxyPort:
-                    type: string
-                  proxyPortCompass:
+                    enum:
+                    - debug
+                    - info
+                    - warn
+                    - error
                     type: string
                   proxyTimeout:
                     type: string
@@ -103,40 +81,12 @@ spec:
                 type: string
               runtimeAgent:
                 properties:
-                  CASecretName:
-                    type: string
-                  centralGatewayServiceUrl:
-                    type: string
                   certValidityRenewalThreshold:
-                    type: string
-                  clientSecretName:
-                    type: string
-                  configSecretName:
                     type: string
                   controllerSyncPeriod:
                     type: string
-                  directorProxyPort:
-                    type: string
-                  gatewayPort:
-                    type: string
-                  healthcheckPort:
-                    type: string
-                  metricsLoggingTimeInterval:
-                    type: string
                   minimalConfigSyncTime:
                     type: string
-                  queryLogging:
-                    type: boolean
-                  runtimeConsoleUrl:
-                    type: string
-                  runtimeEventsURL:
-                    type: string
-                  skipAppsTLSVerify:
-                    type: boolean
-                  skipCompassTLSVerify:
-                    type: boolean
-                  skipDirectorProxyTLSVerify:
-                    type: boolean
                 type: object
             required:
             - domainName

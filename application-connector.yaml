@@ -1027,29 +1027,6 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
     release: application-connector
-  name: compass-runtime-agent
-  namespace: kyma-system
-spec:
-  type: ClusterIP
-  ports:
-    - name: http-director-proxy
-      port: 8081
-      protocol: TCP
-      targetPort: 8081
-  selector:
-    app: compass-runtime-agent
-    release: compass-runtime-agent
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: compass-runtime-agent
-    app.kubernetes.io/name: compass-runtime-agent
-    app.kubernetes.io/managed-by: application-connector-manager
-    app.kubernetes.io/instance: application-connector
-    app.kubernetes.io/part-of: application-connector-manager
-    release: application-connector
   name: compass-runtime-agent-health
   namespace: kyma-system
 spec:

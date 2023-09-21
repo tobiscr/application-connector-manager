@@ -49,57 +49,36 @@ const (
 	Finalizer = "application-connector-manager.kyma-project.io/deletion-hook"
 )
 
-type HorizontalScalingSpec struct {
-	Enabled         bool   `json:"enable,omitempty"`
-	CpuUsagePercent string `json:"cpuUsagePercent,omitempty"`
-	MinReplicas     string `json:"minReplicas,omitempty"`
-	MaxReplicas     string `json:"maxReplicas,omitempty"`
-}
+// +kubebuilder:validation:Enum=debug;info;warn;error
+type LogLevel string
+
+// +kubebuilder:validation:Enum=json;console
+type LogFormat string
 
 type AppGatewaySpec struct {
-	ProxyPort          string                `json:"proxyPort,omitempty"`
-	ProxyPortCompass   string                `json:"proxyPortCompass,omitempty"`
-	ProxyCacheTTL      string                `json:"proxyCacheTTL,omitempty"`
-	ExternalAPIPort    string                `json:"externalAPIPort,omitempty"`
-	ProxyTimeout       string                `json:"proxyTimeout,omitempty"`
-	RequestTimeout     string                `json:"requestTimeout,omitempty"`
-	AppSecretNamespace string                `json:"appSecretNamespace,omitempty"`
-	LogLevel           string                `json:"logLevel,omitempty"`
-	AutoscalingSpec    HorizontalScalingSpec `json:"autoscaling,omitempty"`
+	ProxyTimeout   string   `json:"proxyTimeout,omitempty"`
+	RequestTimeout string   `json:"requestTimeout,omitempty"`
+	LogLevel       LogLevel `json:"logLevel,omitempty"`
+}
+
+type EventingSpec struct {
+	PathPrefixV1     string `json:"pathPrefixV1,omitempty"`
+	PathPrefixV2     string `json:"pathPrefixV2,omitempty"`
+	PathPrefixEvents string `json:"pathPrefixEvents,omitempty"`
+	PublisherHost    string `json:"publisherHost,omitempty"`
+	DestinationPath  string `json:"destinationPath,omitempty"`
 }
 
 type AppConnValidatorSpec struct {
-	ProxyPort                string                `json:"proxyPort,omitempty"`
-	ExternalAPIPort          string                `json:"externalAPIPort,omitempty"`
-	AppNamePlaceholder       string                `json:"appNamePlaceholder,omitempty"`
-	EventingPathPrefixV1     string                `json:"eventingPathPrefixV1,omitempty"`
-	EventingPathPrefixV2     string                `json:"eventingPathPrefixV2,omitempty"`
-	EventingPathPrefixEvents string                `json:"eventingPathPrefixEvents,omitempty"`
-	EventingPublisherHost    string                `json:"eventingPublisherHost,omitempty"` // namespaced name
-	EventingDestinationPath  string                `json:"eventingDestinationPath,omitempty"`
-	LogLevel                 string                `json:"logLevel,omitempty"`
-	LogFormat                string                `json:"logFormat,omitempty"`
-	AutoscalingSpec          HorizontalScalingSpec `json:"autoscaling,omitempty"`
+	EventingConfig EventingSpec `json:"eventingConfig,omitempty"`
+	LogLevel       LogLevel     `json:"logLevel,omitempty"`
+	LogFormat      LogFormat    `json:"logFormat,omitempty"`
 }
 
 type RuntimeAgentSpec struct {
-	ConfigSecretName             string          `json:"configSecretName,omitempty"` // namespaced name
-	ClientSecretName             string          `json:"clientSecretName,omitempty"` // namespaced name
-	CASecretName                 string          `json:"CASecretName,omitempty"`     // namespaced name
 	ControllerSyncPeriod         metav1.Duration `json:"controllerSyncPeriod,omitempty"`
 	MinConfigSyncTime            string          `json:"minimalConfigSyncTime,omitempty"`
-	MetricsLoggingTimeInterval   metav1.Duration `json:"metricsLoggingTimeInterval,omitempty"`
 	CertValidityRenewalThreshold string          `json:"certValidityRenewalThreshold,omitempty"`
-	GatewayPort                  string          `json:"gatewayPort,omitempty"` // int
-	CentralGatewayServiceUrl     string          `json:"centralGatewayServiceUrl,omitempty"`
-	RuntimeEventsURL             string          `json:"runtimeEventsURL,omitempty"`
-	RuntimeConsoleURL            string          `json:"runtimeConsoleUrl,omitempty"`
-	DirectorProxyPort            string          `json:"directorProxyPort,omitempty"` // int
-	HealthcheckPort              string          `json:"healthcheckPort,omitempty"`   // int
-	SkipCompassTLSVerify         bool            `json:"skipCompassTLSVerify,omitempty"`
-	SkipAppsTLSVerify            bool            `json:"skipAppsTLSVerify,omitempty"`
-	SkipDirectorProxyTLSVerify   bool            `json:"skipDirectorProxyTLSVerify,omitempty"`
-	QueryLogging                 bool            `json:"queryLogging,omitempty"`
 }
 
 // ApplicationConnectorSpec contains configuration of ApplicationConnector module and its state
@@ -119,8 +98,8 @@ type ApplicationConnector struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   ApplicationConnectorSpec   `json:"spec,omitempty"`
-	Status ApplicationConnectorStatus `json:"status,omitempty"`
+	Spec   ApplicationConnectorSpec `json:"spec,omitempty"`
+	Status Status                   `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
