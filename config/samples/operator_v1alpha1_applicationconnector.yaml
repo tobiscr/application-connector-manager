@@ -10,4 +10,22 @@ metadata:
     app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
 spec:
-  disableLegacyConnectivity : true
+  domainName: kyma.test.cluster.com
+#  appConnValidator:
+#    eventingConfig:
+#      pathPrefixV1: "/%%APP_NAME%%/v1/events"
+#      pathPrefixV2: "/%%APP_NAME%%/v2/events"
+#      pathPrefixEvents: "/%%APP_NAME%%/events"
+#      publisherHost: "eventing-event-publisher-proxy.kyma-system"
+#      destinationPath: "/publish"
+#    logLevel: "info"
+#    logFormat: "json"
+#  appGateway:
+#    proxyTimeout: "10"
+#    requestTimeout: "10"
+#    logLevel: "info"
+#  runtimeAgent:
+#    controllerSyncPeriod: "180s"
+#    minimalConfigSyncTime: "15s"
+#    certValidityRenewalThreshold: "0.3"
+
