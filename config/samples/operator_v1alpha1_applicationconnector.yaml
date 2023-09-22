@@ -13,9 +13,9 @@ spec:
   domainName: kyma.test.cluster.com
 #  appConnValidator:
 #    eventingConfig:
-#      pathPrefixV1: "/%%APP_NAME%%/v1/events"
-#      pathPrefixV2: "/%%APP_NAME%%/v2/events"
-#      pathPrefixEvents: "/%%APP_NAME%%/events"
+#      pathPrefixV1: "/v1/events"
+#      pathPrefixV2: "/v2/events"
+#      pathPrefixEvents: "/events"
 #      publisherHost: "eventing-event-publisher-proxy.kyma-system"
 #      destinationPath: "/publish"
 #    logLevel: "info"

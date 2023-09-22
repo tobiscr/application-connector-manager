@@ -68,7 +68,7 @@ type AppConnValidatorSpec struct {
 
 type RuntimeAgentSpec struct {
 	ControllerSyncPeriod         metav1.Duration `json:"controllerSyncPeriod"`
-	MinConfigSyncTime            string          `json:"minimalConfigSyncTime"`
+	MinConfigSyncTime            metav1.Duration `json:"minimalConfigSyncTime"`
 	CertValidityRenewalThreshold string          `json:"certValidityRenewalThreshold"`
 }
 
