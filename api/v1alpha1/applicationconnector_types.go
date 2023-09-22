@@ -76,7 +76,7 @@ type RuntimeAgentSpec struct {
 
 type ApplicationConnectorSpec struct {
 	// +optional
-	// +kubebuilder:default:={ proxyTimeout: "10s", requestTimeout: "10", logLevel: "info" }
+	// +kubebuilder:default:={ proxyTimeout: "10s", requestTimeout: "10s", logLevel: "info" }
 	ApplicationGatewaySpec AppGatewaySpec `json:"appGateway"`
 	// +optional
 	// +kubebuilder:default:={ logLevel: "info", logFormat: "json" }
