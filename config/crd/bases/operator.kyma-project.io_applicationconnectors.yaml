@@ -36,20 +36,10 @@ spec:
           spec:
             properties:
               appConnValidator:
+                default:
+                  logFormat: json
+                  logLevel: info
                 properties:
-                  eventingConfig:
-                    properties:
-                      destinationPath:
-                        type: string
-                      pathPrefixEvents:
-                        type: string
-                      pathPrefixV1:
-                        type: string
-                      pathPrefixV2:
-                        type: string
-                      publisherHost:
-                        type: string
-                    type: object
                   logFormat:
                     enum:
                     - json
@@ -62,8 +52,15 @@ spec:
                     - warn
                     - error
                     type: string
+                required:
+                - logFormat
+                - logLevel
                 type: object
               appGateway:
+                default:
+                  logLevel: info
+                  proxyTimeout: 10s
+                  requestTimeout: 10s
                 properties:
                   logLevel:
                     enum:
@@ -76,10 +73,18 @@ spec:
                     type: string
                   requestTimeout:
                     type: string
+                required:
+                - logLevel
+                - proxyTimeout
+                - requestTimeout
                 type: object
               domainName:
                 type: string
               runtimeAgent:
+                default:
+                  certValidityRenewalThreshold: "0.3"
+                  controllerSyncPeriod: 90s
+                  minimalConfigSyncTime: 15s
                 properties:
                   certValidityRenewalThreshold:
                     type: string
@@ -87,6 +92,10 @@ spec:
                     type: string
                   minimalConfigSyncTime:
                     type: string
+                required:
+                - certValidityRenewalThreshold
+                - controllerSyncPeriod
+                - minimalConfigSyncTime
                 type: object
             required:
             - domainName

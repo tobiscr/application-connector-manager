@@ -10,12 +10,12 @@ import (
 )
 
 var (
-	InstallationErr = errors.New("installation error")
+	ErrInstallationFailed = errors.New("installation failed")
 )
 
 func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	var isError bool
-	for _, obj := range r.Objs {
+	for _, obj := range append(r.Objs, r.Deps...) {
 		r.log.
 			With("gvk", obj.GetObjectKind().GroupVersionKind()).
 			With("name", obj.GetName()).
@@ -42,7 +42,7 @@ func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Resul
 	s.instance.UpdateStateFromErr(
 		v1alpha1.ConditionTypeInstalled,
 		v1alpha1.ConditionReasonApplyObjError,
-		InstallationErr,
+		ErrInstallationFailed,
 	)
 	return stopWithNoRequeue()
 }

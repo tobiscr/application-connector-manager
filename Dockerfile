@@ -23,6 +23,7 @@ FROM gcr.io/distroless/static:nonroot
 WORKDIR /
 COPY --chown=65532:65532 --from=builder /workspace/manager .
 COPY --chown=65532:65532 --from=builder /workspace/application-connector.yaml .
+COPY --chown=65532:65532 --from=builder /workspace/application-connector-dependencies.yaml .
 USER 65532:65532
 
 ENTRYPOINT ["/manager"]

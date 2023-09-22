@@ -56,38 +56,35 @@ type LogLevel string
 type LogFormat string
 
 type AppGatewaySpec struct {
-	ProxyTimeout   string   `json:"proxyTimeout,omitempty"`
-	RequestTimeout string   `json:"requestTimeout,omitempty"`
-	LogLevel       LogLevel `json:"logLevel,omitempty"`
-}
-
-type EventingSpec struct {
-	PathPrefixV1     string `json:"pathPrefixV1,omitempty"`
-	PathPrefixV2     string `json:"pathPrefixV2,omitempty"`
-	PathPrefixEvents string `json:"pathPrefixEvents,omitempty"`
-	PublisherHost    string `json:"publisherHost,omitempty"`
-	DestinationPath  string `json:"destinationPath,omitempty"`
+	ProxyTimeout   metav1.Duration `json:"proxyTimeout"`
+	RequestTimeout metav1.Duration `json:"requestTimeout"`
+	LogLevel       LogLevel        `json:"logLevel"`
 }
 
 type AppConnValidatorSpec struct {
-	EventingConfig EventingSpec `json:"eventingConfig,omitempty"`
-	LogLevel       LogLevel     `json:"logLevel,omitempty"`
-	LogFormat      LogFormat    `json:"logFormat,omitempty"`
+	LogLevel  LogLevel  `json:"logLevel"`
+	LogFormat LogFormat `json:"logFormat"`
 }
 
 type RuntimeAgentSpec struct {
-	ControllerSyncPeriod         metav1.Duration `json:"controllerSyncPeriod,omitempty"`
-	MinConfigSyncTime            string          `json:"minimalConfigSyncTime,omitempty"`
-	CertValidityRenewalThreshold string          `json:"certValidityRenewalThreshold,omitempty"`
+	ControllerSyncPeriod         metav1.Duration `json:"controllerSyncPeriod"`
+	MinConfigSyncTime            metav1.Duration `json:"minimalConfigSyncTime"`
+	CertValidityRenewalThreshold string          `json:"certValidityRenewalThreshold"`
 }
 
 // ApplicationConnectorSpec contains configuration of ApplicationConnector module and its state
 
 type ApplicationConnectorSpec struct {
-	ApplicationGatewaySpec AppGatewaySpec       `json:"appGateway,omitempty"`
-	AppConValidatorSpec    AppConnValidatorSpec `json:"appConnValidator,omitempty"`
-	RuntimeAgentSpec       RuntimeAgentSpec     `json:"runtimeAgent,omitempty"`
-	DomainName             string               `json:"domainName"`
+	// +optional
+	// +kubebuilder:default:={ proxyTimeout: "10s", requestTimeout: "10s", logLevel: "info" }
+	ApplicationGatewaySpec AppGatewaySpec `json:"appGateway"`
+	// +optional
+	// +kubebuilder:default:={ logLevel: "info", logFormat: "json" }
+	AppConValidatorSpec AppConnValidatorSpec `json:"appConnValidator"`
+	// +optional
+	// +kubebuilder:default:={ controllerSyncPeriod: "90s", minimalConfigSyncTime: "15s", certValidityRenewalThreshold: "0.3" }
+	RuntimeAgentSpec RuntimeAgentSpec `json:"runtimeAgent"`
+	DomainName       string           `json:"domainName"`
 }
 
 //+kubebuilder:object:root=true

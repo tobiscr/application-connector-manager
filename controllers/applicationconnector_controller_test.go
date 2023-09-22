@@ -26,7 +26,16 @@ const (
 var _ = Describe("ApplicationConnector controller", func() {
 
 	defaultTestTimeout := 60 * time.Second
-	defaultAppCon := applicationConnector("test", "kyma-system", v1alpha1.ApplicationConnectorSpec{})
+	defaultAppCon := applicationConnector("test", "kyma-system", v1alpha1.ApplicationConnectorSpec{
+		DomainName: "testme",
+		ApplicationGatewaySpec: v1alpha1.AppGatewaySpec{
+			LogLevel: v1alpha1.LogLevel("info"),
+		},
+		AppConValidatorSpec: v1alpha1.AppConnValidatorSpec{
+			LogLevel:  v1alpha1.LogLevel("info"),
+			LogFormat: v1alpha1.LogFormat("json"),
+		},
+	})
 
 	Context("When creating fresh instance", func() {
 		DescribeTable(

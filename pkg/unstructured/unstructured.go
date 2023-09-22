@@ -12,6 +12,8 @@ var (
 
 type Unstructured = unstructured.Unstructured
 
+type UnstructuredList = unstructured.UnstructuredList
+
 // updates given object by applying provided function with given data
 func Update[T any, R any](u *Unstructured, data R, update func(T, R) error) error {
 	var result T
