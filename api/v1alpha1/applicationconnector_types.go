@@ -56,9 +56,9 @@ type LogLevel string
 type LogFormat string
 
 type AppGatewaySpec struct {
-	ProxyTimeout   string   `json:"proxyTimeout"`
-	RequestTimeout string   `json:"requestTimeout"`
-	LogLevel       LogLevel `json:"logLevel"`
+	ProxyTimeout   metav1.Duration `json:"proxyTimeout"`
+	RequestTimeout metav1.Duration `json:"requestTimeout"`
+	LogLevel       LogLevel        `json:"logLevel"`
 }
 
 type AppConnValidatorSpec struct {
@@ -76,7 +76,7 @@ type RuntimeAgentSpec struct {
 
 type ApplicationConnectorSpec struct {
 	// +optional
-	// +kubebuilder:default:={ proxyTimeout: "10", requestTimeout: "10", logLevel: "info" }
+	// +kubebuilder:default:={ proxyTimeout: "10s", requestTimeout: "10", logLevel: "info" }
 	ApplicationGatewaySpec AppGatewaySpec `json:"appGateway"`
 	// +optional
 	// +kubebuilder:default:={ logLevel: "info", logFormat: "json" }

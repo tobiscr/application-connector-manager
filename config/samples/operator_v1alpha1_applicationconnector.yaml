@@ -21,8 +21,8 @@ spec:
 #    logLevel: "info"
 #    logFormat: "json"
 #  appGateway:
-#    proxyTimeout: "10"
-#    requestTimeout: "10"
+#    proxyTimeout: "10s"
+#    requestTimeout: "10s"
 #    logLevel: "info"
 #  runtimeAgent:
 #    controllerSyncPeriod: "180s"

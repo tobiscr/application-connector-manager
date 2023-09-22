@@ -59,8 +59,8 @@ spec:
               appGateway:
                 default:
                   logLevel: info
-                  proxyTimeout: "10"
-                  requestTimeout: "10"
+                  proxyTimeout: 10s
+                  requestTimeout: 10s
                 properties:
                   logLevel:
                     enum:
