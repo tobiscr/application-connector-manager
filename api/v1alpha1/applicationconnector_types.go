@@ -47,6 +47,13 @@ const (
 	ConditionTypeDeleted   = ConditionType("Deleted")
 
 	Finalizer = "application-connector-manager.kyma-project.io/deletion-hook"
+
+	ArgCentralAppGatewayRequestTimeout = "--requestTimeout"
+	ArgCentralAppGatewayProxyTimeout   = "--proxyTimeout"
+
+	EnvRuntimeAgentControllerSyncPeriod         = "APP_CONTROLLER_SYNC_PERIOD"
+	EnvRuntimeAgentCertValidityRenevalThreshold = "APP_CERT_VALIDITY_RENEWAL_THRESHOLD"
+	EnvRuntimeAgentMinimalCompassSyncTime       = "APP_MINIMAL_COMPASS_SYNC_TIME"
 )
 
 // +kubebuilder:validation:Enum=debug;info;warn;error

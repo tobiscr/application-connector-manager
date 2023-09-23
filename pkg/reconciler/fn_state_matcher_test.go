@@ -9,12 +9,14 @@ import (
 
 func equalStateFunction(sFn stateFn) types.GomegaMatcher {
 	return &stateFnNameMatcher{
-		expected: sFn,
+		Expected: sFn,
 	}
 }
 
 type stateFnNameMatcher struct {
-	expected stateFn
+	Expected stateFn
+	actName  string
+	expName  string
 }
 
 func lastIndexOf(s string, of rune) int {
@@ -35,26 +37,26 @@ func (m *stateFnNameMatcher) Match(actual any) (success bool, err error) {
 
 	r := regexp.MustCompile(".func[0-9]*|.glob")
 
-	actName := r.ReplaceAllString(actualFn.name(), "")
-	expName := r.ReplaceAllString(m.expected.name(), "")
+	m.actName = r.ReplaceAllString(actualFn.name(), "")
+	m.expName = r.ReplaceAllString(m.Expected.name(), "")
 
-	aliof := lastIndexOf(actName, '.')
+	aliof := lastIndexOf(m.actName, '.')
 	if aliof != -1 {
-		actName = actName[aliof:]
+		m.actName = m.actName[aliof+1:]
 	}
 
-	eliof := lastIndexOf(expName, '.')
+	eliof := lastIndexOf(m.expName, '.')
 	if eliof != -1 {
-		expName = expName[eliof:]
+		m.expName = m.expName[eliof+1:]
 	}
 
-	return actName == expName, nil
+	return m.actName == m.expName, nil
 }
 
 func (m *stateFnNameMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("Expected\n\t%s\nto be equal to\n\t%s", actual, m.expected)
+	return fmt.Sprintf("Expected\n\t%s\nto be equal to\n\t%s", m.actName, m.expName)
 }
 
 func (m *stateFnNameMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("Expected\n\t%s\nnot to be equal to\n\t%s", actual, m.expected)
+	return fmt.Sprintf("Expected\n\t%s\nnot to be equal to\n\t%s", m.actName, m.expName)
 }

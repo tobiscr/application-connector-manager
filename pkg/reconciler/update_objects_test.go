@@ -23,7 +23,13 @@ var _ = Describe("ACM sFnUpdate", func() {
 		instance: v1alpha1.ApplicationConnector{
 			Spec: v1alpha1.ApplicationConnectorSpec{
 				RuntimeAgentSpec: v1alpha1.RuntimeAgentSpec{
-					ControllerSyncPeriod: metav1.Duration{Duration: time.Second * 10},
+					ControllerSyncPeriod:         metav1.Duration{Duration: time.Second * 30},
+					MinConfigSyncTime:            metav1.Duration{Duration: time.Second * 5},
+					CertValidityRenewalThreshold: "0.5",
+				},
+				ApplicationGatewaySpec: v1alpha1.AppGatewaySpec{
+					ProxyTimeout:   metav1.Duration{Duration: time.Second * 101},
+					RequestTimeout: metav1.Duration{Duration: time.Second * 102},
 				},
 			},
 		},
@@ -46,6 +52,10 @@ var _ = Describe("ACM sFnUpdate", func() {
 			testUpdateOptions{
 				MatchExpectedErr: BeNil(),
 				MatchNextFnState: equalStateFunction(sFnApply),
+				StateMatch: map[string]types.GomegaMatcher{
+					"compass-runtime-agent":       haveRuntimeAgentSpec(defaultState.instance.Spec.RuntimeAgentSpec),
+					"central-application-gateway": haveAppGatewaySpec(defaultState.instance.Spec.ApplicationGatewaySpec),
+				},
 			},
 		),
 		Entry(
@@ -64,10 +74,17 @@ var _ = Describe("ACM sFnUpdate", func() {
 type testUpdateOptions struct {
 	MatchExpectedErr types.GomegaMatcher
 	MatchNextFnState types.GomegaMatcher
+	StateMatch       map[string]types.GomegaMatcher
 }
 
 func testUpdate(ctx context.Context, r *fsm, s *systemState, ops testUpdateOptions) {
 	sFn, _, err := sFnUpdate(ctx, r, s)
 	Expect(err).To(ops.MatchExpectedErr)
 	Expect(sFn).To(ops.MatchNextFnState)
+
+	for deployment, match := range ops.StateMatch {
+		u, err := unstructured.IsDeployment(deployment).First(r.Objs)
+		Expect(err).Should(BeNil())
+		Expect(*u).Should(match)
+	}
 }

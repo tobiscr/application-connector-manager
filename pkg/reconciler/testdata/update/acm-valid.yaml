@@ -132,4 +132,81 @@ spec:
       serviceAccountName: compass-runtime-agent
       terminationGracePeriodSeconds: 30
       priorityClassName: compass-runtime-agent-priority-class
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: central-application-gateway
+  namespace: kyma-system
+  labels:
+    app: central-application-gateway
+    release: application-connector
+    app.kubernetes.io/name: central-application-gateway
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: central-application-gateway
+      release: application-connector
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: central-application-gateway
+        app.kubernetes.io/part-of: application-connector-manager
+        release: application-connector
+    spec:
+      serviceAccountName: central-application-gateway
+      containers:
+      - name: central-application-gateway
+        image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20230821-f9ec5ecd
+        imagePullPolicy: IfNotPresent
+        args:
+          - "/app/applicationgateway"
+          - "--proxyPort=8080"
+          - "--proxyPortCompass=8082"
+          - "--externalAPIPort=8081"
+          - "--applicationSecretsNamespace=kyma-system"
+          - "--requestTimeout=10"
+          - "--proxyTimeout=10"
+          - "--proxyCacheTTL=120"
+          - "--requestLogging=false"
+        readinessProbe:
+          httpGet:
+            path: /v1/health
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /v1/health
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 20m
+            memory: 64Mi
+        ports:
+          - containerPort: 8080
+            name: http-proxy
+          - containerPort: 8082
+            name: http-proxy-mps
+          - containerPort: 8081
+            name: http-api-port
+        securityContext:
+          runAsUser: 1000
+          privileged: false
+          allowPrivilegeEscalation: false
+      priorityClassName: central-application-gateway-priority-class
 
