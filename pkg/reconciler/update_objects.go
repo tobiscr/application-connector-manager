@@ -26,17 +26,21 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 	return switchState(sFnApply)
 }
 
-func envVarUpdate(envs []corev1.EnvVar, newEnv corev1.EnvVar) update {
+func envVarUpdate(envs *[]corev1.EnvVar, newEnv corev1.EnvVar) update {
 	return func() error {
+		if envs == nil {
+			return fmt.Errorf("invalid value: nil")
+		}
 		envIndex := slices.IndexFunc(
-			envs,
+			*envs,
 			func(env corev1.EnvVar) bool { return newEnv.Name == env.Name })
 		// return error if env variable was not found
 		if envIndex == -1 {
-			return fmt.Errorf(`'%s' env variable: %w`, newEnv.Name, unstructured.ErrNotFound)
+			*envs = append(*envs, newEnv)
+			return nil
 		}
 
-		envs[envIndex] = newEnv
+		(*envs)[envIndex] = newEnv
 		return nil
 	}
 }
@@ -50,7 +54,7 @@ func updateCRA(d *appv1.Deployment, v v1alpha1.RuntimeAgentSpec) error {
 	if index == -1 {
 		return fmt.Errorf("compass-runtime-agent container: %w", unstructured.ErrNotFound)
 	}
-	compassRtAgentEnvs := d.Spec.Template.Spec.Containers[index].Env
+	compassRtAgentEnvs := &d.Spec.Template.Spec.Containers[index].Env
 	// define all update functions
 	fns := []update{
 		envVarUpdate(
@@ -94,6 +98,9 @@ func updateCentralApplicationGateway(i v1alpha1.ApplicationConnectorSpec, objs [
 }
 
 func updateCAG(d *appv1.Deployment, v v1alpha1.AppGatewaySpec) error {
+	if d == nil {
+		return fmt.Errorf("invalid value: nil")
+	}
 	// find compass-runtime-agent container
 	index := slices.IndexFunc(
 		d.Spec.Template.Spec.Containers,
@@ -102,12 +109,13 @@ func updateCAG(d *appv1.Deployment, v v1alpha1.AppGatewaySpec) error {
 	if index == -1 {
 		return fmt.Errorf("central-application-gateway container: %w", unstructured.ErrNotFound)
 	}
-	cAppG8wayArgs := d.Spec.Template.Spec.Containers[index].Args
+	cAppG8wayArgs := &d.Spec.Template.Spec.Containers[index].Args
 
 	// define all update functions
 	fns := []update{
 		argValueUpdate(cAppG8wayArgs, v1alpha1.ArgCentralAppGatewayRequestTimeout, fmt.Sprintf("%.0f", v.RequestTimeout.Seconds())),
 		argValueUpdate(cAppG8wayArgs, v1alpha1.ArgCentralAppGatewayProxyTimeout, fmt.Sprintf("%.0f", v.ProxyTimeout.Seconds())),
+		argValueUpdate(cAppG8wayArgs, v1alpha1.ArgLogLevel, fmt.Sprintf("%s", v.LogLevel)),
 	}
 	// perform update
 	for _, f := range fns {
@@ -118,18 +126,20 @@ func updateCAG(d *appv1.Deployment, v v1alpha1.AppGatewaySpec) error {
 	return nil
 }
 
-func argValueUpdate(args []string, key string, newValue any) update {
+func argValueUpdate(args *[]string, key string, newValue any) update {
 	return func() error {
+		newArg := fmt.Sprintf("%s=%v", key, newValue)
 		// assume argument is distinct
-		argIndex := slices.IndexFunc(args, func(s string) bool {
+		argIndex := slices.IndexFunc(*args, func(s string) bool {
 			return strings.HasPrefix(s, key)
 		})
 		// return error if env variable was not found
 		if argIndex == -1 {
-			return fmt.Errorf(`argument with key: '%s': %w `, key, unstructured.ErrNotFound)
+			*args = append(*args, newArg)
+			return nil
 		}
 
-		args[argIndex] = fmt.Sprintf("%s=%v", key, newValue)
+		(*args)[argIndex] = newArg
 		return nil
 	}
 }

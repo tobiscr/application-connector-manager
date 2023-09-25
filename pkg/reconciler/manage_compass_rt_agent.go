@@ -16,7 +16,8 @@ var (
 	keyCompassAgentCfg = client.ObjectKey{
 		Namespace: "kyma-system",
 		Name:      "compass-agent-configuration",
-	}
+	} //nolint:golint,unused
+
 )
 
 func sFnManageCompassRtAgent(ctx context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.Result, error) {

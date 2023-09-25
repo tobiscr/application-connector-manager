@@ -332,18 +332,18 @@ spec:
       serviceAccountName: central-application-gateway
       containers:
       - name: central-application-gateway
-        image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20230821-f9ec5ecd
+        image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20230925-75c3a9a8
         imagePullPolicy: IfNotPresent
         args:
           - "/app/applicationgateway"
           - "--proxyPort=8080"
           - "--proxyPortCompass=8082"
           - "--externalAPIPort=8081"
+          - "--logLevel=info"
           - "--applicationSecretsNamespace=kyma-system"
           - "--requestTimeout=10"
           - "--proxyTimeout=10"
           - "--proxyCacheTTL=120"
-          - "--requestLogging=false"
         readinessProbe:
           httpGet:
             path: /v1/health

@@ -25,6 +25,7 @@ var _ = Describe("ACM sFnUpdate", func() {
 				ApplicationGatewaySpec: v1alpha1.AppGatewaySpec{
 					ProxyTimeout:   metav1.Duration{Duration: time.Second * 101},
 					RequestTimeout: metav1.Duration{Duration: time.Second * 102},
+					LogLevel:       v1alpha1.LogLevelFatal,
 				},
 			},
 		},

@@ -44,6 +44,7 @@ func (m *cagMatcher) Match(actual any) (success bool, err error) {
 	m.expectArgs = []string{
 		fmt.Sprintf("%s=%.0f", v1alpha1.ArgCentralAppGatewayRequestTimeout, m.expected.RequestTimeout.Seconds()),
 		fmt.Sprintf("%s=%.0f", v1alpha1.ArgCentralAppGatewayProxyTimeout, m.expected.ProxyTimeout.Seconds()),
+		fmt.Sprintf("%s=%s", v1alpha1.ArgLogLevel, m.expected.LogLevel),
 	}
 	m.actualArgs = actualDeployment.Spec.Template.Spec.Containers[index].Args
 	containsArgs := gomega.ContainElements(m.expectArgs)
@@ -51,9 +52,9 @@ func (m *cagMatcher) Match(actual any) (success bool, err error) {
 }
 
 func (m *cagMatcher) FailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("Expected\n\t%s\nto be equal to\n\t%s", m.actualArgs, m.expectArgs)
+	return fmt.Sprintf("Expected\n\t%s\nto be contain\n\t%s", m.actualArgs, m.expectArgs)
 }
 
 func (m *cagMatcher) NegatedFailureMessage(actual interface{}) (message string) {
-	return fmt.Sprintf("Expected\n\t%s\nnot to be equal to\n\t%s", m.actualArgs, m.expectArgs)
+	return fmt.Sprintf("Expected\n\t%s\nnot to contain\n\t%s", m.actualArgs, m.expectArgs)
 }

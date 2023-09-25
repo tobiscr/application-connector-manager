@@ -48,15 +48,24 @@ const (
 
 	Finalizer = "application-connector-manager.kyma-project.io/deletion-hook"
 
+	ArgLogLevel = "--logLevel"
+
 	ArgCentralAppGatewayRequestTimeout = "--requestTimeout"
 	ArgCentralAppGatewayProxyTimeout   = "--proxyTimeout"
 
 	EnvRuntimeAgentControllerSyncPeriod         = "APP_CONTROLLER_SYNC_PERIOD"
 	EnvRuntimeAgentCertValidityRenevalThreshold = "APP_CERT_VALIDITY_RENEWAL_THRESHOLD"
 	EnvRuntimeAgentMinimalCompassSyncTime       = "APP_MINIMAL_COMPASS_SYNC_TIME"
+
+	LogLevelPanic = LogLevel("panic")
+	LogLevelFatal = LogLevel("fatal")
+	LogLevelError = LogLevel("error")
+	LogLevelWarn  = LogLevel("warn")
+	LogLevelInfo  = LogLevel("info")
+	LogLevelDebug = LogLevel("debug")
 )
 
-// +kubebuilder:validation:Enum=debug;info;warn;error
+// +kubebuilder:validation:Enum=debug;panic;fatal;error;warn;info;debug
 type LogLevel string
 
 // +kubebuilder:validation:Enum=json;console

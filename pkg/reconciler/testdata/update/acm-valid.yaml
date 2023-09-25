@@ -43,7 +43,6 @@ spec:
           - "--requestTimeout=10"
           - "--proxyTimeout=10"
           - "--proxyCacheTTL=120"
-          - "--requestLogging=false"
         readinessProbe:
           httpGet:
             path: /v1/health
