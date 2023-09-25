@@ -80,23 +80,6 @@ spec:
                 type: object
               domainName:
                 type: string
-              runtimeAgent:
-                default:
-                  certValidityRenewalThreshold: "0.3"
-                  controllerSyncPeriod: 90s
-                  minimalConfigSyncTime: 15s
-                properties:
-                  certValidityRenewalThreshold:
-                    type: string
-                  controllerSyncPeriod:
-                    type: string
-                  minimalConfigSyncTime:
-                    type: string
-                required:
-                - certValidityRenewalThreshold
-                - controllerSyncPeriod
-                - minimalConfigSyncTime
-                type: object
             required:
             - domainName
             type: object

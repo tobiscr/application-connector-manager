@@ -22,11 +22,6 @@ var _ = Describe("ACM sFnUpdate", func() {
 	defaultState := &systemState{
 		instance: v1alpha1.ApplicationConnector{
 			Spec: v1alpha1.ApplicationConnectorSpec{
-				RuntimeAgentSpec: v1alpha1.RuntimeAgentSpec{
-					ControllerSyncPeriod:         metav1.Duration{Duration: time.Second * 30},
-					MinConfigSyncTime:            metav1.Duration{Duration: time.Second * 5},
-					CertValidityRenewalThreshold: "0.5",
-				},
 				ApplicationGatewaySpec: v1alpha1.AppGatewaySpec{
 					ProxyTimeout:   metav1.Duration{Duration: time.Second * 101},
 					RequestTimeout: metav1.Duration{Duration: time.Second * 102},
@@ -53,7 +48,6 @@ var _ = Describe("ACM sFnUpdate", func() {
 				MatchExpectedErr: BeNil(),
 				MatchNextFnState: equalStateFunction(sFnApply),
 				StateMatch: map[string]types.GomegaMatcher{
-					"compass-runtime-agent":       haveRuntimeAgentSpec(defaultState.instance.Spec.RuntimeAgentSpec),
 					"central-application-gateway": haveAppGatewaySpec(defaultState.instance.Spec.ApplicationGatewaySpec),
 				},
 			},

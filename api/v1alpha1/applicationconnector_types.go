@@ -88,10 +88,7 @@ type ApplicationConnectorSpec struct {
 	// +optional
 	// +kubebuilder:default:={ logLevel: "info", logFormat: "json" }
 	AppConValidatorSpec AppConnValidatorSpec `json:"appConnValidator"`
-	// +optional
-	// +kubebuilder:default:={ controllerSyncPeriod: "90s", minimalConfigSyncTime: "15s", certValidityRenewalThreshold: "0.3" }
-	RuntimeAgentSpec RuntimeAgentSpec `json:"runtimeAgent"`
-	DomainName       string           `json:"domainName"`
+	DomainName          string               `json:"domainName"`
 }
 
 //+kubebuilder:object:root=true

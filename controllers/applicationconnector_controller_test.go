@@ -66,10 +66,6 @@ func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
 	ns := namespace(ac.Namespace)
 	Expect(k8sClient.Create(ctx, &ns)).To(Succeed())
 
-	By(fmt.Sprintf("create compass-rt-agent configuration: %s/compass-agent-configuration", ac.Namespace))
-	compassRtAgentSecret := secret(ac.Namespace)
-	Expect(k8sClient.Create(ctx, &compassRtAgentSecret)).To(Succeed())
-
 	By(fmt.Sprintf("create application-connector instance: %s/%s", ac.Namespace, ac.Name))
 	Expect(k8sClient.Create(ctx, &ac)).To(Succeed())
 
@@ -105,10 +101,6 @@ func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
 		WithPolling(time.Second).
 		WithTimeout(t).
 		Should(Succeed())
-
-	By(fmt.Sprintf("simulate k8s reaction - update %s deployment and create replica-set", compassRtAgentDeploymentName))
-	compassRtAgentNsName := types.NamespacedName{Name: compassRtAgentDeploymentName, Namespace: ac.Namespace}
-	Expect(simulateK8sDeploymentRdy(ctx, compassRtAgentNsName)).To(Succeed())
 
 	// all deployments should be ready, the CR status should be in
 	// ready state

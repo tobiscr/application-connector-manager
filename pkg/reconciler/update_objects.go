@@ -17,7 +17,6 @@ type update = func() error
 
 func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	for _, f := range []func(v1alpha1.ApplicationConnectorSpec, []unstructured.Unstructured) error{
-		updateCompassRuntimeAgent,
 		updateCentralApplicationGateway,
 	} {
 		if err := f(s.instance.Spec, r.Objs); err != nil {
@@ -25,18 +24,6 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 		}
 	}
 	return switchState(sFnApply)
-}
-
-func updateCompassRuntimeAgent(i v1alpha1.ApplicationConnectorSpec, objs []unstructured.Unstructured) error {
-	u, err := unstructured.IsDeployment("compass-runtime-agent").First(objs)
-	if err != nil {
-		return err
-	}
-
-	if err := unstructured.Update(u, i.RuntimeAgentSpec, updateCRA); err != nil {
-		return err
-	}
-	return nil
 }
 
 func envVarUpdate(envs []corev1.EnvVar, newEnv corev1.EnvVar) update {
