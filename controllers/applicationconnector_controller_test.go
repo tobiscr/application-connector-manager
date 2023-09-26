@@ -120,6 +120,7 @@ func namespace(name string) corev1.Namespace {
 	}
 }
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func secret(ns string) corev1.Secret {
 	return corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{

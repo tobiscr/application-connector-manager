@@ -13,16 +13,19 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 type craMatcher struct {
 	expected   v1alpha1.RuntimeAgentSpec
 	actualVars []corev1.EnvVar
 	expectVars []corev1.EnvVar
 }
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func haveRuntimeAgentSpec(rtAgentSpec v1alpha1.RuntimeAgentSpec) types.GomegaMatcher {
 	return &craMatcher{expected: rtAgentSpec}
 }
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func (m *craMatcher) Match(actual any) (success bool, err error) {
 	u, ok := actual.(unstructured.Unstructured)
 	if !ok {
@@ -60,10 +63,12 @@ func (m *craMatcher) Match(actual any) (success bool, err error) {
 	return containsEnvs.Match(m.actualVars)
 }
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func (m *craMatcher) FailureMessage(actual interface{}) (message string) {
 	return fmt.Sprintf("Expected\n\t%s\nto be equal to\n\t%s", m.actualVars, m.expectVars)
 }
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func (m *craMatcher) NegatedFailureMessage(actual interface{}) (message string) {
 	return fmt.Sprintf("Expected\n\t%s\nnot to be equal to\n\t%s", m.actualVars, m.expectVars)
 }

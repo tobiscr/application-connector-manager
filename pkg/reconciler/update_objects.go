@@ -31,6 +31,7 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 	return switchState(sFnApply)
 }
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func envVarUpdate(envs *[]corev1.EnvVar, newEnv corev1.EnvVar) update {
 	return func() error {
 		if envs == nil {
@@ -50,6 +51,7 @@ func envVarUpdate(envs *[]corev1.EnvVar, newEnv corev1.EnvVar) update {
 	}
 }
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func updateCRA(d *appv1.Deployment, v v1alpha1.RuntimeAgentSpec) error {
 	// find compass-runtime-agent container
 	index := slices.IndexFunc(
