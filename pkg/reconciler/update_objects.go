@@ -21,6 +21,7 @@ type uList = []unstructured.Unstructured
 func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	for _, f := range []func(v1alpha1.ApplicationConnectorSpec, uList, uList) error{
 		updateCentralApplicationGateway,
+		updateAppConnectivityValidator,
 		updateGateways,
 		updateVirtualServices,
 	} {
@@ -83,6 +84,55 @@ func updateCRA(d *appv1.Deployment, v v1alpha1.RuntimeAgentSpec) error {
 				Value: v.MinConfigSyncTime.Duration.String(),
 			}),
 	}
+	// perform update
+	for _, f := range fns {
+		if err := f(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func updateAppConnectivityValidator(i v1alpha1.ApplicationConnectorSpec, objs uList, _ uList) error {
+
+	u, err := unstructured.IsDeployment("central-application-connectivity-validator").First(objs)
+	if err != nil {
+		return err
+	}
+
+	if err := unstructured.Update(u, i.AppConValidatorSpec, updateAppConnValidatorEnvs); err != nil {
+		return err
+	}
+	return nil
+}
+
+func updateAppConnValidatorEnvs(d *appv1.Deployment, v v1alpha1.AppConnValidatorSpec) error {
+
+	index := slices.IndexFunc(
+		d.Spec.Template.Spec.Containers,
+		func(c corev1.Container) bool { return c.Name == "central-application-connectivity-validator" })
+
+	if index == -1 {
+		return fmt.Errorf("central-application-connectivity-validator: %w", unstructured.ErrNotFound)
+	}
+
+	validatorEnvs := &d.Spec.Template.Spec.Containers[index].Env
+
+	fns := []update{
+		envVarUpdate(
+			validatorEnvs,
+			corev1.EnvVar{
+				Name:  v1alpha1.EnvAppConnValidatorLogLevel,
+				Value: string(v.LogLevel),
+			}),
+		envVarUpdate(
+			validatorEnvs,
+			corev1.EnvVar{
+				Name:  v1alpha1.EnvAppConnValidatorLogFormat,
+				Value: string(v.LogFormat),
+			}),
+	}
+
 	// perform update
 	for _, f := range fns {
 		if err := f(); err != nil {

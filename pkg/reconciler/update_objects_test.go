@@ -33,6 +33,10 @@ var _ = Describe("ACM sFnUpdate", func() {
 					RequestTimeout: metav1.Duration{Duration: time.Second * 102},
 					LogLevel:       v1alpha1.LogLevelFatal,
 				},
+				AppConValidatorSpec: v1alpha1.AppConnValidatorSpec{
+					LogLevel:  "debug",
+					LogFormat: "text",
+				},
 				DomainName: "test123",
 			},
 		},
@@ -60,7 +64,8 @@ var _ = Describe("ACM sFnUpdate", func() {
 				MatchNextFnState: equalStateFunction(sFnApply),
 				StateMatch: map[schema.GroupVersionKind]map[string]types.GomegaMatcher{
 					gvkDeployment: {
-						"central-application-gateway": haveAppGatewaySpec(defaultState.instance.Spec.ApplicationGatewaySpec),
+						"central-application-gateway":                haveAppGatewaySpec(defaultState.instance.Spec.ApplicationGatewaySpec),
+						"central-application-connectivity-validator": haveAppConnValidatorSpec(defaultState.instance.Spec.AppConValidatorSpec),
 					},
 					commontypes.Gateway: {
 						"kyma-gateway-application-connector": haveDomainNamePropagatedInGateway(defaultState.instance.Spec.DomainName),

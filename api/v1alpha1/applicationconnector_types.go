@@ -63,12 +63,15 @@ const (
 	LogLevelWarn  = LogLevel("warn")
 	LogLevelInfo  = LogLevel("info")
 	LogLevelDebug = LogLevel("debug")
+
+	EnvAppConnValidatorLogFormat = "APP_LOG_FORMAT"
+	EnvAppConnValidatorLogLevel  = "APP_LOG_LEVEL"
 )
 
 // +kubebuilder:validation:Enum=debug;panic;fatal;error;warn;info;debug
 type LogLevel string
 
-// +kubebuilder:validation:Enum=json;console
+// +kubebuilder:validation:Enum=json;text
 type LogFormat string
 
 type AppGatewaySpec struct {
