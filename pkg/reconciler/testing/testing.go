@@ -16,13 +16,15 @@ var (
 	NamesFnApply        = "github.com/kyma-project/application-connector-manager/pkg/reconciler.sFnApply"
 	NamesFnUpdateStatus = "github.com/kyma-project/application-connector-manager/pkg/reconciler.sFnUpdate.stopWithErrorAndNoRequeue.sFnUpdateStatus.func2"
 	// test data files
-	TdUpdateAcmValid = "acm-valid.yaml"
+	TdUpdateAcmValid  = "acm-valid.yaml"
+	TdUpdateDepsValid = "deps-valid.yaml"
 )
 
 type StateTest string
 
 var (
-	SfnUpdate StateTest = "update"
+	SfnUpdate     StateTest = "update"
+	SfnUpdateDeps StateTest = "update-deps"
 )
 
 func LoadTestData(st StateTest) (map[string][]unstructured.Unstructured, error) {

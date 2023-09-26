@@ -47,12 +47,31 @@ const (
 	ConditionTypeDeleted   = ConditionType("Deleted")
 
 	Finalizer = "application-connector-manager.kyma-project.io/deletion-hook"
+
+	ArgLogLevel = "--logLevel"
+
+	ArgCentralAppGatewayRequestTimeout = "--requestTimeout"
+	ArgCentralAppGatewayProxyTimeout   = "--proxyTimeout"
+
+	EnvRuntimeAgentControllerSyncPeriod         = "APP_CONTROLLER_SYNC_PERIOD"
+	EnvRuntimeAgentCertValidityRenevalThreshold = "APP_CERT_VALIDITY_RENEWAL_THRESHOLD"
+	EnvRuntimeAgentMinimalCompassSyncTime       = "APP_MINIMAL_COMPASS_SYNC_TIME"
+
+	LogLevelPanic = LogLevel("panic")
+	LogLevelFatal = LogLevel("fatal")
+	LogLevelError = LogLevel("error")
+	LogLevelWarn  = LogLevel("warn")
+	LogLevelInfo  = LogLevel("info")
+	LogLevelDebug = LogLevel("debug")
+
+	EnvAppConnValidatorLogFormat = "APP_LOG_FORMAT"
+	EnvAppConnValidatorLogLevel  = "APP_LOG_LEVEL"
 )
 
-// +kubebuilder:validation:Enum=debug;info;warn;error
+// +kubebuilder:validation:Enum=debug;panic;fatal;error;warn;info;debug
 type LogLevel string
 
-// +kubebuilder:validation:Enum=json;console
+// +kubebuilder:validation:Enum=json;text
 type LogFormat string
 
 type AppGatewaySpec struct {
@@ -81,10 +100,7 @@ type ApplicationConnectorSpec struct {
 	// +optional
 	// +kubebuilder:default:={ logLevel: "info", logFormat: "json" }
 	AppConValidatorSpec AppConnValidatorSpec `json:"appConnValidator"`
-	// +optional
-	// +kubebuilder:default:={ controllerSyncPeriod: "90s", minimalConfigSyncTime: "15s", certValidityRenewalThreshold: "0.3" }
-	RuntimeAgentSpec RuntimeAgentSpec `json:"runtimeAgent"`
-	DomainName       string           `json:"domainName"`
+	DomainName          string               `json:"domainName"`
 }
 
 //+kubebuilder:object:root=true

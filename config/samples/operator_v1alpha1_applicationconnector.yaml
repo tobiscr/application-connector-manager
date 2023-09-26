@@ -12,12 +12,6 @@ metadata:
 spec:
   domainName: kyma.test.cluster.com
 #  appConnValidator:
-#    eventingConfig:
-#      pathPrefixV1: "/v1/events"
-#      pathPrefixV2: "/v2/events"
-#      pathPrefixEvents: "/events"
-#      publisherHost: "eventing-event-publisher-proxy.kyma-system"
-#      destinationPath: "/publish"
 #    logLevel: "info"
 #    logFormat: "json"
 #  appGateway:

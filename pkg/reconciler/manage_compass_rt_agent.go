@@ -13,12 +13,14 @@ import (
 )
 
 var (
+	//nolint:unused // remove on phase2: compass-runtime-agent in module
 	keyCompassAgentCfg = client.ObjectKey{
 		Namespace: "kyma-system",
 		Name:      "compass-agent-configuration",
 	}
 )
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func sFnManageCompassRtAgent(ctx context.Context, r *fsm, _ *systemState) (stateFn, *ctrl.Result, error) {
 	var secret v1.Secret
 	err := r.Get(ctx, keyCompassAgentCfg, &secret)
@@ -40,6 +42,7 @@ func sFnManageCompassRtAgent(ctx context.Context, r *fsm, _ *systemState) (state
 	return switchState(sFnUpdate)
 }
 
+//nolint:unused // remove on phase2: compass-runtime-agent in module
 func updateDeploymentScaling(d *appv1.Deployment, replicas int32) error {
 	d.Spec.Replicas = ptr.To(replicas)
 	return nil
