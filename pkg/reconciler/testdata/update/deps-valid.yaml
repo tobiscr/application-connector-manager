@@ -40,6 +40,7 @@ metadata:
   name: central-application-connectivity-validator
   namespace: kyma-system
   labels:
+    test: me
     app: central-application-connectivity-validator
     release: application-connector
     app.kubernetes.io/name: central-application-connectivity-validator

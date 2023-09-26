@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/pkg/dependencies/istio"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	"golang.org/x/exp/slices"
 	appv1 "k8s.io/api/apps/v1"
@@ -15,11 +16,15 @@ import (
 
 type update = func() error
 
+type uList = []unstructured.Unstructured
+
 func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
-	for _, f := range []func(v1alpha1.ApplicationConnectorSpec, []unstructured.Unstructured) error{
+	for _, f := range []func(v1alpha1.ApplicationConnectorSpec, uList, uList) error{
 		updateCentralApplicationGateway,
+		updateGateways,
+		updateVirtualServices,
 	} {
-		if err := f(s.instance.Spec, r.Objs); err != nil {
+		if err := f(s.instance.Spec, r.Objs, r.Deps); err != nil {
 			return stopWithErrorAndNoRequeue(err)
 		}
 	}
@@ -85,7 +90,7 @@ func updateCRA(d *appv1.Deployment, v v1alpha1.RuntimeAgentSpec) error {
 	return nil
 }
 
-func updateCentralApplicationGateway(i v1alpha1.ApplicationConnectorSpec, objs []unstructured.Unstructured) error {
+func updateCentralApplicationGateway(i v1alpha1.ApplicationConnectorSpec, objs uList, _ uList) error {
 	u, err := unstructured.IsDeployment("central-application-gateway").First(objs)
 	if err != nil {
 		return err
@@ -115,7 +120,7 @@ func updateCAG(d *appv1.Deployment, v v1alpha1.AppGatewaySpec) error {
 	fns := []update{
 		argValueUpdate(cAppG8wayArgs, v1alpha1.ArgCentralAppGatewayRequestTimeout, fmt.Sprintf("%.0f", v.RequestTimeout.Seconds())),
 		argValueUpdate(cAppG8wayArgs, v1alpha1.ArgCentralAppGatewayProxyTimeout, fmt.Sprintf("%.0f", v.ProxyTimeout.Seconds())),
-		argValueUpdate(cAppG8wayArgs, v1alpha1.ArgLogLevel, fmt.Sprintf("%s", v.LogLevel)),
+		argValueUpdate(cAppG8wayArgs, v1alpha1.ArgLogLevel, fmt.Sprintf("%v", v.LogLevel)),
 	}
 	// perform update
 	for _, f := range fns {
@@ -142,4 +147,56 @@ func argValueUpdate(args *[]string, key string, newValue any) update {
 		(*args)[argIndex] = newArg
 		return nil
 	}
+}
+
+func updateG8(g *istio.Gateway, domainName string) error {
+	if g == nil {
+		return fmt.Errorf("invalid value: nil")
+	}
+
+	for i := range g.Spec.Servers {
+		g.Spec.Servers[i].Hosts = []string{domainName}
+	}
+
+	return nil
+}
+
+func updateGateways(i v1alpha1.ApplicationConnectorSpec, _ uList, deps uList) error {
+	us, err := unstructured.IsGatewayKind().All(deps)
+	if err != nil {
+		return err
+	}
+
+	for _, u := range us {
+		if err := unstructured.Update(u, i.DomainName, updateG8); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func updateVS(g *istio.VirtualService, domainName string) error {
+	if g == nil {
+		return fmt.Errorf("invalid value: nil")
+	}
+
+	g.Spec.Hosts = []string{domainName}
+
+	return nil
+}
+
+func updateVirtualServices(i v1alpha1.ApplicationConnectorSpec, _ uList, deps uList) error {
+	us, err := unstructured.IsVirtualService().All(deps)
+	if err != nil {
+		return err
+	}
+
+	for _, u := range us {
+		if err := unstructured.Update(u, i.DomainName, updateVS); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

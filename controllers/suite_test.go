@@ -102,10 +102,16 @@ var _ = BeforeSuite(func() {
 	mgrLogger, err := builZapLogger()
 	Expect(err).NotTo(HaveOccurred())
 
-	file, err := os.Open("../application-connector.yaml")
+	objsFile, err := os.Open("../application-connector.yaml")
 	Expect(err).ShouldNot(HaveOccurred())
 
-	data, err := yaml.LoadData(file)
+	objsData, err := yaml.LoadData(objsFile)
+	Expect(err).ShouldNot(HaveOccurred())
+
+	depsFile, err := os.Open("../application-connector-dependencies.yaml")
+	Expect(err).ShouldNot(HaveOccurred())
+
+	depsData, err := yaml.LoadData(depsFile)
 	Expect(err).ShouldNot(HaveOccurred())
 
 	err = (&applicationConnectorReconciler{
@@ -116,7 +122,8 @@ var _ = BeforeSuite(func() {
 		},
 		Cfg: reconciler.Cfg{
 			Finalizer: "application-connector-manager.kyma-project.io/deletion-hook",
-			Objs:      data,
+			Objs:      objsData,
+			Deps:      depsData,
 		},
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())

@@ -6,15 +6,21 @@ import (
 	"time"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	commontypes "github.com/kyma-project/application-connector-manager/pkg/common/types"
 	modtest "github.com/kyma-project/application-connector-manager/pkg/reconciler/testing"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
 var _ = Describe("ACM sFnUpdate", func() {
+
+	var (
+		gvkDeployment = schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"}
+	)
 
 	var testData map[string][]unstructured.Unstructured
 	updateTimeout := time.Second * 5
@@ -27,6 +33,7 @@ var _ = Describe("ACM sFnUpdate", func() {
 					RequestTimeout: metav1.Duration{Duration: time.Second * 102},
 					LogLevel:       v1alpha1.LogLevelFatal,
 				},
+				DomainName: "test123",
 			},
 		},
 	}
@@ -43,13 +50,24 @@ var _ = Describe("ACM sFnUpdate", func() {
 		Entry(
 			"happy path",
 			ctx,
-			&fsm{Cfg: Cfg{Objs: testData[modtest.TdUpdateAcmValid]}},
+			&fsm{Cfg: Cfg{
+				Objs: testData[modtest.TdUpdateAcmValid],
+				Deps: testData[modtest.TdUpdateDepsValid],
+			}},
 			defaultState,
 			testUpdateOptions{
 				MatchExpectedErr: BeNil(),
 				MatchNextFnState: equalStateFunction(sFnApply),
-				StateMatch: map[string]types.GomegaMatcher{
-					"central-application-gateway": haveAppGatewaySpec(defaultState.instance.Spec.ApplicationGatewaySpec),
+				StateMatch: map[schema.GroupVersionKind]map[string]types.GomegaMatcher{
+					gvkDeployment: {
+						"central-application-gateway": haveAppGatewaySpec(defaultState.instance.Spec.ApplicationGatewaySpec),
+					},
+					commontypes.Gateway: {
+						"kyma-gateway-application-connector": haveDomainNamePropagatedInGateway(defaultState.instance.Spec.DomainName),
+					},
+					commontypes.VirtualService: {
+						"central-application-connectivity-validator": haveDomainNamePropagatedInVirtualService(defaultState.instance.Spec.DomainName),
+					},
 				},
 			},
 		),
@@ -69,17 +87,19 @@ var _ = Describe("ACM sFnUpdate", func() {
 type testUpdateOptions struct {
 	MatchExpectedErr types.GomegaMatcher
 	MatchNextFnState types.GomegaMatcher
-	StateMatch       map[string]types.GomegaMatcher
+	StateMatch       map[schema.GroupVersionKind]map[string]types.GomegaMatcher
 }
 
 func testUpdate(ctx context.Context, r *fsm, s *systemState, ops testUpdateOptions) {
 	sFn, _, err := sFnUpdate(ctx, r, s)
 	Expect(err).To(ops.MatchExpectedErr)
 	Expect(sFn).To(ops.MatchNextFnState)
-
-	for deployment, match := range ops.StateMatch {
-		u, err := unstructured.IsDeployment(deployment).First(r.Objs)
-		Expect(err).Should(BeNil())
-		Expect(*u).Should(match)
+	// match state
+	for gvk, nameMatcherPairs := range ops.StateMatch {
+		for name, match := range nameMatcherPairs {
+			u, err := unstructured.IsNamedGroupVersionKind(name, gvk).First(append(r.Objs, r.Deps...))
+			Expect(err).Should(BeNil())
+			Expect(*u).Should(match)
+		}
 	}
 }
