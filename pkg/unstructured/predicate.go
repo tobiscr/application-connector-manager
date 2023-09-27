@@ -43,6 +43,10 @@ func IsDeploymentKind(u Unstructured) bool {
 	return u.GetKind() == "Deployment" && u.GetAPIVersion() == "apps/v1"
 }
 
+func IsServiceKind(u Unstructured) bool {
+	return u.GetKind() == "Service" && u.GetAPIVersion() == "v1"
+}
+
 func isGroupVersionKind(u Unstructured, gvk schema.GroupVersionKind) bool {
 	return u.GroupVersionKind() == gvk
 }
