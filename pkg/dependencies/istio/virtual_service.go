@@ -6,8 +6,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type TypeMeta struct {
+	Kind       string `json:"kind,omitempty"`
+	APIVersion string `json:"apiVersion,omitempty"`
+}
+
 type VirtualService struct {
-	metav1.TypeMeta   `json:",inline"`
+	TypeMeta          `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	Spec   VirtualServiceSpec `json:"spec,omitempty"`
