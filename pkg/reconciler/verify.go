@@ -8,6 +8,7 @@ import (
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
 	apirt "k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -36,6 +37,34 @@ func validateDeployment(obj unstructured.Unstructured) (bool, error) {
 	return false, nil
 }
 
+func validateService(obj unstructured.Unstructured) (bool, error) {
+	var service corev1.Service
+	if err := fromUnstructured(obj.Object, &service); err != nil {
+		return false, err
+	}
+
+	// service does not have cluster IP address
+	if service.Spec.ClusterIP == "" {
+		return false, nil
+	}
+
+	if service.Spec.Type != corev1.ServiceTypeLoadBalancer {
+		return true, nil
+	}
+
+	// service ready - some of external IPs are set
+	if len(service.Spec.ExternalIPs) > 0 {
+		return true, nil
+	}
+
+	// service does not have load balancer ingress IP address
+	if service.Status.LoadBalancer.Ingress == nil {
+		return false, nil
+	}
+
+	return true, nil
+}
+
 type validate = func(unstructured.Unstructured) (bool, error)
 
 func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
@@ -48,7 +77,12 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 			validate = validateDeployment
 		}
 
+		if unstructured.IsServiceKind(obj) {
+			validate = validateService
+		}
+
 		if validate == nil {
+			// omit validation
 			continue
 		}
 

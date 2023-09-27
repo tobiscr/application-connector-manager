@@ -27,7 +27,7 @@ type Port struct {
 }
 
 type Gateway struct {
-	metav1.TypeMeta   `json:",inline"`
+	TypeMeta          `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              GatewaySpec `json:"spec,omitempty"`
 	Status            IstioStatus `json:"status"`
