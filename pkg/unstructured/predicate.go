@@ -47,6 +47,10 @@ func IsServiceKind(u Unstructured) bool {
 	return u.GetKind() == "Service" && u.GetAPIVersion() == "v1"
 }
 
+func IsApiXtV1Beta1CRDKind(u Unstructured) bool {
+	return u.GetKind() == "CustomResourceDefinition" && u.GetAPIVersion() == "apiextensions.k8s.io"
+}
+
 func isGroupVersionKind(u Unstructured, gvk schema.GroupVersionKind) bool {
 	return u.GroupVersionKind() == gvk
 }
