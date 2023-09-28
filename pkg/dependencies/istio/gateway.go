@@ -15,7 +15,7 @@ type Server struct {
 	Bind            string             `json:"bind,omitempty"`
 	Hosts           []string           `json:"hosts,omitempty"`
 	Tls             *ServerTLSSettings `json:"tls,omitempty"`
-	DefaultEndpoint string             `json:"default_endpoint,omitempty"`
+	DefaultEndpoint string             `json:"defaultEndpoint,omitempty"`
 	Name            string             `json:"name,omitempty"`
 }
 
@@ -23,7 +23,7 @@ type Port struct {
 	Number     uint32 `json:"number,omitempty"`
 	Protocol   string `json:"protocol,omitempty"`
 	Name       string `json:"name,omitempty"`
-	TargetPort uint32 `json:"target_port,omitempty"`
+	TargetPort uint32 `json:"targetPort,omitempty"`
 }
 
 type Gateway struct {
@@ -35,8 +35,8 @@ type Gateway struct {
 
 type IstioStatus struct {
 	Conditions         []*IstioCondition      `json:"conditions,omitempty"`
-	ValidationMessages []*AnalysisMessageBase `json:"validation_messages,omitempty"`
-	ObservedGeneration int64                  `json:"observed_generation,omitempty"`
+	ValidationMessages []*AnalysisMessageBase `json:"validationMessages,omitempty"`
+	ObservedGeneration int64                  `json:"observedGeneration,omitempty"`
 }
 
 type AnalysisMessageBase_Level int32
@@ -44,7 +44,7 @@ type AnalysisMessageBase_Level int32
 type AnalysisMessageBase struct {
 	Type             *AnalysisMessageBase_Type `json:"type,omitempty"`
 	Level            AnalysisMessageBase_Level `json:"level,omitempty"`
-	DocumentationUrl string                    `json:"documentation_url,omitempty"`
+	DocumentationUrl string                    `json:"documentationUrl,omitempty"`
 }
 
 type AnalysisMessageBase_Type struct {
@@ -55,27 +55,25 @@ type AnalysisMessageBase_Type struct {
 type IstioCondition struct {
 	Type               string               `json:"type,omitempty"`
 	Status             string               `json:"status,omitempty"`
-	LastProbeTime      *timestamp.Timestamp `json:"last_probe_time,omitempty"`
-	LastTransitionTime *timestamp.Timestamp `json:"last_transition_time,omitempty"`
+	LastProbeTime      *timestamp.Timestamp `json:"lastProbeTime,omitempty"`
+	LastTransitionTime *timestamp.Timestamp `json:"lastTransitionTime,omitempty"`
 	Reason             string               `json:"reason,omitempty"`
 	Message            string               `json:"message,omitempty"`
 }
 
 type ServerTLSSettings_TLSmode uint32
 
-type ServerTLSSettings_TLSProtocol uint32
-
 type ServerTLSSettings struct {
-	HttpsRedirect         bool                          `json:"https_redirect,omitempty"`
-	Mode                  string                        `json:"mode,omitempty"`
-	ServerCertificate     string                        `json:"server_certificate,omitempty"`
-	PrivateKey            string                        `json:"private_key,omitempty"`
-	CaCertificates        string                        `json:"ca_certificates,omitempty"`
-	CredentialName        string                        `json:"credential_name,omitempty"`
-	SubjectAltNames       []string                      `json:"subject_alt_names,omitempty"`
-	VerifyCertificateSpki []string                      `json:"verify_certificate_spki,omitempty"`
-	VerifyCertificateHash []string                      `json:"verify_certificate_hash,omitempty"`
-	MinProtocolVersion    ServerTLSSettings_TLSProtocol `json:"min_protocol_version,omitempty"`
-	MaxProtocolVersion    ServerTLSSettings_TLSProtocol `json:"max_protocol_version,omitempty"`
-	CipherSuites          []string                      `json:"cipher_suites,omitempty"`
+	HttpsRedirect         bool     `json:"httpsRedirect,omitempty"`
+	Mode                  string   `json:"mode,omitempty"`
+	ServerCertificate     string   `json:"serverCertificate,omitempty"`
+	PrivateKey            string   `json:"privateKey,omitempty"`
+	CaCertificates        string   `json:"caCertificates,omitempty"`
+	CredentialName        string   `json:"credentialName,omitempty"`
+	SubjectAltNames       []string `json:"subjectAltNames,omitempty"`
+	VerifyCertificateSpki []string `json:"verifyCertificateSpki,omitempty"`
+	VerifyCertificateHash []string `json:"verifyCertificateHash,omitempty"`
+	MinProtocolVersion    string   `json:"minProtocolVersion,omitempty"`
+	MaxProtocolVersion    string   `json:"maxProtocolVersion,omitempty"`
+	CipherSuites          []string `json:"cipherSuites,omitempty"`
 }

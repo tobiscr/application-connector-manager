@@ -25,15 +25,15 @@ type VirtualServiceSpec struct {
 	Http     []*HTTPRoute `json:"http,omitempty"`
 	Tls      []*TLSRoute  `json:"tls,omitempty"`
 	Tcp      []*TCPRoute  `json:"tcp,omitempty"`
-	ExportTo []string     `json:"export_to,omitempty"`
+	ExportTo []string     `json:"exportTo,omitempty"`
 }
 
 type L4MatchAttributes struct {
-	DestinationSubnets []string `json:"destination_subnets,omitempty"`
+	DestinationSubnets []string `json:"destinationSubnets,omitempty"`
 	Port               uint32   `json:"port,omitempty"`
-	SourceSubnet       string   `json:"source_subnet,omitempty"`
+	SourceSubnet       string   `json:"sourceSubnet,omitempty"`
 	Gateways           []string `json:"gateways,omitempty"`
-	SourceNamespace    string   `json:"source_namespace,omitempty"`
+	SourceNamespace    string   `json:"sourceNamespace,omitempty"`
 }
 
 type TCPRoute struct {
@@ -52,11 +52,11 @@ type RouteDestination struct {
 }
 
 type TLSMatchAttributes struct {
-	SniHosts           []string `json:"sni_hosts,omitempty"`
-	DestinationSubnets []string `json:"destination_subnets,omitempty"`
+	SniHosts           []string `json:"sniHosts,omitempty"`
+	DestinationSubnets []string `json:"destinationSubnets,omitempty"`
 	Port               uint32   `json:"port,omitempty"`
 	Gateways           []string `json:"gateways,omitempty"`
-	SourceNamespace    string   `json:"source_namespace,omitempty"`
+	SourceNamespace    string   `json:"sourceNamespace,omitempty"`
 }
 
 type HTTPRoute struct {
@@ -64,7 +64,7 @@ type HTTPRoute struct {
 	Match            []*HTTPMatchRequest     `json:"match,omitempty"`
 	Route            []*HTTPRouteDestination `json:"route,omitempty"`
 	Redirect         *HTTPRedirect           `json:"redirect,omitempty"`
-	DirectResponse   *HTTPDirectResponse     `json:"direct_response,omitempty"`
+	DirectResponse   *HTTPDirectResponse     `json:"directResponse,omitempty"`
 	Delegate         *Delegate               `json:"delegate,omitempty"`
 	Rewrite          *HTTPRewrite            `json:"rewrite,omitempty"`
 	Timeout          *duration.Duration      `json:"timeout,omitempty"`
@@ -72,20 +72,20 @@ type HTTPRoute struct {
 	Fault            *HTTPFaultInjection     `json:"fault,omitempty"`
 	Mirror           *Destination            `json:"mirror,omitempty"`
 	Mirrors          []*HTTPMirrorPolicy     `json:"mirrors,omitempty"`
-	MirrorPercent    *wrappers.UInt32Value   `json:"mirror_percent,omitempty"`
-	MirrorPercentage *Percent                `json:"mirror_percentage,omitempty"`
-	CorsPolicy       *CorsPolicy             `json:"cors_policy,omitempty"`
+	MirrorPercent    *wrappers.UInt32Value   `json:"mirrorPercent,omitempty"`
+	MirrorPercentage *Percent                `json:"mirrorPercentage,omitempty"`
+	CorsPolicy       *CorsPolicy             `json:"corsPolicy,omitempty"`
 	Headers          *Headers                `json:"headers,omitempty"`
 }
 
 type CorsPolicy struct {
-	AllowOrigin      []string            `json:"allow_origin,omitempty"`
-	AllowOrigins     []*string           `json:"allow_origins,omitempty"`
-	AllowMethods     []string            `json:"allow_methods,omitempty"`
-	AllowHeaders     []string            `json:"allow_headers,omitempty"`
-	ExposeHeaders    []string            `json:"expose_headers,omitempty"`
-	MaxAge           *duration.Duration  `json:"max_age,omitempty"`
-	AllowCredentials *wrappers.BoolValue `json:"allow_credentials,omitempty"`
+	AllowOrigin      []string            `json:"allowOrigin,omitempty"`
+	AllowOrigins     []*string           `json:"allowOrigins,omitempty"`
+	AllowMethods     []string            `json:"allowMethods,omitempty"`
+	AllowHeaders     []string            `json:"allowHeaders,omitempty"`
+	ExposeHeaders    []string            `json:"exposeHeaders,omitempty"`
+	MaxAge           *duration.Duration  `json:"maxAge,omitempty"`
+	AllowCredentials *wrappers.BoolValue `json:"allowCredentials,omitempty"`
 }
 
 type HTTPMirrorPolicy struct {
@@ -113,14 +113,14 @@ type HTTPFaultInjection struct {
 
 type HTTPRetry struct {
 	Attempts      int32              `json:"attempts,omitempty"`
-	PerTryTimeout *duration.Duration `json:"per_try_timeout,omitempty"`
-	RetryOn       string             `json:"retry_on,omitempty"`
+	PerTryTimeout *duration.Duration `json:"perTryTimeout,omitempty"`
+	RetryOn       string             `json:"retryOn,omitempty"`
 }
 
 type HTTPRewrite struct {
 	Uri             *StringMatch  `json:"uri,omitempty"`
 	Authority       *StringMatch  `json:"authority,omitempty"`
-	UriRegexRewrite *RegexRewrite `json:"uri_regex_rewrite,omitempty"`
+	UriRegexRewrite *RegexRewrite `json:"uriRegexRewrite,omitempty"`
 }
 
 type StringMatch struct {
@@ -148,7 +148,7 @@ type HTTPRedirect struct {
 	Uri          string `json:"uri,omitempty"`
 	Authority    string `json:"authority,omitempty"`
 	Scheme       string `json:"scheme,omitempty"`
-	RedirectCode uint32 `json:"redirect_code,omitempty"`
+	RedirectCode uint32 `json:"redirectCode,omitempty"`
 }
 
 type HTTPMatchRequest struct {
@@ -159,9 +159,9 @@ type HTTPMatchRequest struct {
 	Authority       *StringMatch `json:"authority,omitempty"`
 	Port            uint32       `json:"port,omitempty"`
 	Gateways        []string     `json:"gateways,omitempty"`
-	IgnoreUriCase   bool         `json:"ignore_uri_case,omitempty"`
-	SourceNamespace string       `json:"source_namespace,omitempty"`
-	StatPrefix      string       `json:"stat_prefix,omitempty"`
+	IgnoreUriCase   bool         `json:"ignoreUriCase,omitempty"`
+	SourceNamespace string       `json:"sourceNamespace,omitempty"`
+	StatPrefix      string       `json:"statPrefix,omitempty"`
 }
 
 type HTTPRouteDestination struct {

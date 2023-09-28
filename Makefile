@@ -97,6 +97,11 @@ docker-build: manifests generate ## Build docker image with the manager.
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
 
+.PHONY: generate-manifest
+generate-manifest: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	$(KUSTOMIZE) build config/default > manifest.yaml
+
 ##@ Deployment
 
 IGNORE_NOT_FOUND ?= false

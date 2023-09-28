@@ -207,7 +207,7 @@ func updateG8(g *istio.Gateway, domainName string) error {
 	}
 
 	for i := range g.Spec.Servers {
-		g.Spec.Servers[i].Hosts = []string{domainName}
+		g.Spec.Servers[i].Hosts = []string{fmt.Sprintf("*.%s", domainName)}
 	}
 
 	return nil
@@ -233,7 +233,7 @@ func updateVS(g *istio.VirtualService, domainName string) error {
 		return fmt.Errorf("invalid value: nil")
 	}
 
-	g.Spec.Hosts = []string{domainName}
+	g.Spec.Hosts = []string{fmt.Sprintf("gateway.%s", domainName)}
 
 	return nil
 }
