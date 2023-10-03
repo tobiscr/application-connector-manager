@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
-	"github.com/kyma-project/application-connector-manager/pkg/dependencies/istio"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	"golang.org/x/exp/slices"
+	istio "istio.io/client-go/pkg/apis/networking/v1beta1"
 	appv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"

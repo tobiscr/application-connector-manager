@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	acm_predicate "github.com/kyma-project/application-connector-manager/pkg/common/controller-runtime/predicate"
 	"github.com/kyma-project/application-connector-manager/pkg/common/types"
 	"golang.org/x/exp/slices"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -87,9 +88,18 @@ func sFnRegisterDependencyWatch(_ context.Context, r *fsm, s *systemState) (stat
 
 	for _, u := range r.Deps {
 		r.log.With("gvk", u.GroupVersionKind()).Info("adding watch")
-		err := r.Watch(&source.Kind{
-			Type: &u,
-		}, handler.EnqueueRequestsFromMapFunc(r.MapFunc), labelSelectorPredicate)
+
+		var objPredicate predicate.Predicate = predicate.GenerationChangedPredicate{}
+
+		if u.GetObjectKind().GroupVersionKind() == types.VirtualService {
+			objPredicate = acm_predicate.NewVirtualServicePredicate(r.log)
+		}
+
+		if u.GetObjectKind().GroupVersionKind() == types.Gateway {
+			objPredicate = acm_predicate.NewGatewayPredicate(r.log)
+		}
+
+		err := r.Watch(source.Kind(r.Cache, &u), handler.EnqueueRequestsFromMapFunc(r.MapFunc), predicate.And(labelSelectorPredicate, objPredicate))
 
 		if err != nil {
 			s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)

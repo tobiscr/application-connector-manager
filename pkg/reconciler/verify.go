@@ -9,7 +9,6 @@ import (
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
 	apirt "k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
@@ -30,7 +29,7 @@ func validateDeployment(obj unstructured.Unstructured) (bool, error) {
 	}
 
 	for _, cond := range deployment.Status.Conditions {
-		if cond.Type == appsv1.DeploymentAvailable && cond.Status == v1.ConditionTrue {
+		if cond.Type == appsv1.DeploymentAvailable && cond.Status == corev1.ConditionTrue {
 			return true, nil
 		}
 	}

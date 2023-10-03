@@ -1,69 +1,68 @@
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: kyma-gateway-application-connector
   finalizers:
   - application-connector-manager.kyma-project.io/deletion-hook
-  namespace: kyma-system
   labels:
-    release: application-connector
-    app.kubernetes.io/name: application-connector
-    app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/name: application-connector
     app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
+  name: kyma-gateway-application-connector
+  namespace: kyma-system
 spec:
   selector:
-    istio: ingressgateway # use istio default ingress gateway
+    istio: ingressgateway
   servers:
-    - port:
-        name: https-app-connector
-        number: 443
-        protocol: HTTPS
-      tls:
-        mode: MUTUAL
-        credentialName: kyma-gateway-certs
-        minProtocolVersion: TLSV1_2
-        cipherSuites:
-        - ECDHE-RSA-CHACHA20-POLY1305
-        - ECDHE-RSA-AES256-GCM-SHA384
-        - ECDHE-RSA-AES256-SHA
-        - ECDHE-RSA-AES128-GCM-SHA256
-        - ECDHE-RSA-AES128-SHA
-      hosts:
-        - "gateway.kyma.example.com"
+  - hosts:
+    - '*.a76fe9a.dev.kyma.ondemand.com'
+    port:
+      name: https-app-connector
+      number: 443
+      protocol: HTTPS
+    tls:
+      cipherSuites:
+      - ECDHE-RSA-CHACHA20-POLY1305
+      - ECDHE-RSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES256-SHA
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES128-SHA
+      credentialName: kyma-gateway-certs
+      minProtocolVersion: TLSV1_2
+      mode: MUTUAL
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   finalizers:
   - application-connector-manager.kyma-project.io/deletion-hook
+  labels:
+    app: central-application-connectivity-validator
+    app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/managed-by: application-connector-manager
+    app.kubernetes.io/name: central-application-connectivity-validator
+    app.kubernetes.io/part-of: application-connector-manager
+    release: application-connector
   name: central-application-connectivity-validator
   namespace: kyma-system
-  labels:
-    test: me
-    app: central-application-connectivity-validator
-    release: application-connector
-    app.kubernetes.io/name: central-application-connectivity-validator
-    app.kubernetes.io/managed-by: application-connector-manager
-    app.kubernetes.io/instance: application-connector
-    app.kubernetes.io/part-of: application-connector-manager
 spec:
-  hosts:
-    - gateway.kyma.example.com
   gateways:
-    - kyma-system/kyma-gateway-application-connector
+  - kyma-system/kyma-gateway-application-connector
+  hosts:
+  - gateway.a76fe9a.dev.kyma.ondemand.com
   http:
-    - match:
-        - uri:
-            regex: ^/[^/]+/v1/metadata(/|/.*)?
-        - uri:
-            regex: ^/[^/]+/v1/events(/|/.*)?
-        - uri:
-            regex: ^/[^/]+/v2/events(/|/.*)?
-        - uri:
-            regex: ^/[^/]+/events(/|/.*)?
-      route:
-        - destination:
-            port:
-              number: 8080
-            host: central-application-connectivity-validator
+  - match:
+    - uri:
+        regex: ^/[^/]+/v1/metadata(/|/.*)?
+    - uri:
+        regex: ^/[^/]+/v1/events(/|/.*)?
+    - uri:
+        regex: ^/[^/]+/v2/events(/|/.*)?
+    - uri:
+        regex: ^/[^/]+/events(/|/.*)?
+    route:
+    - destination:
+        host: central-application-connectivity-validator
+        port:
+          number: 8080
