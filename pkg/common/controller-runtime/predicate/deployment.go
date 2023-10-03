@@ -4,9 +4,7 @@ import (
 	"reflect"
 
 	"go.uber.org/zap"
-	_ "golang.org/x/exp/slices"
 	appsv1 "k8s.io/api/apps/v1"
-	_ "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/event"
@@ -59,20 +57,6 @@ func (p deploymentPredicate) Update(e event.UpdateEvent) bool {
 
 	// check if namespace changed
 	if oldDeployment.GetNamespace() != newDeployment.GetNamespace() {
-		return true
-	}
-
-	// check if managed fields changed
-
-	if len(newDeployment.ManagedFields) == 0 && len(oldDeployment.ManagedFields) == 0 {
-		return false
-	}
-
-	if len(newDeployment.ManagedFields) == 0 && len(oldDeployment.ManagedFields) != 0 {
-		return true
-	}
-
-	if len(newDeployment.ManagedFields) != 0 && len(oldDeployment.ManagedFields) == 0 {
 		return true
 	}
 

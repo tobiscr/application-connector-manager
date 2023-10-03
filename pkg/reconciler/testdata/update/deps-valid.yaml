@@ -16,7 +16,7 @@ spec:
     istio: ingressgateway
   servers:
   - hosts:
-    - '*.a76fe9a.dev.kyma.ondemand.com'
+    - "*.gateway.kyma.example.com"
     port:
       name: https-app-connector
       number: 443
@@ -50,7 +50,7 @@ spec:
   gateways:
   - kyma-system/kyma-gateway-application-connector
   hosts:
-  - gateway.a76fe9a.dev.kyma.ondemand.com
+  - "gateway.kyma.example.com"
   http:
   - match:
     - uri:

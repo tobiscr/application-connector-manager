@@ -6,7 +6,7 @@ import (
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	"github.com/onsi/gomega/types"
 	"golang.org/x/exp/slices"
-	istio "istio.io/client-go/pkg/apis/networking/v1alpha3"
+	istio "istio.io/client-go/pkg/apis/networking/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 

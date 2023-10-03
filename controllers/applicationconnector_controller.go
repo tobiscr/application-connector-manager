@@ -18,7 +18,6 @@ package controllers
 
 import (
 	"context"
-	_ "encoding/json"
 	"reflect"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
@@ -117,15 +116,6 @@ func (r *applicationConnectorReconciler) mapFunction(_ context.Context, object c
 	if instanceIsBeingDeleted {
 		return nil
 	}
-
-	//	l := r.log.
-	//		With("name", object.GetName()).
-	//		With("ns", object.GetNamespace()).
-	//		With("gvk", object.GetObjectKind().GroupVersionKind()).
-	//		With("rscVer", object.GetResourceVersion()).
-	//		With("appConRscVer", applicationConnectors.Items[0].ResourceVersion)
-	//
-	//	l.Debug("redirecting")
 
 	// make sure only 1 controller will handle change
 	return []ctrl.Request{

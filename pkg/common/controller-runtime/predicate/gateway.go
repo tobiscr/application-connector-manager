@@ -17,7 +17,7 @@ type gatewayPredicate struct {
 }
 
 func NewGatewayPredicate(log *zap.SugaredLogger) predicate.Predicate {
-	return &deploymentPredicate{
+	return &gatewayPredicate{
 		log: log,
 	}
 }

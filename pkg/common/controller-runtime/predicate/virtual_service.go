@@ -17,7 +17,7 @@ type virtualServicePredicate struct {
 }
 
 func NewVirtualServicePredicate(log *zap.SugaredLogger) predicate.Predicate {
-	return &deploymentPredicate{
+	return &virtualServicePredicate{
 		log: log,
 	}
 }
