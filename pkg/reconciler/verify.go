@@ -9,6 +9,7 @@ import (
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	apiextv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apirt "k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
@@ -30,6 +31,31 @@ func validateDeployment(obj unstructured.Unstructured) (bool, error) {
 
 	for _, cond := range deployment.Status.Conditions {
 		if cond.Type == appsv1.DeploymentAvailable && cond.Status == corev1.ConditionTrue {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func validateApiXtV1Beta1CRD(obj unstructured.Unstructured) (bool, error) {
+	var crd apiextv1.CustomResourceDefinition
+	if err := fromUnstructured(obj.Object, &crd); err != nil {
+		return false, err
+	}
+
+	for _, cond := range crd.Status.Conditions {
+
+		isEstablished := cond.Type == apiextv1.Established
+		isConditionTrue := cond.Status == apiextv1.ConditionTrue
+
+		if isEstablished && isConditionTrue {
+			return true, nil
+		}
+
+		isNamesAccepted := cond.Type == apiextv1.NamesAccepted
+		isConditionFalse := cond.Status == apiextv1.ConditionFalse
+
+		if isNamesAccepted && isConditionFalse {
 			return true, nil
 		}
 	}
@@ -80,6 +106,10 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 			validate = validateService
 		}
 
+		if unstructured.IsApiXtV1Beta1CRDKind(obj) {
+			validate = validateApiXtV1Beta1CRD
+		}
+
 		if validate == nil {
 			// omit validation
 			continue
@@ -107,7 +137,7 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 		)
 
 		ready, total := inventory.count()
-		m.log.Infof("deployments not ready: [%d/%d]", ready, total)
+		m.log.Infof("resources not ready: [%d/%d]", ready, total)
 		return stopWithNoRequeue()
 	}
 
