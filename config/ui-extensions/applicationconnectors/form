@@ -1,0 +1,19 @@
+- path: spec.domainName
+  name: Domain name
+
+- path: spec.appConnValidator
+  widget: FormGroup
+  name: Application Connector Validator Configuration
+  children:
+   - widget: KeyValuePair
+     path: 
+     keyEnum: ['logLevel', 'logFormat']
+
+- path: spec.appGateway
+  widget: FormGroup
+  name: Application Connector Gateway Configuration
+  children:
+   - widget: KeyValuePair
+     path: requests
+     keyEnum: ['proxyTimeout', 'requestTimeout','logLevel']
+
