@@ -68,10 +68,10 @@ var _ = Describe("ACM sFnUpdate", func() {
 						"central-application-connectivity-validator": haveAppConnValidatorSpec(defaultState.instance.Spec.AppConValidatorSpec),
 					},
 					commontypes.Gateway: {
-						"kyma-gateway-application-connector": haveDomainNamePropagatedInGateway(defaultState.instance.Spec.DomainName),
+						"kyma-gateway-application-connector": haveDomainNamePropagatedInGateway(fmt.Sprintf("*.%s", defaultState.instance.Spec.DomainName)),
 					},
 					commontypes.VirtualService: {
-						"central-application-connectivity-validator": haveDomainNamePropagatedInVirtualService(defaultState.instance.Spec.DomainName),
+						"central-application-connectivity-validator": haveDomainNamePropagatedInVirtualService(fmt.Sprintf("gateway.%s", defaultState.instance.Spec.DomainName)),
 					},
 				},
 			},

@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
-	"github.com/kyma-project/application-connector-manager/pkg/dependencies/istio"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	"golang.org/x/exp/slices"
+	istio "istio.io/client-go/pkg/apis/networking/v1beta1"
 	appv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -207,7 +207,7 @@ func updateG8(g *istio.Gateway, domainName string) error {
 	}
 
 	for i := range g.Spec.Servers {
-		g.Spec.Servers[i].Hosts = []string{domainName}
+		g.Spec.Servers[i].Hosts = []string{fmt.Sprintf("*.%s", domainName)}
 	}
 
 	return nil
@@ -233,7 +233,7 @@ func updateVS(g *istio.VirtualService, domainName string) error {
 		return fmt.Errorf("invalid value: nil")
 	}
 
-	g.Spec.Hosts = []string{domainName}
+	g.Spec.Hosts = []string{fmt.Sprintf("gateway.%s", domainName)}
 
 	return nil
 }

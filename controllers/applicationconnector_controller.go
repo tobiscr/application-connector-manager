@@ -21,10 +21,11 @@ import (
 	"reflect"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	acm_predicate "github.com/kyma-project/application-connector-manager/pkg/common/controller-runtime/predicate"
 	"github.com/kyma-project/application-connector-manager/pkg/reconciler"
 	"go.uber.org/zap"
+	appsv1 "k8s.io/api/apps/v1"
 	v2 "k8s.io/api/autoscaling/v2"
-	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -93,7 +94,7 @@ func NewApplicationConnetorReconciler(c client.Client, r record.EventRecorder, l
 	}
 }
 
-func (r *applicationConnectorReconciler) mapFunction(object client.Object) []reconcile.Request {
+func (r *applicationConnectorReconciler) mapFunction(_ context.Context, object client.Object) []reconcile.Request {
 	var applicationConnectors v1alpha1.ApplicationConnectorList
 	err := r.List(context.Background(), &applicationConnectors)
 
@@ -115,14 +116,6 @@ func (r *applicationConnectorReconciler) mapFunction(object client.Object) []rec
 	if instanceIsBeingDeleted {
 		return nil
 	}
-
-	r.log.
-		With("name", object.GetName()).
-		With("ns", object.GetNamespace()).
-		With("gvk", object.GetObjectKind().GroupVersionKind()).
-		With("rscVer", object.GetResourceVersion()).
-		With("appConRscVer", applicationConnectors.Items[0].ResourceVersion).
-		Debug("redirecting")
 
 	// make sure only 1 controller will handle change
 	return []ctrl.Request{
@@ -177,7 +170,12 @@ var (
 		Version: "v2",
 		Kind:    "HorizontalPodAutoscaler",
 	}
-	kindSecret = source.Kind{Type: &corev1.Secret{}}
+
+	deploymentVersionKind = schema.GroupVersionKind{
+		Group:   appsv1.GroupName,
+		Version: appsv1.SchemeGroupVersion.Version,
+		Kind:    "Deployment",
+	}
 )
 
 // SetupWithManager sets up the controller with the Manager.
@@ -199,15 +197,21 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 	// create functtion to register wached objects
 	watchFn := func(u unstructured.Unstructured) {
 		var objPredicate predicate.Predicate = &predicate.ResourceVersionChangedPredicate{}
+
 		if u.GroupVersionKind() == hpaGroupVersionKind {
 			objPredicate = hpaResourceVersionChangedPredicate{
 				log: r.log,
 			}
 		}
 
+		if u.GroupVersionKind() == deploymentVersionKind {
+			objPredicate = acm_predicate.NewDeploymentPredicate(r.log)
+		}
+
 		r.log.With("gvk", u.GroupVersionKind().String()).Infoln("adding watcher")
-		b = b.Watches(
-			&source.Kind{Type: &u},
+
+		b = b.WatchesRawSource(
+			source.Kind(mgr.GetCache(), &u),
 			handler.EnqueueRequestsFromMapFunc(r.mapFunction),
 			builder.WithPredicates(
 				predicate.And(
@@ -222,24 +226,13 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 		return err
 	}
 
-	// register compass-runtime-agent secret
-	b = b.Watches(
-		&kindSecret,
-		handler.EnqueueRequestsFromMapFunc(r.mapFunction),
-		builder.WithPredicates(
-			&predicateCompassRtAgentGenChange{
-				objectName: "compass-agent-configuration",
-				namespace:  "kyma-system",
-				log:        r.log,
-			},
-		))
-
 	controller, err := b.Build(r)
 	if err != nil {
 		return err
 	}
 
 	r.Watch = controller.Watch
+	r.Cache = mgr.GetCache()
 	return nil
 }
 
@@ -261,6 +254,7 @@ func (r *applicationConnectorReconciler) Reconcile(ctx context.Context, req ctrl
 			EventRecorder: r.EventRecorder,
 			Watch:         r.Watch,
 			MapFunc:       r.mapFunction,
+			Cache:         r.Cache,
 		},
 		&r.DepsACK)
 	requCounter++

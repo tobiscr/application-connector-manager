@@ -3,10 +3,10 @@ package reconciler
 import (
 	"fmt"
 
-	"github.com/kyma-project/application-connector-manager/pkg/dependencies/istio"
 	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	"github.com/onsi/gomega/types"
 	"golang.org/x/exp/slices"
+	istio "istio.io/client-go/pkg/apis/networking/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 

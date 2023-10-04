@@ -7,12 +7,12 @@ import (
 var (
 	VirtualService = schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1alpha3",
+		Version: "v1beta1",
 		Kind:    "VirtualService",
 	}
 	Gateway = schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1alpha3",
+		Version: "v1beta1",
 		Kind:    "Gateway",
 	}
 	Dependencies = []schema.GroupVersionKind{
