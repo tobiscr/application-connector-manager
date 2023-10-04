@@ -1,6 +1,9 @@
 PROJECT_ROOT ?= ../..
 PROJECT_COMMON ?= ../common
 
+K3D_URL=https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
+DEFAULT_K3D_VERSION=v5.4.6
+
 include ${PROJECT_ROOT}/.env
 
 ifndef MODULE_SHA
@@ -53,11 +56,15 @@ k3d-upgrade-test: \
 render-manifest:
 	@make -C ${PROJECT_ROOT} render-manifest
 
+.PHONY: install-k3d
+install-k3d:
+	curl --silent --fail ${K3D_URL} | TAG=${DEFAULT_K3D_VERSION} bash
+
 .PHONY: run-with-lifecycle-manager
 run-with-lifecycle-manager:
 	@make -C ${PROJECT_COMMON} run-with-lifecycle-manager
 
 .PHONY: run-without-lifecycle-manager
-run-without-lifecycle-manager:
+run-without-lifecycle-manager: install-k3d
 	@make -C ${PROJECT_COMMON} run-without-lifecycle-manager
 
