@@ -1,0 +1,58 @@
+header:
+  - name: Ready  
+    source: status.state
+    widget: Badge
+    highlights:
+      positive:
+        - 'Ready'
+body:
+  - name: Configuration
+    widget: Panel
+    children:
+      - name: Domanin name
+        source: spec.domainName
+  - widget: Columns
+    children:
+      - name: Application Connnector Validator
+        widget: Panel
+        children: 
+          - source: spec.appConnValidator.logLevel
+            name: Validator log level
+          - source: spec.appConnValidator.logFormat
+            name: Validator log format
+      - name: Application Connector Gateway
+        widget: Panel
+        children:
+          - source: spec.appGateway.proxyTimeout
+            name: Proxy timeout duration
+          - source: spec.appGateway.requestTimeout
+            name: Request timeout duration
+          - source: spec.appGateway.logLevel
+            name: Gateway log level
+
+  - source: status.conditions
+    widget: Table
+    name: Reconciliation Conditions
+    children:
+      - source: type
+        name: Type
+      - source: status
+        name: Status
+        widget: Badge
+        highlights:
+          positive:
+            - 'True'
+          negative:
+            - 'False'
+      - source: reason
+        name: Reason
+      - source: message
+        name: Message
+      - source: '$readableTimestamp(lastTransitionTime)'
+        name: Last transition
+        sort: true
+
+  - widget: EventList
+    filter: '$matchEvents($$, $root.kind, $root.metadata.name)'
+    name: events
+    defaultType: information

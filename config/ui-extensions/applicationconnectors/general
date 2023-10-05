@@ -1,0 +1,15 @@
+resource:
+  kind: ApplicationConnector
+  group: operator.kyma-project.io
+  version: v1alpha1
+urlPath: applicationconnectors
+category: Kyma
+name: ApplicationConnector
+scope: namespace
+features:
+  actions:
+    disableCreate: true
+    disableDelete: true
+description: >-
+  {{[ApplicationConnector CR](https://www.youtube.com/watch?v=v7ScGV5128A)}}
+  configures application connector installation.
