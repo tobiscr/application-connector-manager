@@ -135,7 +135,7 @@ module-image: docker-build docker-push ## Build the Module Image and push it to 
 	echo "built and pushed module image $(IMG)"
 
 .PHONY: module-build
-module-build: kyma kustomize module-config-template configure-git-origin ## Build the Module and push it to a registry defined in MODULE_REGISTRY
+module-build: kyma kustomize render-manifest module-config-template configure-git-origin ## Build the Module and push it to a registry defined in MODULE_REGISTRY
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	@$(KYMA) alpha create module --path . --output=moduletemplate.yaml \
 		--module-config-file=module-config.yaml $(MODULE_CREATION_FLAGS)
