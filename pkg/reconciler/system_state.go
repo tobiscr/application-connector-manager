@@ -13,6 +13,8 @@ type systemState struct {
 	objs []unstructured.Unstructured
 
 	snapshot v1alpha1.Status
+
+	domainName string
 }
 
 func (s *systemState) saveAppConStatus() {

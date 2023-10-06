@@ -39,7 +39,7 @@ func sFnManageCompassRtAgent(ctx context.Context, r *fsm, _ *systemState) (state
 		return stopWithErrorAndNoRequeue(err)
 	}
 
-	return switchState(sFnUpdate)
+	return switchState(sFnDetectDomain)
 }
 
 //nolint:unused // remove on phase2: compass-runtime-agent in module
