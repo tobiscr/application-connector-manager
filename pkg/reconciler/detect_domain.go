@@ -21,7 +21,6 @@ func sFnDetectDomain(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctr
 
 	// check if domain name was already fetched
 	if s.domainName != "" {
-		s.instance.Spec.DomainName = s.domainName
 		return switchState(sFnUpdate)
 	}
 
