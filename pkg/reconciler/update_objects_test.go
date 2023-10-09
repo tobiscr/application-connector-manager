@@ -19,7 +19,8 @@ import (
 var _ = Describe("ACM sFnUpdate", func() {
 
 	var (
-		gvkDeployment = schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"}
+		gvkDeployment    = schema.GroupVersionKind{Group: "apps", Version: "v1", Kind: "Deployment"}
+		defaulDomainName = "test123"
 	)
 
 	var testData map[string][]unstructured.Unstructured
@@ -37,7 +38,7 @@ var _ = Describe("ACM sFnUpdate", func() {
 					LogLevel:  "debug",
 					LogFormat: "text",
 				},
-				DomainName: "test123",
+				DomainName: defaulDomainName,
 			},
 		},
 	}

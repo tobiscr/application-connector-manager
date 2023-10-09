@@ -18,14 +18,40 @@ type update = func() error
 
 type uList = []unstructured.Unstructured
 
+type defaultingOption func(*v1alpha1.ApplicationConnectorSpec) error
+
+func applyDefaults(spec v1alpha1.ApplicationConnectorSpec, ops ...defaultingOption) (v1alpha1.ApplicationConnectorSpec, error) {
+	var specCopy v1alpha1.ApplicationConnectorSpec
+	spec.DeepCopyInto(&specCopy)
+
+	for _, opt := range ops {
+		if err := opt(&specCopy); err != nil {
+			return v1alpha1.ApplicationConnectorSpec{}, err
+		}
+	}
+	return specCopy, nil
+}
+
 func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
+
+	updatedSpec, err := applyDefaults(s.instance.Spec, func(spec *v1alpha1.ApplicationConnectorSpec) error {
+		if s.domainName != "" {
+			spec.DomainName = s.domainName
+		}
+		return nil
+	})
+
+	if err != nil {
+		return stopWithErrorAndNoRequeue(fmt.Errorf("defaults application failed: %w", err))
+	}
+
 	for _, f := range []func(v1alpha1.ApplicationConnectorSpec, uList, uList) error{
 		updateCentralApplicationGateway,
 		updateAppConnectivityValidator,
 		updateGateways,
 		updateVirtualServices,
 	} {
-		if err := f(s.instance.Spec, r.Objs, r.Deps); err != nil {
+		if err := f(updatedSpec, r.Objs, r.Deps); err != nil {
 			return stopWithErrorAndNoRequeue(err)
 		}
 	}

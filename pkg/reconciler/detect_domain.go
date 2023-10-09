@@ -2,6 +2,7 @@ package reconciler
 
 import (
 	"context"
+	"fmt"
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -27,16 +28,14 @@ func sFnDetectDomain(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctr
 	// try to fetch domain name from config map
 	var cm v1.ConfigMap
 	if err := r.Get(ctx, gardenerCM, &cm); err != nil {
-		r.log.Warn("unable to domain name: %s", err)
-		return switchState(sFnUpdate)
+		return stopWithErrorAndNoRequeue(fmt.Errorf("unable to detect domain"))
 	}
 
 	domainName, found := cm.Data["domain"]
 	if !found {
-		r.log.Warn("unable to domain name: not found")
-		return switchState(sFnUpdate)
+		return stopWithErrorAndNoRequeue(fmt.Errorf("domain not found"))
 	}
 
-	s.instance.Spec.DomainName = domainName
+	s.domainName = domainName
 	return switchState(sFnUpdate)
 }
