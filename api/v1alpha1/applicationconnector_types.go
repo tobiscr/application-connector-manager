@@ -100,7 +100,7 @@ type ApplicationConnectorSpec struct {
 	// +optional
 	// +kubebuilder:default:={ logLevel: "info", logFormat: "json" }
 	AppConValidatorSpec AppConnValidatorSpec `json:"appConnValidator"`
-	DomainName          string               `json:"domainName"`
+	DomainName          string               `json:"domainName,omitempty"`
 }
 
 //+kubebuilder:object:root=true
