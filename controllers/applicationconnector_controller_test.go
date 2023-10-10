@@ -6,12 +6,16 @@ import (
 	"time"
 
 	"github.com/kyma-project/application-connector-manager/api/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/pkg/unstructured"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	istio "istio.io/client-go/pkg/apis/networking/v1beta1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
 	"k8s.io/utils/ptr"
@@ -27,7 +31,6 @@ var _ = Describe("ApplicationConnector controller", func() {
 
 	defaultTestTimeout := 60 * time.Second
 	defaultAppCon := applicationConnector("test", "kyma-system", v1alpha1.ApplicationConnectorSpec{
-		DomainName: "testme",
 		ApplicationGatewaySpec: v1alpha1.AppGatewaySpec{
 			LogLevel: v1alpha1.LogLevel("info"),
 		},
@@ -59,12 +62,26 @@ func validateAppConState(ctx context.Context, expected State, key types.Namespac
 }
 
 func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
+	testDomainName := "testme"
+
 	ctx, cancel := context.WithTimeout(context.Background(), t)
 	defer cancel()
 
 	By(fmt.Sprintf("create namespace: %s", ac.Namespace))
 	ns := namespace(ac.Namespace)
 	Expect(k8sClient.Create(ctx, &ns)).To(Succeed())
+
+	By("create gardener config")
+	gardenerCM := corev1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "shoot-info",
+			Namespace: "kube-system",
+		},
+		Data: map[string]string{
+			"domain": testDomainName,
+		},
+	}
+	Expect(k8sClient.Create(ctx, &gardenerCM)).Should(BeNil())
 
 	By(fmt.Sprintf("create application-connector instance: %s/%s", ac.Namespace, ac.Name))
 	Expect(k8sClient.Create(ctx, &ac)).To(Succeed())
@@ -110,6 +127,43 @@ func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
 		WithTimeout(t).
 		Should(Succeed())
 
+	// check if domain name was set
+	Expect(validateGateway(ctx, testDomainName)).To(BeNil())
+}
+
+func validateGateway(ctx context.Context, expectedDomainName string) error {
+	var u unstructured.Unstructured
+	u.SetGroupVersionKind(schema.GroupVersionKind{
+		Kind:    "Gateway",
+		Version: "v1beta1",
+		Group:   "networking.istio.io",
+	})
+
+	gatewayKey := types.NamespacedName{
+		Name:      "kyma-gateway-application-connector",
+		Namespace: "kyma-system",
+	}
+
+	if err := k8sClient.Get(ctx, gatewayKey, &u); err != nil {
+		return err
+	}
+
+	var gateway istio.Gateway
+	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(u.Object, &gateway); err != nil {
+		return fmt.Errorf("conversion error: %w", err)
+	}
+
+	expectedHost := fmt.Sprintf("*.%s", expectedDomainName)
+
+	for _, s := range gateway.Spec.Servers {
+		for _, h := range s.Hosts {
+			if expectedHost == h {
+				return nil
+			}
+		}
+	}
+
+	return fmt.Errorf(`domain: "%s" name not propagated`, expectedDomainName)
 }
 
 func namespace(name string) corev1.Namespace {

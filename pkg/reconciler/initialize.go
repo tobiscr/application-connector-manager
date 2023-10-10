@@ -40,5 +40,5 @@ func sFnInitialize(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.
 		return switchState(sFnDeleteResources)
 	}
 
-	return switchState(sFnUpdate)
+	return switchState(sFnDetectDomain)
 }

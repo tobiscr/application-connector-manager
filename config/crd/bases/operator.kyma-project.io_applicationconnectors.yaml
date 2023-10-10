@@ -86,8 +86,6 @@ spec:
                 type: object
               domainName:
                 type: string
-            required:
-            - domainName
             type: object
           status:
             properties:
