@@ -9,11 +9,12 @@ body:
   - name: Configuration
     widget: Panel
     children:
-      - name: Domanin name
+      - name: Domain name
         source: spec.domainName
+        placeholder: Detected automatically
   - widget: Columns
     children:
-      - name: Application Connnector Validator
+      - name: Application Connector Validator
         widget: Panel
         children: 
           - source: spec.appConnValidator.logLevel

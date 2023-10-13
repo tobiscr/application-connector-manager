@@ -85,7 +85,7 @@ fix-template: ## Create template-k3d.yaml based on moduletemplate.yaml with righ
 	> ${PROJECT_ROOT}/template-k3d.yaml
 
 .PHONY: enable-module
-enable-module: ## Patch serverless module in the right Kyma CR.
+enable-module: ## Patch application-connector module in the right Kyma CR.
 	kubectl patch kymas.operator.kyma-project.io \
 		default-kyma \
 		-n kyma-system \
@@ -106,9 +106,9 @@ install-module: ## Kyma alpha deploy with k3d moduletemplate.
 	kubectl apply -f ${PROJECT_ROOT}/template-k3d.yaml
 
 .PHONY: apply-appcon
-apply-appcon: ## Apply the k3d serverless CR
+apply-appcon: ## Apply the k3d application-connector CR
 	kubectl apply -n kyma-system \
-		-f ${PROJECT_ROOT}/config/samples/operator_v1alpha1_applicationconnector.yaml
+		-f ${PROJECT_ROOT}/hack/common/test_sample_applicationconnector.yaml
 
 .PHONY: create-kyma-system-ns
 create-kyma-system-ns: ## Create kyma-system namespace.
