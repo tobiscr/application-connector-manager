@@ -9,17 +9,4 @@ metadata:
     app.kuberentes.io/managed-by: kustomize
     app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
-spec:
-  domainName: ""
-#  appConnValidator:
-#    logLevel: "info"
-#    logFormat: "json"
-#  appGateway:
-#    proxyTimeout: "10s"
-#    requestTimeout: "10s"
-#    logLevel: "info"
-#  runtimeAgent:
-#    controllerSyncPeriod: "180s"
-#    minimalConfigSyncTime: "15s"
-#    certValidityRenewalThreshold: "0.3"
-
+spec: {}
