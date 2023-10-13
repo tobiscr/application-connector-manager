@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
 spec:
-  domainName: kyma.test.cluster.com
+  domainName: ""
 #  appConnValidator:
 #    logLevel: "info"
 #    logFormat: "json"
