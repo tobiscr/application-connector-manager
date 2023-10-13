@@ -34,6 +34,7 @@ metadata:
     app.kuberentes.io/managed-by: kustomize
     app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
+spec: {}
 ```
 
 Any update to this CR is intercepted by Application Connector Manager and applied to the Application Connector binaries.
