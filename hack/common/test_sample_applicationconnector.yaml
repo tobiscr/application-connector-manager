@@ -9,4 +9,5 @@ metadata:
     app.kuberentes.io/managed-by: kustomize
     app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
-spec: {}
+spec:
+  domainName: kyma.test.cluster.com
