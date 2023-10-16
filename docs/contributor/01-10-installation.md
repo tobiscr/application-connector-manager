@@ -1,40 +1,33 @@
-# Install Application Connector Manager
+# Install Application Connector Manager 
 
-## Prerequisites
+- [Install Application Connector Manager](#install-application-connector-manager)
+  - [Install Application Connector Manager from the local sources](#install-application-connector-manager-from-the-local-sources)
+    - [Prerequisites](#prerequisites)
+    - [Procedure](#procedure)
+  - [Make targets to run Application Connector Manager locally on k3d](#make-targets-to-run-application-connector-manager-locally-on-k3d)
+    - [Run Application Connector Manager on bare k3d](#run-application-connector-manager-on-bare-k3d)
+  - [Install Application Connector module on remote Kyma runtime](#install-application-connector-module-on-remote-kyma-runtime)
+    - [Prerequisite](#prerequisite)
+    - [Procedure](#procedure-1)
+
+Learn how to install the Application Connector module locally (on k3d) or on your remote cluster.
+
+## Install Application Connector Manager from the local sources 
+
+### Prerequisites
 
 - Access to a Kubernetes (v1.24 or higher) cluster
-- [k3d](https://k3d.io) to get a local cluster for testing, or run on a remote cluster
+- [Go](https://go.dev/)
+- [Docker](https://www.docker.com/)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [kubebuilder](https://book.kubebuilder.io/)
 
-## Install kubebuilder
+### Procedure
 
-<div tabs name="Install kubebuilder" group="kubebuilder">
-  <details open>
-  <summary label="Homebrew">
-  Homebrew
-  </summary>
-Run:
+You can build and run the Application Connector Manager in the Kubernetes cluster without Kyma.
+For the day-to-day development on your machine, you don't always need to have it controlled by Kyma's Lifecycle Manager.
 
-   ```bash
-   brew install kubebuilder
-   ```
-  </details>
-  <details>
-  <summary label="kubectl">
-  Fetch sources
-  </summary>
-
-Run:
-
-   ```bash
-   curl -L -o kubebuilder https://go.kubebuilder.io/dl/latest/$(go env GOOS)/$(go env GOARCH)
-   chmod +x kubebuilder && mv kubebuilder /usr/local/bin/
-   ```
-  </details>
-</div>
-
-## Manual installation of Application Connector Manager
+Run the following commands to deploy Application Connector Manager on a target Kubernetes cluster, such as k3d:
 
 1. Clone the project.
 
@@ -44,46 +37,26 @@ Run:
 
 2. Set the Application Connector Manager image name.
 
+   > NOTE: You can use the local k3d registry or your Docker Hub account to push intermediate images.  
    ```bash
-   export IMG=custom-application-connector-manager:0.0.1
-   export K3D_CLUSTER_NAME=application-connector-manager-demo
+   export IMG=<DOCKER_USERNAME>/custom-application-connector-manager:0.0.1
    ```
 
-3. Build the project.
+3. Test the code.
 
    ```bash
-   make build
+   make test
    ```
-
-4. Build the image.
+4. Build and push the image to the registry.
 
    ```bash
-   make docker-build
+   make module-image
    ```
-
-5. Push the image to the registry.
-
-<div tabs name="Push image" group="application-connector-installation">
-  <details>
-  <summary label="k3d">
-  k3d
-  </summary>
+5. Create a target Namespace.
 
    ```bash
-   k3d image import $IMG -c $K3D_CLUSTER_NAME
+   kubectl create ns kyma-system
    ```
-  </details>
-  <details>
-  <summary label="Docker registry">
-  Globally available Docker registry
-  </summary>
-
-   ```bash
-   make docker-push
-   ```
-
-  </details>
-</div>
 
 6. Deploy Application Connector Manager.
 
@@ -91,161 +64,208 @@ Run:
    make deploy
    ```
 
-## Using Application Connector Manager
-
-- Create an ApplicationConnector instance.
+7. Verify if Application Connector Manager is deployed.
 
    ```bash
-   kubectl apply -f config/samples/operator_v1alpha1_applicationconnector.yaml
+   kubectl get deployments -n kyma-system
    ```
 
-- Delete an ApplicationConnector instance.
+   You should get a result similar to this example:
+
+   ```
+   NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+   application-connector-controller-manager   1/1     1            1           20s
+   ```
+
+## Make targets to run Application Connector Manager locally on k3d
+
+### Run Application Connector Manager on bare k3d
+
+When using a local k3d cluster, you can also use the local OCI image registry that comes with it.
+Thanks to that, you don't need to push the Application Connector module images to a remote registry and you can test the changes in the Kyma installation set up entirely on your machine.
+
+1. Clone the project.
 
    ```bash
-   kubectl delete -f config/samples/operator_v1alpha1_applicationconnector.yaml
+   git clone https://github.com/kyma-project/application-connector-manager.git && cd application-connector-manager/
    ```
-
-- Update the ApplicationConnector properties.
-
-TODO: Provide example of CR update
-
-## Build and install the Application Connector module on the local k3d cluster
-
-1. Set up a local k3d cluster and a local Docker registry.
+2. Build the manager locally and run it on the k3d cluster.
 
    ```bash
-   k3d cluster create kyma --registry-create registry.localhost:0.0.0.0:5001
+   make -C hack/local run-without-lifecycle-manager
    ```
-2. Add the `etc/hosts` entry to register the local Docker registry under the `registry.localhost` name.
+3. If you want to clean up the k3d cluster, use the `make -C hack/local stop` make target.
 
-   ```
-   127.0.0.1 registry.localhost
-   ```
+## Install Application Connector module on remote Kyma runtime
 
-3. Export environment variables (ENVs) pointing to the module and the module image registries.
+### Prerequisite
+Lifecycle Manager must be installed on the cluster (locally), or the cluster itself must be managed remotely by the central control-plane.
 
-   ```bash
-   export IMG_REGISTRY=registry.localhost:8888/unsigned/operator-images
-   export MODULE_REGISTRY=registry.localhost:8888/unsigned
-   ```
+### Procedure
+In this section, you will learn how to install a pull request (PR) version of the Application Connector module with Lifecycle Manager on a remote cluster.
+You need OCI images for the Application Connector module version to be built and pushed into a public registry. You also need ModuleTemplate matching the version to apply it on the remote cluster.
+CI jobs running on PRs and on the main branch help you to achieve that.
 
-4. Build the Application Connector module.
-   
-   ```bash
-   make module-build
-   ```
+1. Create a PR or use an existing one in the [`application-connector-manager`](https://github.com/kyma-project/application-connector-manager) repository; on the PR page, scroll down to the Prow jobs status list. 
 
-This command builds an OCI image for the Application Connector module and pushes it to the registry and path, as defined in `MODULE_REGISTRY`.
+   ![Prow job status](../assets/prow_job_status.png)
 
-5. Build the Application Connector Manager image.
-   
-   ```bash
-   make module-image
-   ```
+2. After the job has finished with success, click **Details** next to the `pull-application-connector-module-build` job.
 
-This command builds a Docker image for Application Connector Manager and pushes it to the registry and path, as defined in `MODULE_REGISTRY`.
+   ![Pull Application Connector module build](../assets/pull_application-connector_module_build.png)
 
-6. Verify if the module and the manager's image are pushed to the local registry.
+The ModuleTemplate will be printed in the MODULE TEMPLATE section, between the tags.
 
-   ```bash
-   curl registry.localhost:8888/v2/_catalog
-   {"repositories":["unsigned/component-descriptors/kyma.project.io/module/application-connector","unsigned/operator-images/application-connector-operator"]}
-   ```
-
-7. Inspect the generated module template.
-
-> **NOTE:** The following are temporary workarounds:
-
-Edit the `template.yaml` file and:
-
-- change `target` to `control-plane`
->**NOTE:** This is only required in the single cluster mode.
+> `~~~~~~~~~~~~BEGINING OF MODULE TEMPLATE~~~~~~~~~~~~~~`
 
    ```yaml
-   spec:
-     target: control-plane
+   apiVersion: operator.kyma-project.io/v1alpha1
+   kind: ModuleTemplate
+   metadata:
+   name: moduletemplate-application-connector
+   ...
    ```
 
-- change the existing repository context in `spec.descriptor.component`:
-> **NOTE:** Because Pods inside the k3d cluster use the Docker internal port of the registry, it tries to resolve the registry against port 5000 instead of 8888. k3d has registry aliases, but Module Manager is not part of k3d and thus does not know how to properly alias `registry.localhost:8888`.
+> `~~~~~~~~~~~~~~~END OF MODULE TEMPLATE~~~~~~~~~~~~~~~~`
 
-   ```yaml
-   repositoryContexts:                                                                           
-   - baseUrl: registry.localhost:5000/unsigned                                                   
-     componentNameMapping: urlPath                                                               
-     type: ociRegistry
+<details>
+<summary><b>Example of full job build result</b></summary>
+
+   ```text
+.1.8
+go: downloading github.com/mattn/go-isatty v0.0.12
+go: downloading sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2
+go: downloading gopkg.in/inf.v0 v0.9.1
+go: downloading golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f
+go: downloading golang.org/x/net v0.0.0-20220722155237-a158d28d115b
+go: downloading golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4
+go: downloading github.com/json-iterator/go v1.1.12
+go: downloading github.com/go-logr/logr v1.2.3
+go: downloading github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+go: downloading github.com/modern-go/reflect2 v1.0.2
+go: downloading golang.org/x/text v0.3.7
+/home/prow/go/src/github.com/kyma-project/application-connector-manager/bin/controller-gen rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+cd config/manager && /home/prow/go/src/github.com/kyma-project/application-connector-manager/bin/kustomize edit set image controller=europe-docker.pkg.dev/kyma-project/dev/application-connector-manager:PR-73
+/home/prow/go/src/github.com/kyma-project/application-connector-manager/bin/kustomize build config/default > application-connector-manager.yaml
+bash: line 1: gcloud: command not found
+cd config/manager && /home/prow/go/src/github.com/kyma-project/application-connector-manager/bin/kustomize edit set image controller=europe-docker.pkg.dev/kyma-project/dev/application-connector-manager:PR-73
+[0;33;1mWARNING: This command is experimental and might change in its final version. Use at your own risk.
+[0m- Module built
+- Default CR validation succeeded
+- Module archive created
+- Adding layers to archive...
+- Security scanning configured
+- Module successfully pushed to "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+- Template successfully generated at moduletemplate.yaml
+make[1]: Leaving directory '/home/prow/go/src/github.com/kyma-project/application-connector-manager'
+\n~~~~~~~~~~~~BEGINING OF MODULE TEMPLATE~~~~~~~~~~~~~~
+apiVersion: operator.kyma-project.io/v1beta2
+kind: ModuleTemplate
+metadata:
+  name: application-connector-fast
+  namespace: kcp-system
+  labels:
+    "operator.kyma-project.io/module-name": "application-connector"
+  annotations:
+    "operator.kyma-project.io/doc-url": "https://kyma-project.io/#/application-connector-manager/user/README"
+    "operator.kyma-project.io/is-cluster-scoped": "false"
+    "operator.kyma-project.io/module-version": "0.0.10-PR-73" 
+spec:
+  channel: fast 
+  data:
+    apiVersion: operator.kyma-project.io/v1alpha1
+    kind: ApplicationConnector
+    metadata:
+      namespace: kyma-system
+      labels:
+        app.kubernetes.io/name: applicationconnector
+        app.kubernetes.io/instance: applicationconnector-sample
+        app.kubernetes.io/part-of: application-connector-manager
+        app.kuberentes.io/managed-by: kustomize
+        app.kubernetes.io/created-by: application-connector-manager
+      name: applicationconnector-sample
+    spec: {}
+  descriptor:
+    component:
+      componentReferences: []
+      labels:
+      - name: security.kyma-project.io/scan
+        value: enabled
+        version: v1
+      name: kyma-project.io/module/application-connector
+      provider: '{"name":"kyma-project.io","labels":[{"name":"kyma-project.io/built-by","value":"cli","version":"v1"}]}'
+      repositoryContexts:
+      - baseUrl: europe-docker.pkg.dev/kyma-project/dev/unsigned
+        componentNameMapping: urlPath
+        type: OCIRegistry
+      resources:
+      - access:
+          globalAccess:
+            digest: sha256:0bae5aaacc545d1ce3e2f006622db906080035de33d03de3e909bc20c26d5349
+            mediaType: application/octet-stream
+            ref: europe-docker.pkg.dev/kyma-project/dev/unsigned/component-descriptors/kyma-project.io/module/application-connector
+            size: 18727
+            type: ociBlob
+          localReference: sha256:0bae5aaacc545d1ce3e2f006622db906080035de33d03de3e909bc20c26d5349
+          mediaType: application/octet-stream
+          type: localBlob
+        name: raw-manifest
+        relation: local
+        type: yaml
+        version: 0.0.10-PR-73
+      - access:
+          imageReference: europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:v20231013-6f235afa
+          type: ociRegistry
+        labels:
+        - name: scan.security.kyma-project.io/type
+          value: third-party-image
+          version: v1
+        name: application-connector-manager
+        relation: external
+        type: ociImage
+        version: v20231013-6f235afa
+      sources:
+      - access:
+          commit: 4878b1dc6ea8f4d56e56ab854c0bf13129c9cfe1
+          repoUrl: https://github.com/kyma-project/application-connector-manager
+          type: gitHub
+        labels:
+        - name: git.kyma-project.io/ref
+          value: refs/heads/main
+          version: v1
+        - name: scan.security.kyma-project.io/dev-branch
+          value: ""
+          version: v1
+        - name: scan.security.kyma-project.io/rc-tag
+          value: ""
+          version: v1
+        - name: scan.security.kyma-project.io/language
+          value: golang-mod
+          version: v1
+        - name: scan.security.kyma-project.io/exclude
+          value: '**/*_test.go'
+          version: v1
+        name: module-sources
+        type: Github
+        version: 0.0.10-PR-73
+      version: 0.0.10-PR-73
+    meta:
+      schemaVersion: v2
+\n~~~~~~~~~~~~~~~END OF MODULE TEMPLATE~~~~~~~~~~~~~~~~
+make: Leaving directory '/home/prow/go/src/github.com/kyma-project/application-connector-manager/hack/ci'
    ```
+</details>
 
-8. Install modular Kyma on the k3d cluster.
+   3. Save the section's content in the local YAML file.
 
-This installs the latest versions of Module Manager and Lifecycle Manager.
-
-Use the `--template` flag to deploy the Application Connector module manifest from the beginning or apply it using kubectl later.
+   4. Apply ModuleTemplate on your remote cluster:
 
    ```bash
-   kyma alpha deploy  --template=./template.yaml
-
-   - Kustomize ready
-   - Lifecycle Manager deployed
-   - Module Manager deployed
-   - Modules deployed
-   - Kyma CR deployed
-   - Kyma deployed successfully!
-
-   Kyma is installed in version:
-   Kyma installation took:		18 seconds
-
-   Happy Kyma-ing! :)
+   kubectl apply -f <saved_module_template_path>
    ```
 
-Kyma installation is ready, but the module is not yet activated.
+   5. Enable the Application Connector Manager module by patching the Kyma CRD.
 
    ```bash
-   kubectl get kymas.operator.kyma-project.io -A
-   NAMESPACE    NAME           STATE   AGE
-   kcp-system   default-kyma   Ready   71s
+   make -C hack/common module
    ```
-
-   The `applicationconnector` module is a known module, but not activated.
-   ```bash
-   kubectl get moduletemplates.operator.kyma-project.io -A 
-   NAMESPACE    NAME                  AGE
-   kcp-system   moduletemplate-applicationconnector   2m24s
-   ```
-
-9. Give Module Manager permission to install the CRD cluster-wide.
-
-> **NOTE:** This is a temporary workaround and is only required in the single-cluster mode.
-
-Module Manager must be able to apply CRDs to install modules. In the remote mode (with control-plane managing remote clusters) it gets an administrative kubeconfig, targeting the remote cluster to do so. In the local mode (single-cluster mode), it uses Service Account and does not have permission to create CRDs by default.
-
-Run the following to make sure the module manager's Service Account gets an administrative role:
-
-   ```bash
-   kubectl edit clusterrole module-manager-manager-role
-   ```
-
-add the following under `rules`:
-
-   ```yaml
-   - apiGroups:
-     - "*"
-     resources:
-     - "*"                  
-     verbs:                  
-     - "*"
-   ```
-
-10.  Enable ApplicationConnector in the Kyma custom resource.
-
-   ```bash
-   kubectl edit kymas.operator.kyma-project.io -n kcp-system default-kyma
-   ```
-   Add the following under `spec`:
-
-   ```yaml
-   spec:
-     modules:
-     - name: applicationconnector
-   ```
-
