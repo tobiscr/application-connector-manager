@@ -153,7 +153,7 @@ func validateGateway(ctx context.Context, expectedDomainName string) error {
 		return fmt.Errorf("conversion error: %w", err)
 	}
 
-	expectedHost := fmt.Sprintf("*.%s", expectedDomainName)
+	expectedHost := fmt.Sprintf("gateway.%s", expectedDomainName)
 
 	for _, s := range gateway.Spec.Servers {
 		for _, h := range s.Hosts {
