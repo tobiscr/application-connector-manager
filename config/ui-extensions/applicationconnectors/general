@@ -11,5 +11,5 @@ features:
     disableCreate: true
     disableDelete: true
 description: >-
-  {{[ApplicationConnector CR](https://www.youtube.com/watch?v=v7ScGV5128A)}}
+  {{[ApplicationConnector CR](https://github.com/kyma-project/application-connector-manager/blob/main/config/samples/operator_v1alpha1_applicationconnector.yaml)}}
   configures application connector installation.
