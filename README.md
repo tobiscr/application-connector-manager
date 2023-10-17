@@ -34,14 +34,10 @@ metadata:
     app.kuberentes.io/managed-by: kustomize
     app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
-spec:
-  disableLegacyConnectivity : "false"
+spec: {}
 ```
 
 Any update to this CR is intercepted by Application Connector Manager and applied to the Application Connector binaries.
-
-> **NOTE:** At this stage of development, the ApplicationConnector Custom Resource Definition (CRD) contains only one parameter for testing.
-> The ApplicationConnector CRD will be extended during further development.
 
 See also:
 - [Lifecycle Manager documentation](https://github.com/kyma-project/lifecycle-manager#lifecycle-manager)
