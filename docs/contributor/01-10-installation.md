@@ -259,7 +259,7 @@ make: Leaving directory '/home/prow/go/src/github.com/kyma-project/application-c
 
    4. Save the section's content in the local YAML file.
 
-   4. Apply ModuleTemplate on your remote cluster:
+   5. Apply ModuleTemplate on your remote cluster:
 
    ```bash
    kubectl apply -f <saved_module_template_path>
