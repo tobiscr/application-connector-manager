@@ -49,7 +49,7 @@ hyperscalers-compatibility-test: ## Hyperscalers compatibility tests not impleme
 
 .PHONY: k3d-upgrade-test
 k3d-upgrade-test: ## Installs application-connector from latest and upgrades to local.
-k3d-upgrade-test: \
+k3d-upgrade-test:
 	@echo "upgrade tests not implemented yet"
 
 .PHONY: render-manifest
