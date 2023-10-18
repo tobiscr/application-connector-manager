@@ -265,7 +265,7 @@ make: Leaving directory '/home/prow/go/src/github.com/kyma-project/application-c
    kubectl apply -f <saved_module_template_path>
    ```
 
-   5. Enable the Application Connector Manager module by patching the Kyma CRD.
+   6. Enable the Application Connector Manager module by patching the Kyma CRD.
 
    ```bash
    make -C hack/common module
