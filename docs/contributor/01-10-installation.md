@@ -106,7 +106,8 @@ In this section, you will learn how to install a pull request (PR) version of th
 You need OCI images for the Application Connector module version to be built and pushed into a public registry. You also need ModuleTemplate matching the version to apply it on the remote cluster.
 CI jobs running on PRs and on the main branch help you to achieve that.
 
-1. Create a PR or use an existing one in the [`application-connector-manager`](https://github.com/kyma-project/application-connector-manager) repository; on the PR page, scroll down to the Prow jobs status list. 
+1. Create a PR or use an existing one in the [`application-connector-manager`](https://github.com/kyma-project/application-connector-manager) repository. 
+2. On the PR page, scroll down to the Prow jobs status list. 
 
    ![Prow job status](../assets/prow_job_status.png)
 
