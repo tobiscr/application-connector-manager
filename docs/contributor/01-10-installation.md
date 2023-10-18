@@ -111,7 +111,7 @@ CI jobs running on PRs and on the main branch help you to achieve that.
 
    ![Prow job status](../assets/prow_job_status.png)
 
-2. After the job has finished with success, click **Details** next to the `pull-application-connector-module-build` job.
+3. After the job has finished with success, click **Details** next to the `pull-application-connector-module-build` job.
 
    ![Pull Application Connector module build](../assets/pull_application-connector_module_build.png)
 
