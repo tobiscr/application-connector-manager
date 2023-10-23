@@ -30,9 +30,6 @@ metadata:
   labels:
     app.kubernetes.io/name: applicationconnector
     app.kubernetes.io/instance: applicationconnector-sample
-    app.kubernetes.io/part-of: application-connector-manager
-    app.kuberentes.io/managed-by: kustomize
-    app.kubernetes.io/created-by: application-connector-manager
   name: applicationconnector-sample
 spec: {}
 ```
