@@ -1,6 +1,6 @@
 module-name: application-connector-manager
 protecode:
-  - europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:v20231018-86e4bf52
+  - europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:v20231024-4d88a4d5
 whitesource:
   language: golang-mod
   subprojects: false
