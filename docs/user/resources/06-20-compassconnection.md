@@ -57,7 +57,7 @@ This table lists all the possible parameters of the CompassConnection custom res
 
 | Parameter | Type | Description |
 | ---- | ----------- | ---- |
-| **managementInfo** (required) | object |  |
+| **managementInfo** (required) | object | Specifies the required information used for the connection to Compass.  |
 | **managementInfo.&#x200b;connectorUrl** (required) | string | URL used for maintaining the secure connection. |
 | **managementInfo.&#x200b;directorUrl** (required) | string | URL used for fetching Applications. |
 | **refreshCredentialsNow**  | boolean | If set to `true`, ignores certificate expiration date and refreshes in the next round. |
@@ -67,13 +67,13 @@ This table lists all the possible parameters of the CompassConnection custom res
 
 | Parameter | Type | Description |
 | ---- | ----------- | ---- |
-| **connectionState** (required) | string |  |
+| **connectionState** (required) | string | Represents the state of the connection to Compass. |
 | **connectionStatus** (required) | object | Represents the status of the connection to Compass. |
 | **connectionStatus.&#x200b;certificateStatus** (required) | object | Specifies the certificate issue and expiration dates. |
 | **connectionStatus.&#x200b;certificateStatus.&#x200b;acquired**  | string | Specifies when the certificate was acquired. |
 | **connectionStatus.&#x200b;certificateStatus.&#x200b;notAfter**  | string | Specifies when the certificate stops being valid. |
 | **connectionStatus.&#x200b;certificateStatus.&#x200b;notBefore**  | string | Specifies when the certificate becomes valid. |
-| **connectionStatus.&#x200b;error**  | string |  |
+| **connectionStatus.&#x200b;error**  | string | Specifies the connection error. |
 | **connectionStatus.&#x200b;established**  | string | Specifies when the connection was established. |
 | **connectionStatus.&#x200b;lastSuccess**  | string | Specifies the date of the last successful synchronization with the Connector. |
 | **connectionStatus.&#x200b;lastSync**  | string | Specifies the date of the last synchronization attempt. |
