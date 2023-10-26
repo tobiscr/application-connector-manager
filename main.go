@@ -74,7 +74,7 @@ func main() {
 		Scheme:                 scheme,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "4123c01c.operator.kyma-project.io",
+		LeaderElectionID:       "3e432b4e.acm.operator.kyma-project.io",
 		Cache:                  cache.Options{},
 		// LeaderElectionReleaseOnCancel defines if the leader should step down voluntarily
 		// when the Manager ends. This requires the binary to immediately end when the
