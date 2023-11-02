@@ -29,7 +29,7 @@ func (p gatewayPredicate) Update(e event.UpdateEvent) bool {
 		return true
 	}
 
-	var newVS istio.VirtualService
+	var newVS istio.Gateway
 	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(e.ObjectNew.(*unstructured.Unstructured).Object, &newVS); err != nil {
 		p.log.Warnf("unable to convert new gateway: %w", err)
 		return true
