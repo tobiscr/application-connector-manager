@@ -1,4 +1,5 @@
 * [Application Connector module](../README.md)
 * [Resources](README.md)
   * [Application CR](06-10-application.md)
+  * [Application Connector CR](06-30-application-connector.md)
   * [CompassConnection CR](06-20-compassconnection.md)
