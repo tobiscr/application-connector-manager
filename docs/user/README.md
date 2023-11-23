@@ -6,7 +6,7 @@ Application Connectivity in Kyma is an area that:
 
 - Simplifies and secures the connection between external systems and Kyma
 - Stores and handles the metadata of external systems
-- Provides certificate handling for the [Eventing](https://github.com/kyma-project/kyma/blob/main/docs/01-overview/eventing/README.md) flow in the Compass scenario (mode)
+- Provides certificate handling for the [Eventing](https://kyma-project.io/#/eventing-manager/user/README) flow in the Compass scenario (mode)
 - Manages secure access to external systems
 - Provides monitoring and tracing capabilities to facilitate operational aspects
 
@@ -33,7 +33,7 @@ Application Connector:
 - Simplifies and secures the connection between external systems and Kyma
 - Stores and handles the metadata of external APIs
 - Proxies calls sent from internals of the Kyma cluster (for example, from [Function](https://kyma-project.io/#/serverless-manager/user/resources/06-10-function-cr)) to external APIs registered as the connected external solution (Application)
-- Provides certificate handling for the [Eventing](https://github.com/kyma-project/kyma/blob/main/docs/01-overview/eventing/README.md) flow in the Compass scenario
+- Provides certificate handling for the [Eventing](https://kyma-project.io/#/eventing-manager/user/README) flow in the Compass scenario
 - Delivers events from the connected external solution to the internal Kyma Event Publisher in the Compass scenario 
 - Manages secure access to external systems
 
