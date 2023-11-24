@@ -259,7 +259,7 @@ spec:
           - "--externalAPIPort=8081"
           - "--eventingPathPrefixV1=/%%APP_NAME%%/v1/events"
           - "--eventingPathPrefixV2=/%%APP_NAME%%/v2/events"
-          - "--eventingPublisherHost=eventing-event-publisher-proxy.kyma-system"
+          - "--eventingPublisherHost=eventing-publisher-proxy.kyma-system"
           - "--eventingDestinationPath=/publish"
           - "--eventingPathPrefixEvents=/%%APP_NAME%%/events"
           - "--appNamePlaceholder=%%APP_NAME%%"
