@@ -1,8 +1,8 @@
 # Default owners of the repository
-* @VOID404 @akgalwas @koala7659 @m00g3n @mvshao
+* @kyma-project/Framefrog
 
 # All files and subdirectories in /docs
-/docs/ @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko
+/docs/ @kyma-project/technical-writers
 
 # All .md files
-*.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko
+*.md @kyma-project/technical-writers
