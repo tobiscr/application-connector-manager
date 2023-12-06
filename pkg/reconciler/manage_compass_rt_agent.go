@@ -32,11 +32,11 @@ func sFnManageCompassRtAgent(ctx context.Context, r *fsm, _ *systemState) (state
 
 	u, err := unstructured.IsDeployment("compass-runtime-agent").First(r.Objs)
 	if err != nil {
-		return stopWithErrorAndNoRequeue(err)
+		return stopWithErrorAndRequeue(err)
 	}
 
 	if err := unstructured.Update(u, replicas, updateDeploymentScaling); err != nil {
-		return stopWithErrorAndNoRequeue(err)
+		return stopWithErrorAndRequeue(err)
 	}
 
 	return switchState(sFnDetectDomain)

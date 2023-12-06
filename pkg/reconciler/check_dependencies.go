@@ -57,7 +57,7 @@ func sFnCheckDependencies(ctx context.Context, r *fsm, s *systemState) (stateFn,
 	var crds apiextensionsv1.CustomResourceDefinitionList
 	if err := r.List(ctx, &crds); err != nil {
 		s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
-		return stopWithErrorAndNoRequeue(err)
+		return stopWithErrorAndRequeue(err)
 	}
 
 	if err := checkDeps(crds.Items, types.Dependencies...); err != nil {
@@ -83,7 +83,7 @@ func sFnRegisterDependencyWatch(_ context.Context, r *fsm, s *systemState) (stat
 
 	if err != nil {
 		s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
-		return stopWithErrorAndNoRequeue(err)
+		return stopWithErrorAndRequeue(err)
 	}
 
 	for _, u := range r.Deps {
@@ -103,7 +103,7 @@ func sFnRegisterDependencyWatch(_ context.Context, r *fsm, s *systemState) (stat
 
 		if err != nil {
 			s.instance.UpdateStateFromErr(v1alpha1.ConditionTypeInstalled, v1alpha1.ConditionReasonApplyObjError, err)
-			return stopWithErrorAndNoRequeue(err)
+			return stopWithErrorAndRequeue(err)
 		}
 	}
 

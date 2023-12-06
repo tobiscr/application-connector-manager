@@ -14,7 +14,7 @@ import (
 
 var (
 	NamesFnApply        = "github.com/kyma-project/application-connector-manager/pkg/reconciler.sFnApply"
-	NamesFnUpdateStatus = "github.com/kyma-project/application-connector-manager/pkg/reconciler.sFnUpdate.stopWithErrorAndNoRequeue.sFnUpdateStatus.func2"
+	NamesFnUpdateStatus = "github.com/kyma-project/application-connector-manager/pkg/reconciler.sFnUpdate.stopWithErrorAndRequeue.sFnUpdateStatus.func2"
 	// test data files
 	TdUpdateAcmValid  = "acm-valid.yaml"
 	TdUpdateDepsValid = "deps-valid.yaml"
