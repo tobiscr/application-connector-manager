@@ -1,8 +1,0 @@
-* [Application Connector module](../README.md)
-* [Technical reference](README.md)
-  * [Application Connector components](04-10-application-connector-components.md)
-  * [Application Gateway](04-20-application-gateway.md)
-  * [Runtime Agent architecture](04-30-runtime-agent-workflow.md)
-  * [Connection with Compass](05-20-connection-with-compass.md)
-  * [Application Gateway details](07-10-application-gateway-details.md)
-  * [Configuring the Runtime](07-20-configuring-runtime.md)
