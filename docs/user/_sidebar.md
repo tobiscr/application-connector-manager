@@ -1,5 +1,5 @@
 <!-- markdown-link-check-disable -->
-* [Home](/)
+* [Back to Kyma Home](/)
 * [Application Connector module](/application-connector-manager/user/README.md)
 * [Application Gateway](/application-connector-manager/user/00-10-application-gateway.md)
 * [Security](/application-connector-manager/user/00-20-security.md)
