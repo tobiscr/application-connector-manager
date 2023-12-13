@@ -5,12 +5,8 @@ import (
 	"time"
 )
 
-func stopWithErrorAndNoRequeue(err error) (stateFn, *ctrl.Result, error) {
-	return sFnUpdateStatus(nil, err), nil, nil
-}
-
 func stopWithErrorAndRequeue(err error) (stateFn, *ctrl.Result, error) {
-	return sFnUpdateStatus(&ctrl.Result{Requeue: true}, err), nil, nil
+	return sFnUpdateStatus(nil, err), nil, nil
 }
 
 func stopWithRequeueAfter(duration time.Duration) (stateFn, *ctrl.Result, error) {

@@ -41,7 +41,7 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 	})
 
 	if err != nil {
-		return stopWithErrorAndNoRequeue(fmt.Errorf("defaults application failed: %w", err))
+		return stopWithErrorAndRequeue(fmt.Errorf("defaults application failed: %w", err))
 	}
 
 	for _, f := range []func(v1alpha1.ApplicationConnectorSpec, uList, uList) error{
@@ -51,7 +51,7 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 		updateVirtualServices,
 	} {
 		if err := f(updatedSpec, r.Objs, r.Deps); err != nil {
-			return stopWithErrorAndNoRequeue(err)
+			return stopWithErrorAndRequeue(err)
 		}
 	}
 	return switchState(sFnApply)
