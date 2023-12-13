@@ -83,7 +83,7 @@ func sFnDeleteResources(ctx context.Context, m *fsm, s *systemState) (stateFn, *
 			v1alpha1.ConditionReasonDeletionErr,
 			ErrDeletionFailed,
 		)
-		return stopWithErrorAndRequeue(err)
+		return stopWithErrorAndNoRequeue(err)
 	}
 
 	updated := updateFinalizers(deps, "application-connector-manager.kyma-project.io/deletion-hook")
@@ -110,7 +110,7 @@ func sFnDeleteResources(ctx context.Context, m *fsm, s *systemState) (stateFn, *
 		ErrDeletionFailed,
 	)
 
-	return stopWithErrorAndRequeue(fmt.Errorf("%w: unable to remove dependency finalizer[s]", ErrDeletionFailed))
+	return stopWithErrorAndNoRequeue(fmt.Errorf("%w: unable to remove dependency finalizer[s]", ErrDeletionFailed))
 }
 
 type deletionStrategy string
@@ -151,7 +151,7 @@ func sFnSafeDeletionState(ctx context.Context, r *fsm, s *systemState) (stateFn,
 		)
 
 		// stop state machine with an error and requeue reconciliation
-		return stopWithErrorAndRequeue(err)
+		return stopWithErrorAndNoRequeue(err)
 	}
 
 	return deleteResourcesWithFilter(ctx, r, s)
@@ -194,7 +194,7 @@ func deleteResourcesWithFilter(ctx context.Context, r *fsm, s *systemState, filt
 			ErrDeletionFailed,
 		)
 		// stop state machine with an error and requeue reconciliation
-		return stopWithErrorAndRequeue(err)
+		return stopWithErrorAndNoRequeue(err)
 	}
 	return switchState(sFnRemoveFinalizer)
 }

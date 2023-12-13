@@ -45,5 +45,5 @@ func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Resul
 		v1alpha1.ConditionReasonApplyObjError,
 		ErrInstallationFailed,
 	)
-	return stopWithNoRequeue()
+	return stopWithErrorAndRequeue(ErrInstallationFailed) // exponential backoff
 }
