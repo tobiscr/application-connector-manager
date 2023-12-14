@@ -15,7 +15,7 @@ Runtime Agent reads this configuration from the Secret specified in the Runtime 
 
 To see how to create the Secret, see the [tutorial](../tutorials/01-90-configure-runtime-agent-with-compass.md).
 
-## Connection status
+## Connection Status
 
 The connection status is preserved in the [CompassConnection](../resources/06-20-compassconnection.md) custom resource (CR). This CR also stores the Connector URL and the Director URL.
 

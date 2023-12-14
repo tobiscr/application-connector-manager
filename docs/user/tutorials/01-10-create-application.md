@@ -1,4 +1,4 @@
-# Create a new Application
+# Create a New Application
 
 >**NOTE:** An Application represents a single connected external solution.
 
@@ -30,7 +30,7 @@ spec:
 EOF
 ```
 
-## Get the Application data
+## Get the Application Data
 
 To get the data of the created Application and show the output in the `yaml` format, run this command:
 ```bash

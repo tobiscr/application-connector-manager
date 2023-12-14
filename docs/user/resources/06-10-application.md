@@ -6,7 +6,7 @@ The `applications.applicationconnector.kyma-project.io` CustomResourceDefinition
 kubectl get crd applications.applicationconnector.kyma-project.io -o yaml
 ```
 
-## Sample custom resource
+## Sample Custom Resource
 
 This is a sample resource that registers the `system-prod` Application which offers one service.
 
@@ -30,7 +30,7 @@ spec:
     kind: production
 ```
 
-## Custom resource parameters
+## Custom Resource Parameters
 
 This table lists all the possible parameters of a given resource together with their descriptions:
 
@@ -56,7 +56,7 @@ This table lists all the possible parameters of a given resource together with t
 | **spec.services.entries.oauthUrl** | No | Specifies the URL used to authorize with a given API. This field is required for the API entry type. In the [Compass mode](../README.md), it's provided by Runtime Agent. In the [standalone mode](../README.md), you must provide it yourself. |
 | **spec.services.entries.credentialsSecretName** | No | Specifies the name of the Secret which allows you to call a given API. This field is required if **spec.services.entries.oauthUrl** is specified. In the [Compass mode](../README.md), it's provided by Runtime Agent. In the [standalone mode](../README.md), you must provide it yourself. |
 
-## Related resources and components
+## Related Resources and Components
 
 These components use this CR:
 

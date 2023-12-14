@@ -1,4 +1,4 @@
-# Application Gateway details
+# Application Gateway Details
 
 Application Gateway is an intermediary component between a Function or a microservice and an external API.
 
@@ -19,7 +19,7 @@ The placeholders in the URLs map to the following:
 - `SERVICE_NAME` represents the API Definition.
 - `TARGET_PATH` is the destination API URL.
 
-## Proxying requests
+## Proxying Requests
 
 Application Gateway proxies requests from Functions and services in Kyma to external APIs based on the configuration stored in the [Application CR](../resources/06-10-application.md) and Kubernetes Secrets.
 
@@ -32,7 +32,7 @@ For examples of configurations and Secrets, see the [tutorial on registering a s
 To ensure optimal performance, Application Gateway caches the OAuth tokens and CSRF tokens it obtains. If the service doesn't find valid tokens for the call it makes, it gets new tokens from the OAuth server and the CSRF token endpoint.
 Additionally, the service caches ReverseProxy objects used to proxy requests to the underlying URL.
 
-## Handling of headers
+## Handling of Headers
 
 Application Gateway proxies the following headers while making calls to the registered Applications:
 
@@ -43,7 +43,7 @@ Application Gateway proxies the following headers while making calls to the regi
 
 In addition, the `User-Agent` header is set to an empty value not specified in the call, which prevents setting the default value.
 
-## Response rewriting
+## Response Rewriting
 
 Application Gateway performs response rewriting in situations when during a call to the external system, the target responds with a redirect (`3xx` status code) that points to the URL with the same host and a different path.
 In such a case, the `Location` header is modified so that the original target path is replaced with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end. 

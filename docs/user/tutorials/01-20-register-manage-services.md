@@ -1,4 +1,4 @@
-# Register a service
+# Register a Service
 
 This guide shows you how to register a service of your external solution in Kyma. For this example, we use a Basic Authentication-secured API.   
 
@@ -35,7 +35,7 @@ This guide shows you how to register a service of your external solution in Kyma
    kubectl label namespace $NAMESPACE istio-injection=enabled
    ```
 
-## Register a service
+## Register a Service
 
 1. Create a Secret that contains your username and password to the external service:
 
@@ -68,7 +68,7 @@ This guide shows you how to register a service of your external solution in Kyma
     EOF
     ```
 
-## Access the registered service 
+## Access the Registered Service 
 
 To check that the service was registered correctly, create a test Pod, and make a call to Application Gateway from within this Pod.   
 

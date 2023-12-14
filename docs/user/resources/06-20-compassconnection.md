@@ -10,7 +10,7 @@ To get the up-to-date CRD and show the output in the `yaml` format, run this com
 kubectl get crd compassconnections.compass.kyma-project.io -o yaml
 ```
 
-## Sample custom resource
+## Sample Custom Resource
 
 This is a sample resource that registers the `compass-agent-connection` CompassConnection,
 which preserves the status of the connection between Runtime Agent and Compass. 
@@ -42,7 +42,7 @@ status:
     lastSuccessfulFetch: "2020-02-12T10:45:10Z"
 ```
 
-## Custom resource parameters
+## Custom Resource Parameters
 
 This table lists all the possible parameters of the CompassConnection custom resource together with their descriptions. For more details, see the [CompassConnection specification file](https://github.com/kyma-project/kyma/blob/main/installation/resources/crds/compass-runtime-agent/compass-connection.crd.yaml).
 

@@ -12,7 +12,7 @@ To get the up-to-date CRD and show the output in the `yaml` format, run this com
 kubectl get crd applicationconnectors.operator.kyma-project.io -o yaml
 ```
 
-## Custom resource specification
+## Custom Resource Specification
 
 | Path | Description | Required |
 | ---- | ----------- | -------- |
@@ -23,7 +23,7 @@ kubectl get crd applicationconnectors.operator.kyma-project.io -o yaml
 | appGateway.proxyTimeout | Specifies the maximum duration for which Application Gateway waits for a response from an external system before timing out | false |
 | appGateway.requestTimeout | Specifies the maximum duration for which Application Gateway waits for a response from a client request before timing out. | false |
 
-## Sample custom resource
+## Sample Custom Resource
 
 ```
 apiVersion: operator.kyma-project.io/v1alpha1

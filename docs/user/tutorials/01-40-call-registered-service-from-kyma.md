@@ -1,4 +1,4 @@
-# Call a registered external service from Kyma
+# Call a Registered External Service from Kyma
 
 This guide shows how to call a registered external service from Kyma using a simple Function.
 
