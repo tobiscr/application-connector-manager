@@ -14,7 +14,7 @@ This tutorial shows how to configure Runtime Agent with Compass.
 
 ## Steps
 
-To configure Runtime Agent with Compass, you need to create a Secret in the Runtime Agent Namespace and specify it in the Runtime Agent Deployment. The default Secret is `compass-agent-configuration`. To create the Secret, run:
+To configure Runtime Agent with Compass, you need to create a Secret in the Runtime Agent namespace and specify it in the Runtime Agent Deployment. The default Secret is `compass-agent-configuration`. To create the Secret, run:
 
 ```bash
 cat <<EOF | kubectl -n kyma-system apply -f -

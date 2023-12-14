@@ -52,7 +52,7 @@ Run the following commands to deploy Application Connector Manager on a target K
    ```bash
    make module-image
    ```
-5. Create a target Namespace.
+5. Create a target namespace.
 
    ```bash
    kubectl create ns kyma-system
