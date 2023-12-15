@@ -121,6 +121,7 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 				v1alpha1.ConditionReasonVerificationErr,
 				err,
 			)
+			m.log.Error("Error during validation of installed application connector component")
 			return stopWithErrorAndRequeue(err)
 		}
 
