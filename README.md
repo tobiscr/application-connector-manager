@@ -15,7 +15,7 @@ This repository contains the following projects:
 
 > **NOTE:** Docker images for the Application Connector binaries are built separately from the main GitHub [Kyma repository](https://github.com/kyma-project/kyma/).
  
-## How it works 
+## How It Works 
  
 The Application Connector module represents a specific version of the Application Connector binaries.
 The configuration of the released module is described as a ModuleTemplate custom resource (CR) and delivered as an OCI image.

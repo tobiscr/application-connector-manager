@@ -1,4 +1,4 @@
-# Application Connector components
+# Application Connector Components
 
 ![Architecture Diagram](../../assets/ac-application-connector-architecture.svg)
 

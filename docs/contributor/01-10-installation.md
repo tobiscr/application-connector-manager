@@ -12,7 +12,7 @@
 
 Learn how to install the Application Connector module locally (on k3d) or on your remote cluster.
 
-## Install Application Connector Manager from the local sources 
+## Install Application Connector Manager from the Local Sources 
 
 ### Prerequisites
 
@@ -52,7 +52,7 @@ Run the following commands to deploy Application Connector Manager on a target K
    ```bash
    make module-image
    ```
-5. Create a target Namespace.
+5. Create a target namespace.
 
    ```bash
    kubectl create ns kyma-system
@@ -77,9 +77,9 @@ Run the following commands to deploy Application Connector Manager on a target K
    application-connector-controller-manager   1/1     1            1           20s
    ```
 
-## Make targets to run Application Connector Manager locally on k3d
+## Make Targets to Run Application Connector Manager Locally on k3d
 
-### Run Application Connector Manager on bare k3d
+### Run Application Connector Manager on Bare k3d
 
 When using a local k3d cluster, you can also use the local OCI image registry that comes with it.
 Thanks to that, you don't need to push the Application Connector module images to a remote registry and you can test the changes in the Kyma installation set up entirely on your machine.
@@ -96,7 +96,7 @@ Thanks to that, you don't need to push the Application Connector module images t
    ```
 3. If you want to clean up the k3d cluster, use the `make -C hack/local stop` make target.
 
-## Install Application Connector module on remote Kyma runtime
+## Install Application Connector Module on Remote Kyma Runtime
 
 ### Prerequisite
 Lifecycle Manager must be installed on the cluster (locally), or the cluster itself must be managed remotely by the central control-plane.

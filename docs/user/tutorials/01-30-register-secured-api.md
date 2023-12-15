@@ -1,4 +1,4 @@
-# Register a secured API
+# Register a Secured API
 
 Application Connectivity allows you to register a secured API exposed by your external solution. The supported authentication methods are [Basic Authentication](https://tools.ietf.org/html/rfc7617), [OAuth](https://tools.ietf.org/html/rfc6750), [OAuth 2.0 mTLS](https://datatracker.ietf.org/doc/html/rfc8705), and client certificates.
 
@@ -8,7 +8,7 @@ Additionally, you can secure the API against cross-site request forgery (CSRF) a
 
 >**NOTE:** Registering a secured API is a part of [registering services](01-20-register-manage-services.md) of an external solution connected to Kyma.
 
-## Register a secured API
+## Register a Secured API
 
 To register a secured API, add a **service** object to the **services** section of the Application CR. You must include these fields:
 
@@ -233,7 +233,7 @@ To create such a Secret, run this command:
 kubectl create secret generic {SECRET_NAME} --from-literal username={USER_NAME} --from-literal password={PASSWORD} -n kyma-system
 ```
 
-## Use headers and query parameters for custom authentication
+## Use Headers and Query Parameters for Custom Authentication
 
 You can specify additional headers and query parameters to inject to requests made to the target API. You can use it with any authentication method.
 
