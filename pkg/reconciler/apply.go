@@ -45,6 +45,6 @@ func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Resul
 		v1alpha1.ConditionReasonApplyObjError,
 		ErrInstallationFailed,
 	)
-	r.log.Info("Error during applying helm charts!")
+	r.log.Error("Error during applying helm charts!")
 	return stopWithErrorAndRequeue(ErrInstallationFailed) // exponential backoff
 }
