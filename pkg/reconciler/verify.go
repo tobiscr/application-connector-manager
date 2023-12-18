@@ -44,7 +44,6 @@ func validateApiXtV1Beta1CRD(obj unstructured.Unstructured) (bool, error) {
 	}
 
 	for _, cond := range crd.Status.Conditions {
-
 		isEstablished := cond.Type == apiextv1.Established
 		isConditionTrue := cond.Status == apiextv1.ConditionTrue
 
@@ -122,7 +121,8 @@ func sFnVerify(_ context.Context, m *fsm, s *systemState) (stateFn, *ctrl.Result
 				v1alpha1.ConditionReasonVerificationErr,
 				err,
 			)
-			return stopWithErrorAndNoRequeue(err)
+			m.log.Error("Error during validation of installed application connector component")
+			return stopWithErrorAndRequeue(err)
 		}
 
 		key := fmt.Sprintf("%s/%s/%s", obj.GetNamespace(), obj.GetKind(), obj.GetName())

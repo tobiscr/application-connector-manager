@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func stopWithErrorAndNoRequeue(err error) (stateFn, *ctrl.Result, error) {
+func stopWithErrorAndRequeue(err error) (stateFn, *ctrl.Result, error) {
 	return sFnUpdateStatus(nil, err), nil, nil
 }
 
