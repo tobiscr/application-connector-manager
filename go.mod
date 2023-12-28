@@ -8,7 +8,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/zap v1.26.0
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
-	istio.io/client-go v1.19.0
+	istio.io/client-go v1.20.1
 	k8s.io/api v0.29.0
 	k8s.io/apiextensions-apiserver v0.29.0
 	k8s.io/apimachinery v0.29.0
@@ -64,13 +64,13 @@ require (
 	golang.org/x/tools v0.14.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230803162519-f966b187b2e5 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20230726155614-23370e0ffb3e // indirect
+	google.golang.org/genproto v0.0.0-20231002182017-d307bd883b97 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230920204549-e6e6cdab5c13 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	istio.io/api v1.19.0-beta.1.0.20230821193953-6d232ba686ad // indirect
+	istio.io/api v1.20.1-0.20231207143627-8237149662d6 // indirect
 	k8s.io/component-base v0.29.0 // indirect
 	k8s.io/klog/v2 v2.110.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20231010175941-2dd684a91f00 // indirect
