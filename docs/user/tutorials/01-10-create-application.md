@@ -10,7 +10,7 @@ Before you start, export the name of your application as an environment variable
 export APP_NAME={YOUR_APP_NAME}
 ```
 
->**NOTE:** Read about [Istio sidecars in Kyma and why you want them](https://kyma-project.io/#/istio/user/00-overview/00-30-overview-istio-sidecars). Then, check how to [enable automatic Istio sidecar proxy injection](https://kyma-project.io/#/istio/user/02-operation-guides/operations/02-20-enable-sidecar-injection). For more details, see [Default Istio setup in Kyma](https://kyma-project.io/#/istio/user/00-overview/00-40-overview-istio-setup).
+>**NOTE:** Read about the [Purpose and Benefits of Istio Sidecars](https://kyma-project.io/#/istio/user/00-30-overview-istio-sidecars). Then, check how to [Enable Automatic Istio Sidecar Proxy Injection](https://kyma-project.io/#/istio/user/operation-guides/02-20-enable-sidecar-injection). For more details, see [Default Istio Setup](https://kyma-project.io/#/istio/user/00-40-overview-istio-setup) in Kyma.
 
 ## Create an Application
 
