@@ -24,8 +24,6 @@ The external solution you connect to Kyma using Application Connector is represe
 
 Application Connector secures Eventing with a client certificate verified by Istio Ingress Gateway in the Compass scenario.
 
->**CAUTION:** To run Application Connector, first you must [install the Istio module](https://kyma-project.io/#/02-get-started/08-install-uninstall-upgrade-kyma-module?id=install-kyma-with-a-module). Without it, Application Connector remains in the error state.
-
 ### Features
 
 Application Connector:
