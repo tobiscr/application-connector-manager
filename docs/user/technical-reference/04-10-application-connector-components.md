@@ -18,7 +18,8 @@ An Application represents an external solution connected to Kyma. It handles the
 Using the components of Application Connector, the Application creates a coherent identity for a connected external solution and ensures its separation.
 All Applications are instances of the Application custom resource, which also stores all the relevant metadata.
 
->**NOTE:** Every Application custom resource corresponds to a single Application to which you can connect an external solution.
+> [!NOTE] 
+> Every Application custom resource corresponds to a single Application to which you can connect an external solution.
 
 ## Application Gateway
 

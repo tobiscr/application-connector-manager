@@ -2,7 +2,8 @@
 
 You can disable the [TLS certificate verification](../00-20-security.md#tls-certificate-verification-for-external-systems) for the connections between Kyma and an external solution represented by an Application. This allows Kyma to send requests and data to an unsecured Application without verifying its presented TLS certificate. Disabling the certificate verification can be useful in certain testing scenarios.
 
->**NOTE:** By default, the TLS certificate verification is enabled when sending data and requests to every Application.
+> [!NOTE] 
+> By default, the TLS certificate verification is enabled when sending data and requests to every Application.
 
 To disable TLS certificate verification [export your Application name as an environment variable](01-10-create-application.md#prerequisites) and follow these steps: 
 

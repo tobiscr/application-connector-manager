@@ -10,13 +10,12 @@ kubectl get crd applications.applicationconnector.kyma-project.io -o yaml
 
 This is a sample resource that registers the `system-prod` Application which offers one service.
 
->**NOTE:** The name of the Application must consist of lower case alphanumeric characters, `-` or `.`, and start and end with an alphanumeric character.
+> [!NOTE]
+> The name of the Application must consist of lower case alphanumeric characters, `-` or `.`, and start and end with an alphanumeric character.
 
->**NOTE:** In case the Application name contains `-` or `.`, the underlying Eventing services use a clean name with alphanumeric characters only. For example, `system-prod` becomes `systemprod`.
->
-> This could lead to a naming collision. For example, both `system-prod` and `systemprod` become `systemprod`.
->
-> To avoid this issue, provide an `application-type` label that consists only of alphanumeric characters. It is then used by the Eventing services instead of the Application name. If the `application-type` label also contains `-` or `.`, the underlying Eventing services clean it and use the cleaned label.
+> [!NOTE]
+> In case the Application name contains `-` or `.`, the underlying Eventing services use a clean name with alphanumeric characters only. For example, `system-prod` becomes `systemprod`. This could lead to a naming collision. For example, both `system-prod` and `systemprod` become `systemprod`.
+To avoid this issue, provide an `application-type` label that consists only of alphanumeric characters. It is then used by the Eventing services instead of the Application name. If the `application-type` label also contains `-` or `.`, the underlying Eventing services clean it and use the cleaned label.
 
 ```yaml
 apiVersion: applicationconnector.kyma-project.io/v1alpha1
