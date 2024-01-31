@@ -25,7 +25,8 @@ Application Gateway proxies requests from Functions and services in Kyma to exte
 
 For examples of configurations and Secrets, see the [tutorial on registering a secured API](../tutorials/01-30-register-secured-api.md).
 
-> **NOTE:** All APIs defined in a single Secret use the same configuration - the same credentials, CSRF tokens, and request parameters.
+> [!NOTE] 
+> All APIs defined in a single Secret use the same configuration - the same credentials, CSRF tokens, and request parameters.
 
 ## Caching
 

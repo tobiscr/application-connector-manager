@@ -1,6 +1,7 @@
 # Create a New Application
 
->**NOTE:** An Application represents a single connected external solution.
+> [!NOTE] 
+> An Application represents a single connected external solution.
 
 ## Prerequisites
 
@@ -10,7 +11,8 @@ Before you start, export the name of your application as an environment variable
 export APP_NAME={YOUR_APP_NAME}
 ```
 
->**NOTE:** Read about the [Purpose and Benefits of Istio Sidecars](https://kyma-project.io/#/istio/user/00-30-overview-istio-sidecars). Then, check how to [Enable Automatic Istio Sidecar Proxy Injection](https://kyma-project.io/#/istio/user/operation-guides/02-20-enable-sidecar-injection). For more details, see [Default Istio Setup](https://kyma-project.io/#/istio/user/00-40-overview-istio-setup) in Kyma.
+> [!NOTE] 
+> Read about the [Purpose and Benefits of Istio Sidecars](https://kyma-project.io/#/istio/user/00-30-overview-istio-sidecars). Then, check how to [Enable Automatic Istio Sidecar Proxy Injection](https://kyma-project.io/#/istio/user/operation-guides/02-20-enable-sidecar-injection). For more details, see [Default Istio Setup](https://kyma-project.io/#/istio/user/00-40-overview-istio-setup) in Kyma.
 
 ## Create an Application
 
@@ -70,4 +72,5 @@ spec:
     region: "us"
   services: {LIST_OF_REGISTERED_SERVICES}
 ```
->**TIP:** You can use Kyma dashboard to create and manage your Application. To do so, go to **Integration > Applications** from the **Cluster Details** view.
+> [!TIP]
+> You can use Kyma dashboard to create and manage your Application. To do so, go to **Integration > Applications** from the **Cluster Details** view.

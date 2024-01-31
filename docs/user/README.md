@@ -48,7 +48,8 @@ The following authentication methods for your secured APIs are supported:
 - OAuth 2.0 mTLS
 - Client Certificates
 
-> **NOTE:** Non-secured APIs are supported too, however, they are not recommended in the production environment.
+> [!NOTE] 
+> Non-secured APIs are supported too, however, they are not recommended in the production environment.
 
 In addition to authentication methods, Application Connector supports Cross-Site Request Forgery (CSRF) Tokens.
 

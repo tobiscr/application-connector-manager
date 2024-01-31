@@ -6,7 +6,8 @@ The following diagram illustrates how Application Gateway interacts with other m
 
 ![Application Gateway Diagram](../../assets/ac-architecture-proxy-service.svg)
 
-> **NOTE:** See how the [Gateway URL differs](07-10-application-gateway-details.md#application-gateway-url) for the [Standalone and Compass modes](../README.md).
+> [!NOTE] 
+> See how the [Gateway URL differs](07-10-application-gateway-details.md#application-gateway-url) for the [Standalone and Compass modes](../README.md).
 
 1. A Function calls Application Gateway. 
 2. Application Gateway extracts the Application name and the service name from the path. Using the extracted Application name, Application Gateway finds the respective Application custom resource and obtains the information about the registered external API, such as the API URL and security credentials. 

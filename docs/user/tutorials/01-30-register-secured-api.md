@@ -6,7 +6,8 @@ You can specify only one authentication method for every secured API you registe
 
 Additionally, you can secure the API against cross-site request forgery (CSRF) attacks. CSRF tokens are an additional layer of protection and can accompany any authentication method.
 
->**NOTE:** Registering a secured API is a part of [registering services](01-20-register-manage-services.md) of an external solution connected to Kyma.
+> [!NOTE] 
+> Registering a secured API is a part of [registering services](01-20-register-manage-services.md) of an external solution connected to Kyma.
 
 ## Register a Secured API
 
@@ -212,7 +213,8 @@ This is an example of the **service** object for an API secured with both Basic 
       type: API
 ```
 
-> **NOTE:** The example assumes that the CSRF token endpoint service uses the same credentials as the target API.
+> [!NOTE] 
+> The example assumes that the CSRF token endpoint service uses the same credentials as the target API.
 
 This is an example of the Secret containing credentials: 
 
