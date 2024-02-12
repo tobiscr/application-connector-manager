@@ -251,7 +251,7 @@ spec:
       serviceAccountName: central-application-connectivity-validator
       containers:
       - name: central-application-connectivity-validator
-        image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20231214-12badce5
+        image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20240212-f2ca576c
         imagePullPolicy: IfNotPresent
         args:
           - "/app/centralapplicationconnectivityvalidator"
