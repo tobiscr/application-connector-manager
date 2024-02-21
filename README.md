@@ -19,7 +19,7 @@ This repository contains the following projects:
  
 The Application Connector module represents a specific version of the Application Connector binaries.
 The configuration of the released module is described as a ModuleTemplate custom resource (CR) and delivered as an OCI image.
-You can install it on the Kyma cluster managed by Template Operator.
+You can install it in the Kyma cluster managed by Template Operator.
 
 The installed Application Connector module is represented as the ApplicationConnector Kubernetes CR.
 
