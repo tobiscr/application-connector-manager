@@ -27,7 +27,7 @@ Learn how to install the Application Connector module locally (on k3d) or on you
 You can build and run the Application Connector Manager in the Kubernetes cluster without Kyma.
 For the day-to-day development on your machine, you don't always need to have it controlled by Kyma's Lifecycle Manager.
 
-Run the following commands to deploy Application Connector Manager on a target Kubernetes cluster, such as k3d:
+Run the following commands to deploy Application Connector Manager in a target Kubernetes cluster, such as k3d:
 
 1. Clone the project.
 
@@ -89,7 +89,7 @@ Thanks to that, you don't need to push the Application Connector module images t
    ```bash
    git clone https://github.com/kyma-project/application-connector-manager.git && cd application-connector-manager/
    ```
-2. Build the manager locally and run it on the k3d cluster.
+2. Build the manager locally and run it in the k3d cluster.
 
    ```bash
    make -C hack/local run-without-lifecycle-manager
@@ -99,11 +99,11 @@ Thanks to that, you don't need to push the Application Connector module images t
 ## Install Application Connector Module on Remote Kyma Runtime
 
 ### Prerequisite
-Lifecycle Manager must be installed on the cluster (locally), or the cluster itself must be managed remotely by the central control-plane.
+Lifecycle Manager must be installed in the cluster (locally), or the cluster itself must be managed remotely by the central control-plane.
 
 ### Procedure
-In this section, you will learn how to install a pull request (PR) version of the Application Connector module with Lifecycle Manager on a remote cluster.
-You need OCI images for the Application Connector module version to be built and pushed into a public registry. You also need ModuleTemplate matching the version to apply it on the remote cluster.
+In this section, you will learn how to install a pull request (PR) version of the Application Connector module with Lifecycle Manager in a remote cluster.
+You need OCI images for the Application Connector module version to be built and pushed into a public registry. You also need ModuleTemplate matching the version to apply it in the remote cluster.
 CI jobs running on PRs and on the main branch help you to achieve that.
 
 1. Create a PR or use an existing one in the [`application-connector-manager`](https://github.com/kyma-project/application-connector-manager) repository. 

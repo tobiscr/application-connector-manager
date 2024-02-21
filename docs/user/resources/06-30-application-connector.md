@@ -4,7 +4,7 @@ The `applicationconnectors.operator.kyma-project.io` CustomResourceDefinition (C
 
 # Purpose
 
-The CRD serves as the blueprint for creating custom resources (CRs) specific to Application Connector. These CRs encapsulate the configuration settings and real-time statuses of the Application Connector module, providing essential insights into the module's behavior on the Kubernetes cluster.
+The CRD serves as the blueprint for creating custom resources (CRs) specific to Application Connector. These CRs encapsulate the configuration settings and real-time statuses of the Application Connector module, providing essential insights into the module's behavior in the Kubernetes cluster.
 
 To get the up-to-date CRD and show the output in the `yaml` format, run this command:
 
