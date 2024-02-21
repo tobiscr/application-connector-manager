@@ -23,10 +23,6 @@ module-build: ## Build the Module, push it to a registry and print it based on t
 		MODULE_REGISTRY=${MODULE_REGISTRY} \
 		MODULE_VERSION=${MODULE_VERSION}-${MODULE_SHA} \
 
-	@echo "\n~~~~~~~~~~~~BEGINING OF MODULE TEMPLATE~~~~~~~~~~~~~~"
-	@cat ${PROJECT_ROOT}/moduletemplate.yaml
-	@echo "\n~~~~~~~~~~~~~~~END OF MODULE TEMPLATE~~~~~~~~~~~~~~~~"
-
 .PHONY: integration-test
 integration-test: ## Run integration tests
 	@echo "\n Not implemented \n"
