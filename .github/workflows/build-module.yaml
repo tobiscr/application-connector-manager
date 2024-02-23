@@ -1,4 +1,4 @@
-name: Build ACM
+name: Build ACM Module
 
 env:
   REGISTRY: ghcr.io
