@@ -86,7 +86,7 @@ jobs:
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
       - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
+        if: true
         env:
           # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
           TAGS: ${{ steps.meta.outputs.tags }}
@@ -97,7 +97,7 @@ jobs:
         env:
           IMG: "europe-docker.pkg.dev/kyma-project/dev/application-connector-manager:PR-${{ github.event.number }}"
           KUSTOMIZE_VERSION: "v4.5.6"
-          MODULE_REGISTRY: "https://ghcr.io/acm/unsigned"
+          MODULE_REGISTRY: "https://ghcr.io/${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           MODULE_SHA: "PR-${{ github.event.number }}"
       - name: Adding markdown
         run: echo -e "### application-connector-manager.yaml\n\`\`\`\n$(cat moduletemplate.yaml)\n\`\`\`" >> $GITHUB_STEP_SUMMARY
