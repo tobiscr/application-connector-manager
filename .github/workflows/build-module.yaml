@@ -35,3 +35,7 @@ jobs:
         MODULE_SHA: "PR-${{ github.event.number }}"
     - name: Adding markdown
       run: echo -e "### application-connector-manager.yaml\n\`\`\`\n$(cat moduletemplate.yaml)\n\`\`\`" >> $GITHUB_STEP_SUMMARY
+    - uses: actions/upload-artifact@v4
+      with:
+        name: application-connector-PR-${{ github.event.number }}.yaml
+        path: moduletemplate.yaml
