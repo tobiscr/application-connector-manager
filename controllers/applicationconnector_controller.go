@@ -133,7 +133,7 @@ var ommitStatusChanged = predicate.Or(
 	predicate.AnnotationChangedPredicate{},
 	predicate.GenerationChangedPredicate{},
 )
-
+// trigger GA
 type hpaResourceVersionChangedPredicate struct {
 	predicate.ResourceVersionChangedPredicate
 	log *zap.SugaredLogger
