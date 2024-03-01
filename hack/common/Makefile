@@ -16,22 +16,6 @@ KYMA ?= ${PROJECT_ROOT}/bin/kyma-unstable
 help:
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-.PHONY: run-with-lifecycle-manager
-run-with-lifecycle-manager: ## Create k3d cluster and deploy module with the lifecycle-manager.
-run-with-lifecycle-manager: \
-        kyma \
-	create-k3d \
-	create-kyma-system-ns \
-	patch-with-istio-crds \
-	module-image \
-	yq-install \
-	module-build \
-	fix-template \
-	install-module \
-	patch-mod-mgr-role \
-	enable-module \
-	verify-kyma
-
 .PHONY: run-without-lifecycle-manager
 run-without-lifecycle-manager: ## Create k3d cluster and deploy module without the lifecycle-manager.
 run-without-lifecycle-manager: \
@@ -128,12 +112,6 @@ module-image:
 .PHONY: clean-charts
 clean-charts:
 	@rm -rf ${PROJECT_ROOT}/charts
-
-.PHONY: module-build
-module-build: clean-charts
-	@make -C ${PROJECT_ROOT} module-build \
-		IMG=k3d-${REGISTRY_NAME}:${REGISTRY_PORT}/${MANAGER_IMAGE_NAME}:${MANAGER_IMAGE_TAG} \
-		MODULE_REGISTRY=localhost:${REGISTRY_PORT}
 
 .PHONY: deploy
 deploy:
