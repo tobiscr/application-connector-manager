@@ -1,14 +1,11 @@
 # Install Application Connector Manager 
 
 - [Install Application Connector Manager](#install-application-connector-manager)
-  - [Install Application Connector Manager from the local sources](#install-application-connector-manager-from-the-local-sources)
+  - [Install Application Connector Manager from the Local Sources](#install-application-connector-manager-from-the-local-sources)
     - [Prerequisites](#prerequisites)
     - [Procedure](#procedure)
-  - [Make targets to run Application Connector Manager locally on k3d](#make-targets-to-run-application-connector-manager-locally-on-k3d)
-    - [Run Application Connector Manager on bare k3d](#run-application-connector-manager-on-bare-k3d)
-  - [Install Application Connector module on remote Kyma runtime](#install-application-connector-module-on-remote-kyma-runtime)
-    - [Prerequisite](#prerequisite)
-    - [Procedure](#procedure-1)
+  - [Make Targets to Run Application Connector Manager Locally on k3d](#make-targets-to-run-application-connector-manager-locally-on-k3d)
+    - [Run Application Connector Manager on Bare k3d](#run-application-connector-manager-on-bare-k3d)
 
 Learn how to install the Application Connector module locally (on k3d) or on your remote cluster.
 
