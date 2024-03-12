@@ -30,4 +30,4 @@ manifests/*
 
 mod
 bin
-charts
+charts/**/*

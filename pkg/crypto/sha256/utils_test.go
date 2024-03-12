@@ -54,7 +54,7 @@ func Test_calculateSHA256(t *testing.T) {
 					u.SetGroupVersionKind(schema.GroupVersionKind{
 						Kind:    "CustomResourceDefinition",
 						Group:   "apiextensions.k8s.io",
-						Version: "v1",
+						Version: "1.0.0",
 					})
 
 					return u

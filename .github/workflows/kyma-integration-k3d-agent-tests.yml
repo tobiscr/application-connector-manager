@@ -1,0 +1,37 @@
+name: Run compass-rt-agemt integration tests on k3d
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: azure/setup-helm@v4.1.0
+        id: install
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install k3d
+        env:
+          K3D_URL: https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
+          DEFAULT_K3D_VERSION: v5.4.6
+        run: curl --silent --fail $K3D_URL | TAG=$DEFAULT_K3D_VERSION bash
+      - name: Set up cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+            /home/runner/work/application-connector-manager/application-connector-manager/bin
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Run unit tests
+        run: make -C tests/hack/ci k3d-agent-tests
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-gateway-test-results
+          path: compass-runtime-agent-test.log
+
