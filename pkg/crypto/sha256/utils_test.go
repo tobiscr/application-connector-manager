@@ -60,7 +60,7 @@ func Test_calculateSHA256(t *testing.T) {
 					return u
 				}(),
 			},
-			want: "9NtR-1kpz4ub0a8jS4YySJEGZKmPfvC5FLh5GNW5UlA=",
+			want: "YVinn88v80IHE3oiOSjwAPUG0OumBQ-dy1ypGbAounU=",
 		},
 	}
 	for _, tt := range tests {
