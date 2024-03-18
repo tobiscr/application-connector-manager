@@ -1,0 +1,10 @@
+        --- PASS: TestGatewaySuite/TestGetRequest/Code_Rewriting (0.09s)
+            --- PASS: TestGatewaySuite/TestGetRequest/Code_Rewriting/Should_return_502_given_500 (0.01s)
+            --- PASS: TestGatewaySuite/TestGetRequest/Code_Rewriting/Should_return_502_given_503 (0.06s)
+            --- PASS: TestGatewaySuite/TestGetRequest/Code_Rewriting/Should_return_502_given_502 (0.01s)
+            --- PASS: TestGatewaySuite/TestGetRequest/Code_Rewriting/Should_return_200_given_123 (0.01s)
+    --- PASS: TestGatewaySuite/TestResponseBody (0.28s)
+        --- PASS: TestGatewaySuite/TestResponseBody/Should_return_451_forwarded_from_target_endpoint (0.00s)
+        --- PASS: TestGatewaySuite/TestResponseBody/Should_return_307_forwarded_from_target_endpoint (0.06s)
+        --- PASS: TestGatewaySuite/TestResponseBody/Should_return_203_forwarded_from_target_endpoint (0.21s)
+PASS

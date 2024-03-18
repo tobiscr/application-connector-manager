@@ -1,5 +1,5 @@
-# image builder base on golang:1.21.1-alpine3.18
-FROM golang@sha256:0c860c7ceba62231d0f99fb92e9d7c1577f26fea794a12c75756a8f64b146e45 as builder
+# image builder base on golang:1.22.1-alpine3.19
+FROM golang@sha256:0466223b8544fb7d4ff04748acc4d75a608234bf4e79563bff208d2060c0dd79 as builder
 
 WORKDIR /gateway-test/
 
