@@ -85,13 +85,31 @@ gateway-tests:
 	@echo "::endgroup::"
 
 .PHONY: k3d-gateway-tests
-k3d-gateway-tests: create-k3d install-istio install-application-connector apply-appcon-crd gateway-tests
+k3d-gateway-tests: create-k3d \
+	install-istio \
+	install-application-connector \
+	apply-appcon-crd \
+	gateway-tests
 
-k3d-validator-tests: setup-environment
-	${KYMA} deploy --ci --components-file ${PROJECT_ROOT}/resources/installation-config/mini-kyma-skr.yaml --value global.disableLegacyConnectivity=true --source=local --workspace ${KYMA_ROOT_CI}
-	cd ${PROJECT_ROOT}
-	@make -f Makefile.test-application-conn-validator test
-	k3d cluster delete
+.PHONY: patch-validator
+patch-validator:
+	@echo "::group::patch-validator"
+	@make -f ${PROJECT_ROOT}/tests/Makefile.test-application-conn-validator patch-validator
+	@echo "::endgroup::"
+
+.PHONY: validator-tests
+validator-tests: 
+	@echo "::group::validator-tests"
+	@make -f ${PROJECT_ROOT}/tests/Makefile.test-application-conn-validator test
+	@echo "::endgroup::"
+
+.PHONY: k3d-validator-tests
+k3d-validator-tests: patch-validator \
+	create-k3d \
+	install-istio \
+	install-application-connector \
+	apply-appcon-crd \
+	validator-tests
 
 .PHONY: k3d-agent-tests
 k3d-agent-tests: create-k3d \

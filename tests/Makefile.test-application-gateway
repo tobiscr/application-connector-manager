@@ -18,8 +18,8 @@ clean: clean-gateway-test
 .PHONY: test-gateway
 test-gateway: disable-sidecar-for-mtls-test generate-certs create-resources
 	@echo "::group::test-gateway"
-	kubectl wait --for=condition=complete --timeout=$(TEST_TIMEOUT) -n $(NAMESPACE) job/application-gateway-test
-	kubectl -n $(NAMESPACE) -l batch.kubernetes.io/job-name=application-gateway-test logs 2>&1 > $(TEST_LOG)
+	kubectl wait --for=condition=complete --timeout=$(TEST_TIMEOUT) -n $(NAMESPACE) job/application-gateway-test; \
+		kubectl -n $(NAMESPACE) -l batch.kubernetes.io/job-name=application-gateway-test logs 2>&1 > $(TEST_LOG)
 	@echo "::endgroup::"
 
 .PHONY: create-resources
@@ -36,7 +36,7 @@ create-resources:
 		| kubectl apply -f -
 	kubectl rollout status deployment mock-application -n test --timeout=90s
 	@echo "::endgroup::"
-	@echo "::group::create-resources::install-mock-app"
+	@echo "::group::create-resources::install-test"
 	helm template ${PWD}/tests/resources/charts/gateway-test/charts/test \
 		--set namespace=$(NAMESPACE) \
 		--set mockServiceName=$(MOCK_SERVICE_NAME) \

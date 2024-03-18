@@ -6,54 +6,38 @@ GOPATH ?= $(shell go env GOPATH)
 VALIDATOR_TEST_IMAGE = "$(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/connectivity-validator-test:$(DOCKER_TAG)"
 TEST_TIMEOUT = "3m"
 MAKEFILE_NAME=Makefile.test-application-conn-validator
-
-.PHONY: test clean
-.PHONY: patch-for-validator-test unpatch-after-validator-test test-validator test-validator-debug validator-create-resources clean-validator-test publish-validator-test
+TEST_LOG = ${PWD}/application-connector-validator-test.log
 
 test: test-validator
-clean: clean-validator-test
 
-patch-for-validator-test:
-	kubectl -n kyma-system patch deployment central-application-connectivity-validator --type json --patch-file resources/patches/central-application-connectivity-validator.json
-	kubectl rollout status deploy central-application-connectivity-validator -n kyma-system --timeout=1m
+.PHONY: patch-validator
+patch-validator:
+	yq e -i '. |= (select(.kind == "Deployment" and .metadata.name == "central-application-connectivity-validator") | .spec.template.spec.containers[0].args[5] = "--eventingPublisherHost=echoserver.test.svc.cluster.local" | .spec.template.spec.containers[0].args[6] = "--eventingDestinationPath=/anything/rewrite" | .spec.template.metadata.annotations.["traffic.sidecar.istio.io/excludeInboundPorts"] += "8080")' ${PWD}/application-connector.yaml
 
-unpatch-after-validator-test:
-	kubectl rollout undo deployment/central-application-connectivity-validator -n kyma-system
-
-test-validator: patch-for-validator-test validator-create-resources
-	if kubectl wait --for=condition=complete --timeout=$(TEST_TIMEOUT) -n $(NAMESPACE) job/application-connectivity-validator-test; then \
-	echo "Success! Results:"; \
-	./scripts/check-pod-logs.sh application-connectivity-validator-test; \
-	$(MAKE) clean-validator-test -f $(MAKEFILE_NAME); \
-	else \
-	echo "Tests failed! Results:"; \
-	./scripts/check-pod-logs.sh application-connectivity-validator-test; \
-	$(MAKE) clean-validator-test -f $(MAKEFILE_NAME); \
-	exit 1; \
-	fi
-
-test-validator-debug: patch-for-validator-test validator-create-resources
+.PHONY: test-validator
+test-validator: patch-validator create-resources
+	@echo "::group::test-validator"
 	kubectl wait --for=condition=complete --timeout=$(TEST_TIMEOUT) -n $(NAMESPACE) job/application-connectivity-validator-test; \
-	echo "Results:"; \
-	./scripts/check-pod-logs.sh application-connectivity-validator-test; \
+		kubectl -n $(NAMESPACE) -l batch.kubernetes.io/job-name=application-gateway-test logs 2>&1 > $(TEST_LOG)
+	@echo "::endgroup::"
 
-validator-create-resources:
-	kubectl create namespace $(NAMESPACE) --dry-run=client -o yaml | kubectl apply -f -
+.PHONY: create-resources
+create-resources:
+	@echo "::group::create-test-namespace"
+	kubectl create namespace $(NAMESPACE) --dry-run=client -o yaml \
+		| kubectl apply -f -
 	kubectl label namespace $(NAMESPACE) istio-injection=enabled --overwrite
-
-	helm template resources/charts/application-connectivity-validator-test/charts/echoserver \
+	@echo "::endgroup::"
+	@echo "::group::create-resources::install-echoserver"
+	@helm template ${PWD}/tests/resources/charts/application-connectivity-validator-test/charts/echoserver \
 		--set global.namespace=$(NAMESPACE) \
-	| kubectl apply -f -
+		| kubectl apply -f -
 	kubectl rollout status deployment echoserver -n test --timeout=90s
-
-	@helm template resources/charts/application-connectivity-validator-test/charts/test \
+	@echo "::endgroup::"
+	@echo "::group::create-resources::install-test"
+	@helm template ${PWD}/tests/resources/charts/application-connectivity-validator-test/charts/test \
     		--set namespace=$(NAMESPACE) \
-    		--values resources/charts/application-connectivity-validator-test/values.yaml \
-	| kubectl apply -f -
-
-clean-validator-test: unpatch-after-validator-test
-	helm template resources/charts/application-connectivity-validator-test --set namespace=$(NAMESPACE) | kubectl delete -f -
-	kubectl delete ns $(NAMESPACE) --ignore-not-found
-
-
+    		--values ${PWD}/tests/resources/charts/application-connectivity-validator-test/values.yaml \
+		| kubectl apply -f -
+	@echo "::endgroup::"
 
