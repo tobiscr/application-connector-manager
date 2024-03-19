@@ -25,7 +25,7 @@ const (
 	appGatewayDeploymentName      = "central-application-gateway"
 	appConValidatorDeploymentName = "central-application-connectivity-validator"
 	compassRtAgentDeploymentName  = "compass-runtime-agent"
-	istioNamespace                = "istio-namespace"
+	istioNamespace                = "istio-system"
 )
 
 var _ = Describe("ApplicationConnector controller", func() {
