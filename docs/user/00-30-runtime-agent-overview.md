@@ -3,7 +3,7 @@
 > [!WARNING]
 > Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality. 
 
-Runtime Agent is a Kyma component that connects to [Compass](https://github.com/kyma-incubator/compass). It is an integral part of every Kyma Runtime in the [Compass mode](README.md) and it fetches the latest configuration from Compass. It also provides Runtime-specific information that is displayed in the Compass UI, such as Runtime UI URL, and it provides Compass with Runtime configuration, such as Event Gateway URL, that should be passed to an Application. To learn more, read the section on [configuring the Runtime](../../05-technical-reference/ra-01-configuring-runtime.md).
+Runtime Agent is a Kyma component that connects to [Compass](https://github.com/kyma-incubator/compass). It is an integral part of every Kyma Runtime in the [Compass mode](README.md) and it fetches the latest configuration from Compass. It also provides Runtime-specific information that is displayed in the Compass UI, such as Runtime UI URL, and it provides Compass with Runtime configuration, such as Event Gateway URL, that should be passed to an Application. To learn more, read the section on [configuring the Runtime](technical-reference/07-20-configuring-runtime.md).
 
 The main responsibilities of the component are:
 - Establishing a trusted connection between the Kyma Runtime and Compass
@@ -16,7 +16,7 @@ If you're interested in learning more about Runtime Agent, follow these links to
 
 - Perform some simple and more advanced tasks:
 
-    - [Enable Kyma with Runtime Agent](02-20-enable-kyma-with-runtime-agent)
+    - [Enable Kyma with Runtime Agent](02-20-enable-kyma-with-runtime-agent.md)
     - [Establish a secure connection with Compass](tutorials/01-60-establish-secure-connection-with-compass.md)
     - [Maintain a secure connection with Compass](tutorials/01-70-maintain-secure-connection-with-compass.md)
     - [Revoke a client certificate (RA)](tutorials/01-80-revoke-client-certificate.md)
