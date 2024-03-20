@@ -50,8 +50,6 @@ func (m *stateFnNameMatcher) Match(actual any) (success bool, err error) {
 		m.expName = m.expName[eliof+1:]
 	}
 
-	fmt.Println("match:", m.actName, m.expName, m.Expected.name())
-
 	return m.actName == m.expName, nil
 }
 
