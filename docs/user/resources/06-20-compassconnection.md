@@ -1,5 +1,8 @@
 # CompassConnection
 
+> [!WARNING]
+> Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality.
+
 The `compassconnections.compass.kyma-project.io` CustomResourceDefinition (CRD) 
 is a detailed description of the kind of data and the format used to preserve 
 the status of the connection between the Runtime Agent and Compass. 

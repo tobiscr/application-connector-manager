@@ -14,6 +14,9 @@ Depending on your use case, Application Connectivity works in one of the two mod
 - **Standalone mode** (default) - a standalone mode where Kyma is not connected to [Compass](https://github.com/kyma-incubator/compass)
 - **Compass mode** - using [Runtime Agent](00-30-runtime-agent-overview.md) and integration with [Compass](https://github.com/kyma-incubator/compass) to automate connection and registration of services using mTLS certificates
 
+> [!WARNING]
+> Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality.
+
 ## Application Connector module
 
 The Application Connector module allows you to install, uninstall, and configure all features of Kyma's Application Connector on your Kubernetes cluster using the Application Connector Manager service.

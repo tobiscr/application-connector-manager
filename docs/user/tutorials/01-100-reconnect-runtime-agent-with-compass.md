@@ -1,5 +1,8 @@
 # Reconnect Runtime Agent with Compass
 
+> [!WARNING]
+> Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality.
+
 This tutorial shows how to reconnect Runtime Agent with Compass after the established connection was lost.
 
 ## Prerequisites

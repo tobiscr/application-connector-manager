@@ -1,5 +1,8 @@
 # Maintain a Secure Connection with Compass
 
+> [!WARNING]
+> Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality.
+
 After you have established a secure connection with Compass, you can fetch the configuration details and renew the client certificate before it expires. To renew the client certificate, follow the steps in this tutorial.
 
 ## Prerequisites
