@@ -13,10 +13,9 @@ import (
 )
 
 var (
-	//nolint:unused // remove on phase2: compass-runtime-agent in module
 	keyCompassAgentCfg = client.ObjectKey{
 		Namespace: "kyma-system",
-		Name:      "compass-agent-configuration",
+		Name:      "compass-runtime-agent-configuration",
 	}
 )
 
