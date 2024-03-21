@@ -228,7 +228,7 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 	}
 	// define predicate for compass-runtime-agent secret
 	craSecretPredicate := predicateCompassRtAgentGenChange{
-		objectName: "compass-runtime-agent-configuration",
+		objectName: "compass-agent-configuration",
 		namespace:  "kyma-system",
 		log:        r.log,
 	}

@@ -29,7 +29,7 @@ install-istio:
 .PHONY: create-cra-config
 create-cra-config:
 	kubectl create secret generic \
-		compass-runtime-agent-configuration \
+		compass-agent-configuration \
 		-n kyma-system \
 		--from-literal=CONNECT_URL="https://test.me" \
 		--from-literal=RUNTIME_ID="test-runtime-id" \

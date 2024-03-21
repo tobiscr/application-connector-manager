@@ -18,6 +18,10 @@ package controllers
 
 import (
 	"context"
+	"os"
+	"path/filepath"
+	"testing"
+
 	"github.com/kyma-project/application-connector-manager/pkg/reconciler"
 	"github.com/kyma-project/application-connector-manager/pkg/yaml"
 	. "github.com/onsi/ginkgo/v2"
@@ -27,14 +31,11 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
-	"os"
-	"path/filepath"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
-	"testing"
 
 	operatorv1alpha1 "github.com/kyma-project/application-connector-manager/api/v1alpha1"
 	//+kubebuilder:scaffold:imports

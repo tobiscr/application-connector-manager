@@ -15,7 +15,7 @@ import (
 var (
 	keyCompassAgentCfg = client.ObjectKey{
 		Namespace: "kyma-system",
-		Name:      "compass-runtime-agent-configuration",
+		Name:      "compass-agent-configuration",
 	}
 )
 
