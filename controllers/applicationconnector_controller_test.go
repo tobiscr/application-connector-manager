@@ -88,7 +88,7 @@ func testInstance(t time.Duration, ac v1alpha1.ApplicationConnector) {
 	}
 	Expect(k8sClient.Create(ctx, &gardenerCM)).Should(BeNil())
 
-	By(fmt.Sprintf("create compass-rt-agent configuration: %s/compass-agent-configuration", ac.Namespace))
+	By(fmt.Sprintf("create compass-runtime-agent configuration: %s/compass-agent-configuration", ac.Namespace))
 	compassRtAgentSecret := secret(ac.Namespace)
 	Expect(k8sClient.Create(ctx, &compassRtAgentSecret)).To(Succeed())
 
