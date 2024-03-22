@@ -40,9 +40,9 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 rules:
-- apiGroups: ["applicationconnector.kyma-project.io"]
-  resources: ["applications"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: ["applicationconnector.kyma-project.io"]
+    resources: ["applications"]
+    verbs: ["get", "list", "watch"]
 ---
 # Source: application-connector/charts/central-application-gateway/templates/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -57,12 +57,12 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 rules:
-- apiGroups: ["applicationconnector.kyma-project.io"]
-  resources: ["applications"]
-  verbs: ["get"]
-- apiGroups: ["*"]
-  resources: ["secrets"]
-  verbs: ["get"]
+  - apiGroups: ["applicationconnector.kyma-project.io"]
+    resources: ["applications"]
+    verbs: ["get"]
+  - apiGroups: ["*"]
+    resources: ["secrets"]
+    verbs: ["get"]
 ---
 # Source: application-connector/templates/cluster-role-binding.yaml
 kind: ClusterRole
@@ -77,9 +77,9 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 rules:
-- apiGroups: ["applicationconnector.kyma-project.io"]
-  resources: ["applications"]
-  verbs: ["get", "list", "update","create", "delete", "watch"]
+  - apiGroups: ["applicationconnector.kyma-project.io"]
+    resources: ["applications"]
+    verbs: ["get", "list", "update", "create", "delete", "watch"]
 ---
 # Source: application-connector/charts/central-application-connectivity-validator/templates/rbac.yaml
 kind: ClusterRoleBinding
@@ -94,9 +94,9 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 subjects:
-- kind: User
-  name: system:serviceaccount:kyma-system:central-application-connectivity-validator
-  apiGroup: rbac.authorization.k8s.io
+  - kind: User
+    name: system:serviceaccount:kyma-system:central-application-connectivity-validator
+    apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
   name: central-application-connectivity-validator-role
@@ -115,9 +115,9 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 subjects:
-- kind: User
-  name: system:serviceaccount:kyma-system:central-application-gateway
-  apiGroup: rbac.authorization.k8s.io
+  - kind: User
+    name: system:serviceaccount:kyma-system:central-application-gateway
+    apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
   name: central-application-gateway-role
@@ -136,9 +136,9 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 subjects:
-- kind: User
-  name: system:serviceaccount:kyma-system:default
-  apiGroup: rbac.authorization.k8s.io
+  - kind: User
+    name: system:serviceaccount:kyma-system:default
+    apiGroup: rbac.authorization.k8s.io
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -250,52 +250,52 @@ spec:
     spec:
       serviceAccountName: central-application-connectivity-validator
       containers:
-      - name: central-application-connectivity-validator
-        image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20240212-f2ca576c
-        imagePullPolicy: IfNotPresent
-        args:
-          - "/app/centralapplicationconnectivityvalidator"
-          - "--proxyPort=8080"
-          - "--externalAPIPort=8081"
-          - "--eventingPathPrefixV1=/%%APP_NAME%%/v1/events"
-          - "--eventingPathPrefixV2=/%%APP_NAME%%/v2/events"
-          - "--eventingPublisherHost=eventing-publisher-proxy.kyma-system"
-          - "--eventingDestinationPath=/publish"
-          - "--eventingPathPrefixEvents=/%%APP_NAME%%/events"
-          - "--appNamePlaceholder=%%APP_NAME%%"
-        env:
-          - name: APP_LOG_FORMAT
-            value: "json"
-          - name: APP_LOG_LEVEL
-            value: "warn"
-        resources:
-          limits:
-            cpu: 500m
-            memory: 128Mi
-          requests:
-            cpu: 20m
-            memory: 64Mi
-        readinessProbe:
-          httpGet:
-            path: /v1/health
-            port: 8081
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        livenessProbe:
-          httpGet:
-            path: /v1/health
-            port: 8081
-          initialDelaySeconds: 10
-          periodSeconds: 10
-        ports:
-          - containerPort: 8080
-            name: http-proxy
-          - containerPort: 8081
-            name: http-api-port
-        securityContext:
-          runAsUser: 1000
-          privileged: false
-          allowPrivilegeEscalation: false
+        - name: central-application-connectivity-validator
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20240212-f2ca576c
+          imagePullPolicy: IfNotPresent
+          args:
+            - "/app/centralapplicationconnectivityvalidator"
+            - "--proxyPort=8080"
+            - "--externalAPIPort=8081"
+            - "--eventingPathPrefixV1=/%%APP_NAME%%/v1/events"
+            - "--eventingPathPrefixV2=/%%APP_NAME%%/v2/events"
+            - "--eventingPublisherHost=eventing-publisher-proxy.kyma-system"
+            - "--eventingDestinationPath=/publish"
+            - "--eventingPathPrefixEvents=/%%APP_NAME%%/events"
+            - "--appNamePlaceholder=%%APP_NAME%%"
+          env:
+            - name: APP_LOG_FORMAT
+              value: "json"
+            - name: APP_LOG_LEVEL
+              value: "warn"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 20m
+              memory: 64Mi
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          ports:
+            - containerPort: 8080
+              name: http-proxy
+            - containerPort: 8081
+              name: http-api-port
+          securityContext:
+            runAsUser: 1000
+            privileged: false
+            allowPrivilegeEscalation: false
       priorityClassName: central-application-connectivity-validator-priority-class
 ---
 # Source: application-connector/charts/central-application-gateway/templates/deployment.yaml
@@ -331,49 +331,49 @@ spec:
     spec:
       serviceAccountName: central-application-gateway
       containers:
-      - name: central-application-gateway
-        image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20231214-12badce5
-        imagePullPolicy: IfNotPresent
-        args:
-          - "/app/applicationgateway"
-          - "--proxyPort=8080"
-          - "--proxyPortCompass=8082"
-          - "--externalAPIPort=8081"
-          - "--logLevel=info"
-          - "--applicationSecretsNamespace=kyma-system"
-          - "--requestTimeout=10"
-          - "--proxyTimeout=10"
-          - "--proxyCacheTTL=120"
-        readinessProbe:
-          httpGet:
-            path: /v1/health
-            port: 8081
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        livenessProbe:
-          httpGet:
-            path: /v1/health
-            port: 8081
-          initialDelaySeconds: 10
-          periodSeconds: 10
-        resources:
-          limits:
-            cpu: 500m
-            memory: 128Mi
-          requests:
-            cpu: 20m
-            memory: 64Mi
-        ports:
-          - containerPort: 8080
-            name: http-proxy
-          - containerPort: 8082
-            name: http-proxy-mps
-          - containerPort: 8081
-            name: http-api-port
-        securityContext:
-          runAsUser: 1000
-          privileged: false
-          allowPrivilegeEscalation: false
+        - name: central-application-gateway
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20231214-12badce5
+          imagePullPolicy: IfNotPresent
+          args:
+            - "/app/applicationgateway"
+            - "--proxyPort=8080"
+            - "--proxyPortCompass=8082"
+            - "--externalAPIPort=8081"
+            - "--logLevel=info"
+            - "--applicationSecretsNamespace=kyma-system"
+            - "--requestTimeout=10"
+            - "--proxyTimeout=10"
+            - "--proxyCacheTTL=120"
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 20m
+              memory: 64Mi
+          ports:
+            - containerPort: 8080
+              name: http-proxy
+            - containerPort: 8082
+              name: http-proxy-mps
+            - containerPort: 8081
+              name: http-api-port
+          securityContext:
+            runAsUser: 1000
+            privileged: false
+            allowPrivilegeEscalation: false
       priorityClassName: central-application-gateway-priority-class
 ---
 # Source: application-connector/charts/central-application-connectivity-validator/templates/autoscaling.yaml
@@ -397,12 +397,12 @@ spec:
     kind: Deployment
     name: central-application-connectivity-validator
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
 ---
 # Source: application-connector/charts/central-application-gateway/templates/hpa.yaml
 apiVersion: autoscaling/v2
@@ -425,12 +425,12 @@ spec:
     kind: Deployment
     name: central-application-gateway
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
 ---
 # Source: compass-runtime-agent/templates/priority-class.yaml
 apiVersion: scheduling.k8s.io/v1
@@ -452,6 +452,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 ---
 # Source: compass-runtime-agent/templates/skr-configmap.yaml
 apiVersion: v1
@@ -473,6 +474,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 rules:
   - apiGroups: ["compass.kyma-project.io"]
     resources: ["compassconnections"]
@@ -488,7 +490,7 @@ rules:
     verbs: ["get", "list"]
   - apiGroups: [""]
     resources: ["secrets"]
-    resourceNames: ["compass-agent-configuration","cluster-client-certificates"]
+    resourceNames: ["compass-agent-configuration", "cluster-client-certificates"]
     verbs: ["get", "delete"]
 ---
 # Source: compass-runtime-agent/templates/cluster-role-binding.yaml
@@ -502,6 +504,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 subjects:
   - kind: ServiceAccount
     name: compass-runtime-agent
@@ -523,6 +526,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 rules:
   - apiGroups: [""]
     resources: ["services"]
@@ -543,6 +547,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -560,6 +565,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -577,6 +583,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 subjects:
   - kind: ServiceAccount
     name: compass-runtime-agent
@@ -598,6 +605,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 subjects:
   - kind: ServiceAccount
     name: compass-runtime-agent
@@ -619,6 +627,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 subjects:
   - kind: ServiceAccount
     name: compass-runtime-agent
@@ -640,6 +649,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
   selector:
     control-plane: compass-runtime-agent
@@ -659,6 +669,7 @@ metadata:
     app.kubernetes.io/name: compass-runtime-agent
     app.kubernetes.io/managed-by: application-connector-manager
     app.kubernetes.io/instance: application-connector
+    app.kubernetes.io/part-of: application-connector-manager
 spec:
   selector:
     matchLabels:
