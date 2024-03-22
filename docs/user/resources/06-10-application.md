@@ -33,6 +33,9 @@ spec:
 
 This table lists all the possible parameters of a given resource together with their descriptions:
 
+> [!WARNING]
+> Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality.
+
 | Parameter   |      Required      |  Description |
 |----------|:-------------:|------|
 | **metadata.name** | Yes | Specifies the name of the CR. |

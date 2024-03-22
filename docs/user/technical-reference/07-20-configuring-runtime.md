@@ -1,5 +1,8 @@
 # Configuring the Runtime
 
+> [!WARNING]
+> Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality.
+
 > [!NOTE] 
 > To represent API and Event Definitions of the Applications connected to a Runtime, we recommend that you use the Open Service Broker API.
 
