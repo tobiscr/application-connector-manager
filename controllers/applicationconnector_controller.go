@@ -26,6 +26,7 @@ import (
 	"go.uber.org/zap"
 	appsv1 "k8s.io/api/apps/v1"
 	v2 "k8s.io/api/autoscaling/v2"
+	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -225,6 +226,18 @@ func (r *applicationConnectorReconciler) SetupWithManager(mgr ctrl.Manager) erro
 	if err := registerWatchDistinct(r.Objs, watchFn); err != nil {
 		return err
 	}
+	// define predicate for compass-runtime-agent secret
+	craSecretPredicate := predicateCompassRtAgentGenChange{
+		objectName: "compass-agent-configuration",
+		namespace:  "kyma-system",
+		log:        r.log,
+	}
+	// register watch for compass-runtime-agent secret
+	b = b.Watches(
+		&corev1.Secret{},
+		handler.EnqueueRequestsFromMapFunc(r.mapFunction),
+		builder.WithPredicates(&craSecretPredicate),
+	)
 
 	controller, err := b.Build(r)
 	if err != nil {

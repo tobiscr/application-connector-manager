@@ -57,7 +57,6 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 	return switchState(sFnApply)
 }
 
-//nolint:unused // remove on phase2: compass-runtime-agent in module
 func envVarUpdate(envs *[]corev1.EnvVar, newEnv corev1.EnvVar) update {
 	return func() error {
 		if envs == nil {
@@ -75,47 +74,6 @@ func envVarUpdate(envs *[]corev1.EnvVar, newEnv corev1.EnvVar) update {
 		(*envs)[envIndex] = newEnv
 		return nil
 	}
-}
-
-//nolint:unused // remove on phase2: compass-runtime-agent in module
-func updateCRA(d *appv1.Deployment, v v1alpha1.RuntimeAgentSpec) error {
-	// find compass-runtime-agent container
-	index := slices.IndexFunc(
-		d.Spec.Template.Spec.Containers,
-		func(c corev1.Container) bool { return c.Name == "compass-runtime-agent" })
-	// return error if compass-runtime-agent container was not found
-	if index == -1 {
-		return fmt.Errorf("compass-runtime-agent container: %w", unstructured.ErrNotFound)
-	}
-	compassRtAgentEnvs := &d.Spec.Template.Spec.Containers[index].Env
-	// define all update functions
-	fns := []update{
-		envVarUpdate(
-			compassRtAgentEnvs,
-			corev1.EnvVar{
-				Name:  v1alpha1.EnvRuntimeAgentControllerSyncPeriod,
-				Value: v.ControllerSyncPeriod.Duration.String(),
-			}),
-		envVarUpdate(
-			compassRtAgentEnvs,
-			corev1.EnvVar{
-				Name:  v1alpha1.EnvRuntimeAgentCertValidityRenevalThreshold,
-				Value: v.CertValidityRenewalThreshold,
-			}),
-		envVarUpdate(
-			compassRtAgentEnvs,
-			corev1.EnvVar{
-				Name:  v1alpha1.EnvRuntimeAgentMinimalCompassSyncTime,
-				Value: v.MinConfigSyncTime.Duration.String(),
-			}),
-	}
-	// perform update
-	for _, f := range fns {
-		if err := f(); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func updateAppConnectivityValidator(i v1alpha1.ApplicationConnectorSpec, objs uList, _ uList) error {

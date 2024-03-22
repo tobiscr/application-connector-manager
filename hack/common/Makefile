@@ -16,13 +16,35 @@ KYMA ?= ${PROJECT_ROOT}/bin/kyma-unstable
 help:
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
+.PHONY: patch-cra-crds
+patch-cra-crds:
+	kubectl apply -f ./k3d-patches/patch-cra-crds.yaml
+
+.PHONY: install-istio
+install-istio:
+	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-manager.yaml
+	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-default-cr.yaml
+	kubectl wait -n kyma-system istios/default --for=jsonpath='{.status.state}'=Ready --timeout=300s
+
+.PHONY: create-cra-config
+create-cra-config:
+	kubectl create secret generic \
+		compass-agent-configuration \
+		-n kyma-system \
+		--from-literal=CONNECT_URL="https://test.me" \
+		--from-literal=RUNTIME_ID="test-runtime-id" \
+		--from-literal=TENANT="test-tenant" \
+		--from-literal=USER="test-user"
+
 .PHONY: run-without-lifecycle-manager
 run-without-lifecycle-manager: ## Create k3d cluster and deploy module without the lifecycle-manager.
 run-without-lifecycle-manager: \
         kyma \
 	create-k3d \
 	create-kyma-system-ns \
-	patch-with-istio-crds \
+	install-istio \
+	create-cra-config \
+	patch-cra-crds \
 	module-image \
 	deploy \
 	apply-appcon \
