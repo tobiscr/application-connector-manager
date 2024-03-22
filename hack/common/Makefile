@@ -16,10 +16,6 @@ KYMA ?= ${PROJECT_ROOT}/bin/kyma-unstable
 help:
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-.PHONY: patch-cra-crds
-patch-cra-crds:
-	kubectl apply -f ./k3d-patches/patch-cra-crds.yaml
-
 .PHONY: install-istio
 install-istio:
 	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-manager.yaml
@@ -44,7 +40,6 @@ run-without-lifecycle-manager: \
 	create-kyma-system-ns \
 	install-istio \
 	create-cra-config \
-	patch-cra-crds \
 	module-image \
 	deploy \
 	apply-appcon \

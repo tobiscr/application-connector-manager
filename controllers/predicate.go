@@ -6,33 +6,29 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 )
 
-type predicateCompassRtAgentGenChange struct {
+type predicateCompassRtAgentSecret struct {
 	objectName string
 	namespace  string
-	predicate.GenerationChangedPredicate
+	predicate.ResourceVersionChangedPredicate
 	log *zap.SugaredLogger
 }
 
-func (p *predicateCompassRtAgentGenChange) Update(e event.UpdateEvent) bool {
-	return e.ObjectNew.GetNamespace() == p.namespace &&
-		e.ObjectNew.GetName() == p.objectName &&
-		p.GenerationChangedPredicate.Update(e)
+func (p *predicateCompassRtAgentSecret) Update(e event.UpdateEvent) bool {
+	return false
 }
 
-func (p *predicateCompassRtAgentGenChange) Delete(e event.DeleteEvent) bool {
+func (p *predicateCompassRtAgentSecret) Delete(e event.DeleteEvent) bool {
 	return e.Object.GetNamespace() == p.namespace &&
 		e.Object.GetName() == p.objectName &&
-		p.GenerationChangedPredicate.Delete(e)
+		p.ResourceVersionChangedPredicate.Delete(e)
 }
 
-func (p *predicateCompassRtAgentGenChange) Create(e event.CreateEvent) bool {
+func (p *predicateCompassRtAgentSecret) Create(e event.CreateEvent) bool {
 	return e.Object.GetNamespace() == p.namespace &&
 		e.Object.GetName() == p.objectName &&
-		p.GenerationChangedPredicate.Create(e)
+		p.ResourceVersionChangedPredicate.Create(e)
 }
 
-func (p *predicateCompassRtAgentGenChange) Generic(e event.GenericEvent) bool {
-	return e.Object.GetNamespace() == p.namespace &&
-		e.Object.GetName() == p.objectName &&
-		p.GenerationChangedPredicate.Generic(e)
+func (p *predicateCompassRtAgentSecret) Generic(e event.GenericEvent) bool {
+	return false
 }
