@@ -251,7 +251,7 @@ spec:
       serviceAccountName: central-application-connectivity-validator
       containers:
         - name: central-application-connectivity-validator
-          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20240212-f2ca576c
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20240313-68aa5ab8
           imagePullPolicy: IfNotPresent
           args:
             - "/app/centralapplicationconnectivityvalidator"
@@ -332,7 +332,7 @@ spec:
       serviceAccountName: central-application-gateway
       containers:
         - name: central-application-gateway
-          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20231214-12badce5
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20240318-2fd4cc1d
           imagePullPolicy: IfNotPresent
           args:
             - "/app/applicationgateway"
@@ -1033,7 +1033,7 @@ spec:
             - containerPort: 8090
               hostPort: 0
               name: http-health
-          image: europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:v20231218-ff3777c4
+          image: europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:v20240313-a62de288
           imagePullPolicy: IfNotPresent
           args:
             - "/app/compass-runtime-agent"
