@@ -8,18 +8,21 @@ This guide shows how to call a registered external service from Kyma using a sim
 - Your [service display name exported](01-20-register-manage-services.md#prerequisites) as an environment variable
 - Your [Application name exported](01-10-create-application.md#prerequisites) as an environment variable
 - Your desired namespace, cluster domain, and the names for your Function and APIRule exported as environment variables
+
   ```bash
   export NAMESPACE=default
   export CLUSTER_DOMAIN=local.kyma.dev
   export FUNCTION_NAME=my-function
   export APIRULE_NAME=$FUNCTION_NAME-ar
   ```
+
 - [Istio sidecar injection](https://kyma-project.io/#/istio/user/00-30-overview-istio-sidecars) enabled in your namespace
+
   ```bash
   kubectl label namespace $NAMESPACE istio-injection=enabled
   ```
 
-> [!WARNING] 
+> [!WARNING]
 > On a local Kyma deployment, skip SSL certificate verification when making a `curl` call, by adding the `-k` flag to it. Alternatively, add the Kyma certificates to your local certificate storage on your machine using the `kyma import certs` command.
 
 ## Steps

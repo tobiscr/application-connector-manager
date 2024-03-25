@@ -62,24 +62,27 @@ To establish a secure connection with Compass and generate the client certificat
 
 3. Generate a key and a Certificate Signing Request (CSR).
 
-    Generate a CSR with the following command. `SUBJECT` is the certificate subject data returned with the CSR information as `subject`.   
+    Generate a CSR with the following command. `SUBJECT` is the certificate subject data returned with the CSR information as `subject`.
 
     ```bash
     export KEY_LENGTH=4096
     openssl genrsa -out compass-app.key $KEY_LENGTH
     openssl req -new -sha256 -out compass-app.csr -key compass-app.key -subj "{SUBJECT}"
     ```
+
    > [!NOTE]
    > The key length is configurable, however, 4096 is the recommended value.
 
 4. Sign the CSR and get a client certificate.
 
     Encode the obtained CSR with base64:
+
     ```bash
     openssl base64 -in compass-app.csr
     ```
 
     To get the CSR signed, use the encoded CSR in this GraphQL mutation:
+
     ```graphql
     mutation {
         result: signCertificateSigningRequest(csr: "{BASE64_ENCODED_CSR}") {
@@ -97,9 +100,10 @@ To establish a secure connection with Compass and generate the client certificat
  5. Decode the certificate chain.
 
     After you receive the certificates, decode the certificate chain with the base64 method and use it in your application:
+
     ```bash
     base64 -d {CERTIFICATE_CHAIN}
     ```
 
-> [!NOTE] 
+> [!NOTE]
 > See how to [maintain a secure connection with Compass and renew a client certificate](01-70-maintain-secure-connection-with-compass.md).
