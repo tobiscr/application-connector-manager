@@ -2,6 +2,7 @@ package init
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/go-multierror"
 	"github.com/kyma-project/kyma/tests/components/application-connector/test/compass-runtime-agent/testkit/init/types"
 	log "github.com/sirupsen/logrus"
@@ -11,7 +12,7 @@ const (
 	CompassSystemNamespace        = "kyma-system"
 	IstioSystemNamespace          = "istio-system"
 	CompassRuntimeAgentDeployment = "compass-runtime-agent"
-	NewCompassRuntimeConfigName   = "test-compass-runtime-agent-config"
+	NewCompassRuntimeConfigName   = "compass-agent-configuration"
 	NewCACertSecretName           = "ca-cert-test"
 	NewClientCertSecretName       = "client-cert-test"
 	NewControllerSyncPeriodTime   = "15s"
@@ -80,7 +81,7 @@ func (crc compassRuntimeAgentConfigurator) Do(runtimeName, formationName string)
 	newCACertNamespacedSecretName := fmt.Sprintf("%s/%s", IstioSystemNamespace, NewCACertSecretName)
 	newClientCertNamespacedSecretName := fmt.Sprintf("%s/%s", CompassSystemNamespace, NewClientCertSecretName)
 	newCompassRuntimeNamespacedSecretConfigName := fmt.Sprintf("%s/%s", CompassSystemNamespace, NewCompassRuntimeConfigName)
-	newControllerSyncPeriodTime := fmt.Sprintf("%s", NewControllerSyncPeriodTime)
+	newControllerSyncPeriodTime := NewControllerSyncPeriodTime
 
 	log.Info("Preparing Compass Runtime Agent configuration secret")
 	deploymentRollbackFunc, err := crc.deploymentConfigurator.Do(newCACertNamespacedSecretName,

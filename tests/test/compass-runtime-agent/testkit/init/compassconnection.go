@@ -35,18 +35,7 @@ func NewCompassConnectionCRConfiguration(compassConnectionInterface CompassConne
 }
 
 func (cc compassConnectionCRConfiguration) Do() (types.RollbackFunc, error) {
-
-	backupRollbackFunc, err := cc.backup()
-	if err != nil {
-		return nil, err
-	}
-
-	deleteRollbackFunc, err := cc.delete()
-	if err != nil {
-		return backupRollbackFunc, err
-	}
-
-	return newRollbackFunc(deleteRollbackFunc, backupRollbackFunc), nil
+	return newRollbackFunc(), nil
 }
 func (cc compassConnectionCRConfiguration) backup() (types.RollbackFunc, error) {
 	compassConnectionCR, err := cc.compassConnectionInterface.Get(context.TODO(), ConnectionCRName, meta.GetOptions{})

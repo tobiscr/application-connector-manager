@@ -5,11 +5,10 @@ GOPATH ?= $(shell go env GOPATH)
 DIRECTOR_URL=https://compass-gateway-auth-oauth.$(COMPASS_HOST)/director/graphql
 TOKENS_ENDPOINT=https://oauth2.${COMPASS_HOST}/oauth2/token
 
-TEST_TIMEOUT   = "3m"
+TEST_TIMEOUT   = "4m"
 CLUSTER_NAME  ?= kyma
 REGISTRY_PORT ?= 5001
 REGISTRY_NAME ?= ${CLUSTER_NAME}-registry
-TEST_LOG       = ${PWD}/compass-runtime-agent-test.log
 
 .PHONY: test
 test: test-compass-runtime-agent clean-compass-runtime-agent-test
@@ -17,11 +16,14 @@ test: test-compass-runtime-agent clean-compass-runtime-agent-test
 .PHONY: clean
 clean: clean-compass-runtime-agent-test
 
+.PHONY: patch-compass-runtime-agent
+patch-compass-runtime-agent:
+	yq e -i '. |= (select(.kind == "Deployment" and .metadata.name == "compass-runtime-agent") | .spec.template.spec.containers[0].env[1] = { "name": "APP_CONTROLLER_SYNC_PERIOD", "value": "15s" })' ${PWD}/application-connector.yaml
+
 .PHONY: test-compass-runtime-agent
 test-compass-runtime-agent: install-compass-runtime-agent-test
-	@echo "::group::test-compass-runtime-agent"
-	kubectl wait --for=condition=complete --timeout=$(TEST_TIMEOUT) -n $(NAMESPACE) job/compass-runtime-agent-test; \
-		kubectl -n $(NAMESPACE) -l batch.kubernetes.io/job-name=compass-runtime-agent-test logs 2>&1 > $(TEST_LOG)
+	@echo "::group::fetch-compass-runtime-agent-test-logs"
+	${PWD}/tests/scripts/fetch-test-logs.sh compass-runtime-agent-test ${PWD}
 	@echo "::endgroup::"
 
 .PHONY: create-resources

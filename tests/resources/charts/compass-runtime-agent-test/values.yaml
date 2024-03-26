@@ -1,5 +1,5 @@
 namespace: "test"
-testTenant: "3e64ebae-38b5-46a0-b1ed-9ccee153a0ae"
+testTenant: "461f6292-8085-41c8-af0c-e185f39b5e18"
 oauthCredentialsSecretName: "oauth-compass-credentials"
 oauthCredentialsNamespace: "test"
 skipDirectorCertVerification: true

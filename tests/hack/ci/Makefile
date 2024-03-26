@@ -97,6 +97,12 @@ patch-validator:
 	@make -f ${PROJECT_ROOT}/tests/Makefile.test-application-conn-validator patch-validator
 	@echo "::endgroup::"
 
+.PHONY: patch-compass-runtime-agent
+patch-compass-runtime-agent:
+	@echo "::group::patch-compass-runtime-agent"
+	@make -f ${PROJECT_ROOT}/tests/Makefile.test-compass-runtime-agent patch-compass-runtime-agent
+	@echo "::endgroup::"
+
 .PHONY: validator-tests
 validator-tests: 
 	@echo "::group::validator-tests"
@@ -114,11 +120,11 @@ k3d-validator-tests: patch-validator \
 .PHONY: k3d-agent-tests
 k3d-agent-tests: create-k3d \
 	install-istio \
+	patch-compass-runtime-agent \
 	install-application-connector \
 	apply-compass-connection-crd \
 	apply-appcon-crd \
 	compass-runtime-agent-test-image \
-	install-compass-runtime-agent \
 	agent-tests
 
 .PHONY: agent-tests
