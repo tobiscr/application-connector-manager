@@ -1,8 +1,18 @@
 name: Run compass-rt-agemt integration tests on k3d
+env:
+  COMPASS_CLIENT_ID: "${{ secrets.COMPASS_CLIENT_ID }}"
+  COMPASS_CLIENT_SECRET: "${{ secrets.COMPASS_CLIENT_SECRET }}"
+  COMPASS_HOST: "${{ secrets.COMPASS_HOST }}"
 on:
   push:
     branches: [ main ]
-  pull_request:
+  pull_request_target:
+    branches: [ main ]
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,7 +37,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Run unit tests
-        run: make -C tests/hack/ci k3d-agent-tests
+        run: make -C tests/hack/ci k3d-agent-tests 
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v4

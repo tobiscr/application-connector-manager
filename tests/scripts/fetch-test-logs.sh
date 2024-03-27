@@ -14,7 +14,7 @@ function fetch_tests() {
   fi
   local LOGS_OUT=${2:-${PWD}}
   local NAMESPACE=${3:-test}
-  local TEST_TIMEOUT=${4:-900s}
+  local TEST_TIMEOUT=${4:-300s}
   # wait for the job to finish
   kubectl wait job/$JOB_NAME \
 	-n $NAMESPACE \
@@ -31,5 +31,6 @@ function fetch_tests() {
   exit $__job_result__
 }
 
+echo "host:"$COMPASS_HOST
+
 fetch_tests $@
- 

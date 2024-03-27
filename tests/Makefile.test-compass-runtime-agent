@@ -3,7 +3,7 @@
 NAMESPACE ?= test
 GOPATH ?= $(shell go env GOPATH)
 DIRECTOR_URL=https://compass-gateway-auth-oauth.$(COMPASS_HOST)/director/graphql
-TOKENS_ENDPOINT=https://oauth2.${COMPASS_HOST}/oauth2/token
+TOKENS_ENDPOINT=https://oauth2.$(COMPASS_HOST)/oauth2/token
 
 TEST_TIMEOUT   = "4m"
 CLUSTER_NAME  ?= kyma
