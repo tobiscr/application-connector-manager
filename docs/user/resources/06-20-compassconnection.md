@@ -47,7 +47,7 @@ status:
 
 ## Custom Resource Parameters
 
-This table lists all the possible parameters of the CompassConnection custom resource together with their descriptions. For more details, see the [CompassConnection specification file](https://github.com/kyma-project/kyma/blob/main/installation/resources/crds/compass-runtime-agent/compass-connection.crd.yaml).
+This table lists all the possible parameters of the CompassConnection custom resource together with their descriptions. For more details, see the [CompassConnection specification file](https://github.com/kyma-project/application-connector-manager/blob/main/application-connector.yaml#L619).
 
 <!-- The table below was generated automatically -->
 <!-- Some special tags (html comments) are at the end of lines due to markdown requirements. -->
