@@ -31,6 +31,4 @@ function fetch_tests() {
   exit $__job_result__
 }
 
-echo "host:"$COMPASS_HOST
-
 fetch_tests $@
