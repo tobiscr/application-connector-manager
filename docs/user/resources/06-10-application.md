@@ -64,6 +64,6 @@ These components use this CR:
 
 | Component   |  Description |
 |-----------|-------------|
-| Application Gateway | Reads the API metadata in order to connect to the external system. | 
+| Application Gateway | Reads the API metadata in order to connect to the external system. |
 | Application Connectivity Validator (in the [Compass mode](../README.md)) | Validates requests and events from the external system against the respective Application CR. |
 | Runtime Agent (in the [Compass mode](../README.md)) | Saves the metadata of the connected external system in the Application CR, synchronizes the metadata stored in Compass with the state in the cluster stored in the Application CR. |

@@ -1,4 +1,4 @@
-# Install Application Connector Manager 
+# Install Application Connector Manager
 
 - [Install Application Connector Manager](#install-application-connector-manager)
   - [Install Application Connector Manager from the Local Sources](#install-application-connector-manager-from-the-local-sources)
@@ -9,7 +9,7 @@
 
 Learn how to install the Application Connector module locally (on k3d) or on your remote cluster.
 
-## Install Application Connector Manager from the Local Sources 
+## Install Application Connector Manager from the Local Sources
 
 ### Prerequisites
 
@@ -34,7 +34,8 @@ Run the following commands to deploy Application Connector Manager in a target K
 
 2. Set the Application Connector Manager image name.
 
-   > NOTE: You can use the local k3d registry or your Docker Hub account to push intermediate images.  
+   > NOTE: You can use the local k3d registry or your Docker Hub account to push intermediate images.
+
    ```bash
    export IMG=<DOCKER_USERNAME>/custom-application-connector-manager:0.0.1
    ```
@@ -44,11 +45,13 @@ Run the following commands to deploy Application Connector Manager in a target K
    ```bash
    make test
    ```
+
 4. Build and push the image to the registry.
 
    ```bash
    make module-image
    ```
+
 5. Create a target namespace.
 
    ```bash
@@ -69,7 +72,7 @@ Run the following commands to deploy Application Connector Manager in a target K
 
    You should get a result similar to this example:
 
-   ```
+   ```bash
    NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
    application-connector-controller-manager   1/1     1            1           20s
    ```
@@ -86,10 +89,11 @@ Thanks to that, you don't need to push the Application Connector module images t
    ```bash
    git clone https://github.com/kyma-project/application-connector-manager.git && cd application-connector-manager/
    ```
+
 2. Build the manager locally and run it in the k3d cluster.
 
    ```bash
    make -C hack/local run-without-lifecycle-manager
    ```
-3. If you want to clean up the k3d cluster, use the `make -C hack/local stop` make target.
 
+3. If you want to clean up the k3d cluster, use the `make -C hack/local stop` make target.

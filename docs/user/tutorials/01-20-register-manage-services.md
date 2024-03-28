@@ -1,8 +1,8 @@
 # Register a Service
 
-This guide shows you how to register a service of your external solution in Kyma. For this example, we use a Basic Authentication-secured API.   
+This guide shows you how to register a service of your external solution in Kyma. For this example, we use a Basic Authentication-secured API.
 
-> [!NOTE] 
+> [!NOTE]
 > Learn how to [register APIs secured with different security schemes or protected against cross-site request forgery (CSRF) attacks](01-30-register-secured-api.md).
 
 ## Prerequisites
@@ -28,11 +28,12 @@ This guide shows you how to register a service of your external solution in Kyma
    export TARGET_PATH=basic-auth/$USER_NAME/$PASSWORD
    export NAMESPACE=default
    ```
-     
-   > [!NOTE] 
-   > Replace the example values above with your actual values. 
+
+   > [!NOTE]
+   > Replace the example values above with your actual values.
 
 2. Enable [Istio sidecar injection](https://kyma-project.io/#/istio/user/00-30-overview-istio-sidecars) in the namespace:
+
    ```bash
    kubectl label namespace $NAMESPACE istio-injection=enabled
    ```
@@ -70,18 +71,18 @@ This guide shows you how to register a service of your external solution in Kyma
     EOF
     ```
 
-## Access the Registered Service 
+## Access the Registered Service
 
-To check that the service was registered correctly, create a test Pod, and make a call to Application Gateway from within this Pod.   
+To check that the service was registered correctly, create a test Pod, and make a call to Application Gateway from within this Pod.
 
 1. To build a path to access your registered service, run this command:
 
     ```bash
     export GATEWAY_URL=http://central-application-gateway.kyma-system:8080/$APP_NAME/$SERVICE_DISPLAY_NAME/$TARGET_PATH
     ```
-   
+
     > [!WARNING]
-    > `SERVICE_DISPLAY_NAME` in the **GATEWAY_URL** path must be in its [normalized form](01-30-register-secured-api.md#register-a-secured-api). This means that, for example, if you used `test-basic-auth` as the service **displayName**, you're good to go, but if you used `"Test Basic Auth"`, you must replace it with `test-basic-auth` in the path. 
+    > `SERVICE_DISPLAY_NAME` in the **GATEWAY_URL** path must be in its [normalized form](01-30-register-secured-api.md#register-a-secured-api). This means that, for example, if you used `test-basic-auth` as the service **displayName**, you're good to go, but if you used `"Test Basic Auth"`, you must replace it with `test-basic-auth` in the path.
 
 2. Export the name of the test Pod as an environment variable:
 
@@ -119,7 +120,7 @@ To check that the service was registered correctly, create a test Pod, and make 
     kubectl wait --for=condition=Ready pod $POD_NAME -n $NAMESPACE
     ```
 
-5. To make a call to Application Gateway from within the Pod, run: 
+5. To make a call to Application Gateway from within the Pod, run:
 
     ```bash
     kubectl exec $POD_NAME -c $POD_NAME -n $NAMESPACE -- sh -c "wget -O- '$GATEWAY_URL'"

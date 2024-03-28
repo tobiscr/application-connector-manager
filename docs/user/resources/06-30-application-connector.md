@@ -2,15 +2,15 @@
 
 The `applicationconnectors.operator.kyma-project.io` CustomResourceDefinition (CRD) is a comprehensive specification that defines the structure and format used to manage the configuration and status of the Application Connector module within your Kyma environment.
 
-# Purpose
+## Purpose
 
 The CRD serves as the blueprint for creating custom resources (CRs) specific to Application Connector. These CRs encapsulate the configuration settings and real-time statuses of the Application Connector module, providing essential insights into the module's behavior in the Kubernetes cluster.
 
 To get the up-to-date CRD and show the output in the `yaml` format, run this command:
 
-```bash
-kubectl get crd applicationconnectors.operator.kyma-project.io -o yaml
-```
+   ```bash
+   kubectl get crd applicationconnectors.operator.kyma-project.io -o yaml
+   ```
 
 ## Custom Resource Specification
 
@@ -25,22 +25,22 @@ kubectl get crd applicationconnectors.operator.kyma-project.io -o yaml
 
 ## Sample Custom Resource
 
-```
-apiVersion: operator.kyma-project.io/v1alpha1
-kind: ApplicationConnector
-metadata:
-  namespace: kyma-system
-  labels:
-    app.kubernetes.io/name: applicationconnector
-    app.kubernetes.io/instance: applicationconnector-sample
-  name: applicationconnector-sample
-spec:
-  domainName: "my.domain"
-  appConnValidator:
-    logLevel: "info"
-    logFormat: "json"
-  appGateway:
-    proxyTimeout: "10s"
-    requestTimeout: "10s"
-    logLevel: "info"
-```
+   ```bash
+   apiVersion: operator.kyma-project.io/v1alpha1
+   kind: ApplicationConnector
+   metadata:
+     namespace: kyma-system
+     labels:
+       app.kubernetes.io/name: applicationconnector
+       app.kubernetes.io/instance: applicationconnector-sample
+     name: applicationconnector-sample
+   spec:
+     domainName: "my.domain"
+     appConnValidator:
+       logLevel: "info"
+       logFormat: "json"
+     appGateway:
+       proxyTimeout: "10s"
+       requestTimeout: "10s"
+       logLevel: "info"
+   ```

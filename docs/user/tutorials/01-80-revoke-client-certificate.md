@@ -5,7 +5,7 @@
 
 After you have established a secure connection with Compass and generated a client certificate, you may want to revoke this certificate at some point. To revoke a client certificate, follow the steps in this tutorial.
 
-> [!NOTE] 
+> [!NOTE]
 > A revoked client certificate remains valid until it expires, but it cannot be renewed.
 
 ## Prerequisites

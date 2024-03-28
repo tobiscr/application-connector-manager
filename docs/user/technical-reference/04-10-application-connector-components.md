@@ -18,7 +18,7 @@ An Application represents an external solution connected to Kyma. It handles the
 Using the components of Application Connector, the Application creates a coherent identity for a connected external solution and ensures its separation.
 All Applications are instances of the Application custom resource, which also stores all the relevant metadata.
 
-> [!NOTE] 
+> [!NOTE]
 > Every Application custom resource corresponds to a single Application to which you can connect an external solution.
 
 ## Application Gateway
@@ -34,7 +34,6 @@ Application Gateway can call services which are not secured, or are secured with
 - Client certificates
 
 Additionally, Application Gateway supports cross-site request forgery (CSRF) tokens as an optional layer of API protection.
-
 
 ## Kubernetes Secret
 

@@ -25,7 +25,7 @@ Application Gateway proxies requests from Functions and services in Kyma to exte
 
 For examples of configurations and Secrets, see the [tutorial on registering a secured API](../tutorials/01-30-register-secured-api.md).
 
-> [!NOTE] 
+> [!NOTE]
 > All APIs defined in a single Secret use the same configuration - the same credentials, CSRF tokens, and request parameters.
 
 ## Caching
@@ -47,10 +47,10 @@ In addition, the `User-Agent` header is set to an empty value not specified in t
 ## Response Rewriting
 
 Application Gateway performs response rewriting in situations when during a call to the external system, the target responds with a redirect (`3xx` status code) that points to the URL with the same host and a different path.
-In such a case, the `Location` header is modified so that the original target path is replaced with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end. 
+In such a case, the `Location` header is modified so that the original target path is replaced with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end.
 The modified `Location` header has the following format: `{APP_GATEWAY_URL}:{APP_GATEWAY_PORT}/{APP_NAME}/{SERVICE_NAME}/{SUB-PATH}`.
 
-This functionality makes the HTTP clients that originally called Application Gateway follow redirects through the Gateway, and not to the service directly. 
+This functionality makes the HTTP clients that originally called Application Gateway follow redirects through the Gateway, and not to the service directly.
 This allows for passing authorization, custom headers, URL parameters, and the body without an issue.
 
-Application Gateway also rewrites all the `5xx` status codes to `502`. In such a case, the `Target-System-Status` header contains the original code returned by the target. 
+Application Gateway also rewrites all the `5xx` status codes to `502`. In such a case, the `Target-System-Status` header contains the original code returned by the target.
