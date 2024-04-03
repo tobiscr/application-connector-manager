@@ -34,6 +34,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: app-gateway-test-results
+          name: application-connectivity-validator-test-results
           path: application-connectivity-validator-test.log
 
