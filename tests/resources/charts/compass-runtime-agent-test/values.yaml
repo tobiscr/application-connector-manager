@@ -1,0 +1,19 @@
+namespace: "test"
+testTenant: "461f6292-8085-41c8-af0c-e185f39b5e18"
+oauthCredentialsSecretName: "oauth-compass-credentials"
+oauthCredentialsNamespace: "test"
+skipDirectorCertVerification: true
+serviceAccountName: "test-compass-runtime-agent"
+
+containerRegistry:
+  path: "k3d-kyma-registry:5000"
+
+images:
+  compassTest:
+    name: "compass-runtime-agent-test"
+    version: "002"
+
+compassCredentials:
+  clientID: ""
+  clientSecret: ""
+  tokensEndpoint: ""

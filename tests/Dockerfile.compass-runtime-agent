@@ -1,0 +1,17 @@
+# image builder base on golang:1.22.1-alpine3.19
+FROM golang@sha256:0466223b8544fb7d4ff04748acc4d75a608234bf4e79563bff208d2060c0dd79 as builder
+
+WORKDIR /compass-test/
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+COPY . .
+
+RUN CGO_ENABLED=0 go test -v -c -o compass-test ./test/compass-runtime-agent/
+
+FROM scratch
+
+COPY --from=builder /compass-test/compass-test /
+ENTRYPOINT [ "/compass-test" ]
+CMD ["-test.v", "-test.parallel", "1"]

@@ -1,0 +1,55 @@
+# -*- mode: Makefile -*-
+
+NAMESPACE ?= test
+GOPATH ?= $(shell go env GOPATH)
+DIRECTOR_URL=https://compass-gateway-auth-oauth.$(COMPASS_HOST)/director/graphql
+TOKENS_ENDPOINT=https://oauth2.$(COMPASS_HOST)/oauth2/token
+
+TEST_TIMEOUT   = "4m"
+CLUSTER_NAME  ?= kyma
+REGISTRY_PORT ?= 5001
+REGISTRY_NAME ?= ${CLUSTER_NAME}-registry
+
+.PHONY: test
+test: test-compass-runtime-agent clean-compass-runtime-agent-test
+
+.PHONY: clean
+clean: clean-compass-runtime-agent-test
+
+.PHONY: patch-compass-runtime-agent
+patch-compass-runtime-agent:
+	yq e -i '. |= (select(.kind == "Deployment" and .metadata.name == "compass-runtime-agent") | .spec.template.spec.containers[0].env[1] = { "name": "APP_CONTROLLER_SYNC_PERIOD", "value": "15s" })' ${PWD}/application-connector.yaml
+
+.PHONY: test-compass-runtime-agent
+test-compass-runtime-agent: install-compass-runtime-agent-test
+	@echo "::group::fetch-compass-runtime-agent-test-logs"
+	${PWD}/tests/scripts/fetch-test-logs.sh compass-runtime-agent-test ${PWD}
+	@echo "::endgroup::"
+
+.PHONY: create-resources
+create-resources:
+	@echo "::group::create-test-namespace"
+	kubectl create namespace $(NAMESPACE) --dry-run=client -o yaml | kubectl apply -f -
+	kubectl label namespace $(NAMESPACE) istio-injection=enabled --overwrite
+	@echo "::endgroup::"
+
+.PHONY: install-compass-runtime-agent-test
+install-compass-runtime-agent-test: create-resources
+	@echo "::group::install-compass-runtime-agent-test"
+	@echo "::add-mask::$(TOKENS_ENDPOINT)"
+	@echo "::add-mask::$(DIRECTOR_URL)"
+	@echo "::add-mask::$(COMPASS_CLIENT_ID)"
+	@echo "::add-mask::$(COMPASS_CLIENT_SECRET)"
+	@helm template ${PWD}/tests/resources/charts/compass-runtime-agent-test \
+		--set namespace=$(NAMESPACE) \
+		--set compassCredentials.clientID=$(COMPASS_CLIENT_ID) \
+		--set compassCredentials.clientSecret=$(COMPASS_CLIENT_SECRET) \
+		--set compassCredentials.tokensEndpoint=$(TOKENS_ENDPOINT) \
+		--set directorUrl=$(DIRECTOR_URL) \
+		| kubectl apply -f -
+	@echo "::endgroup::"
+
+.PHONY: clean-compass-runtime-agent-test
+clean-compass-runtime-agent-test:
+	helm template ${PWD}/tests/resources/charts/compass-runtime-agent-test | kubectl delete -f -
+	kubectl delete ns $(NAMESPACE) --ignore-not-found

@@ -1,0 +1,78 @@
+# -*- mode: PWDmakefile -*-
+
+NAMESPACE ?= test
+GOPATH ?= $(shell go env GOPATH)
+
+MOCK_SERVICE_NAME="mock-application"
+APP_URL = "$(MOCK_SERVICE_NAME).$(NAMESPACE).svc.cluster.local"
+TEST_TIMEOUT = "3m"
+MAKEFILE_NAME=Makefile.test-application-gateway
+
+.PHONY: test
+test: test-gateway
+
+.PHONY: clean
+clean: clean-gateway-test
+
+.PHONY: test-gateway
+test-gateway: disable-sidecar-for-mtls-test generate-certs create-resources
+	@echo "::group::test-gateway"
+	${PWD}/tests/scripts/fetch-test-logs.sh application-gateway-test ${PWD}
+	@echo "::endgroup::"
+
+.PHONY: create-resources
+create-resources:
+	@echo "::group::create-test-namespace"
+	kubectl create namespace $(NAMESPACE) --dry-run=client -o yaml | kubectl apply -f -
+	kubectl label namespace $(NAMESPACE) istio-injection=enabled --overwrite
+	@echo "::endgroup::"
+	@echo "::group::create-resources::install-mock-app"
+	helm template ${PWD}/tests/resources/charts/gateway-test/charts/mock-app \
+		--set global.namespace=$(NAMESPACE) \
+		--set mockServiceName=$(MOCK_SERVICE_NAME) \
+		--values ${PWD}/tests/resources/charts/gateway-test/values.yaml \
+		| kubectl apply -f -
+	kubectl rollout status deployment mock-application -n test --timeout=90s
+	@echo "::endgroup::"
+	@echo "::group::create-resources::install-test"
+	helm template ${PWD}/tests/resources/charts/gateway-test/charts/test \
+		--set namespace=$(NAMESPACE) \
+		--set mockServiceName=$(MOCK_SERVICE_NAME) \
+		--values ${PWD}/tests/resources/charts/gateway-test/values.yaml \
+		| kubectl apply -f -
+	@echo "::endgroup::"
+
+.PHONY: clean-gateway-test
+clean-gateway-test:
+	@echo "::group::clean-gateway-test"
+	helm template ${PWD}/tests/resources/charts/gateway-test --set namespace=$(NAMESPACE) \
+		| kubectl delete -f -
+	kubectl delete ns $(NAMESPACE) --ignore-not-found
+	@echo "::endgroup::"
+
+.PHONY: disable-sidecar-for-mtls-test
+disable-sidecar-for-mtls-test:
+	@echo "::group::disable-sidecar-for-mtls-test"
+	kubectl -n kyma-system \
+		patch deployment central-application-gateway \
+		-p '{"spec":{"template":{"metadata":{"annotations":{"traffic.sidecar.istio.io/excludeOutboundPorts": "8090,8091"}}}}}'
+	kubectl rollout status deploy central-application-gateway -n kyma-system --timeout=1m
+	@echo "::endgroup::"
+
+.PHONY: enable-sidecar-after-mtls-test
+enable-sidecar-after-mtls-test:
+	@echo "::group::enable-sidecar-for-mtls-test"
+	kubectl -n kyma-system \
+		patch deployment central-application-gateway \
+		--type=json \
+		--patch '[{ "op": "remove", "path": "/spec/template/metadata/annotations/traffic.sidecar.istio.io~1excludeOutboundPorts"}]'
+	@echo "::endgroup::"
+
+.PHONY: generate-certs
+generate-certs:
+	@echo "::group::generate-certs"
+	${PWD}/tests/scripts/generate-self-signed-certs.sh $(APP_URL) ${PWD}/tests/resources/charts/gateway-test/charts/test/certs/positive
+	${PWD}/tests/scripts/generate-self-signed-certs.sh $(APP_URL) ${PWD}/tests/resources/charts/gateway-test/charts/test/certs/negative
+	${PWD}/tests/scripts/generate-self-signed-certs.sh test-other-ca ${PWD}/tests/resources/charts/gateway-test/charts/test/certs/invalid-ca
+	cp -p -R ${PWD}/tests/resources/charts/gateway-test/charts/test/certs ${PWD}/tests/resources/charts/gateway-test/charts/mock-app
+	@echo "::endgroup::"

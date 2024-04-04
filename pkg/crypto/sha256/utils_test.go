@@ -54,13 +54,13 @@ func Test_calculateSHA256(t *testing.T) {
 					u.SetGroupVersionKind(schema.GroupVersionKind{
 						Kind:    "CustomResourceDefinition",
 						Group:   "apiextensions.k8s.io",
-						Version: "v1",
+						Version: "1.0.0",
 					})
 
 					return u
 				}(),
 			},
-			want: "9NtR-1kpz4ub0a8jS4YySJEGZKmPfvC5FLh5GNW5UlA=",
+			want: "YVinn88v80IHE3oiOSjwAPUG0OumBQ-dy1ypGbAounU=",
 		},
 	}
 	for _, tt := range tests {
