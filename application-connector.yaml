@@ -251,7 +251,7 @@ spec:
       serviceAccountName: central-application-connectivity-validator
       containers:
         - name: central-application-connectivity-validator
-          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20240313-68aa5ab8
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20240404-457ea77c
           imagePullPolicy: IfNotPresent
           args:
             - "/app/centralapplicationconnectivityvalidator"
@@ -332,7 +332,7 @@ spec:
       serviceAccountName: central-application-gateway
       containers:
         - name: central-application-gateway
-          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20240318-2fd4cc1d
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20240404-3975244b
           imagePullPolicy: IfNotPresent
           args:
             - "/app/applicationgateway"
