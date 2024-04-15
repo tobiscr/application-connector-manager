@@ -32,7 +32,7 @@ func applyDefaults(spec v1alpha1.ApplicationConnectorSpec, ops ...defaultingOpti
 	return specCopy, nil
 }
 
-func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
+func sFnUpdate(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result, error) {
 	updatedSpec, err := applyDefaults(s.instance.Spec, func(spec *v1alpha1.ApplicationConnectorSpec) error {
 		if s.domainName != "" {
 			spec.DomainName = s.domainName
@@ -44,7 +44,9 @@ func sFnUpdate(_ context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Result
 		return stopWithErrorAndRequeue(fmt.Errorf("defaults application failed: %w", err))
 	}
 
+	updateCRA := buildUpdateCompassRuntimeAgent(ctx, r, s)
 	for _, f := range []func(v1alpha1.ApplicationConnectorSpec, uList, uList) error{
+		updateCRA,
 		updateCentralApplicationGateway,
 		updateAppConnectivityValidator,
 		updateGateways,
