@@ -42,7 +42,11 @@ func buildUpdateCompassRuntimeAgent(ctx context.Context, r *fsm, s *systemState)
 			return err
 		}
 
-		if err := unstructured.Update(u, craDTO{Domain: s.domainName, Replicas: replicas}, updateCompassRuntimeAgent); err != nil {
+		domainName := s.instance.Spec.DomainName
+		if domainName == "" {
+			domainName = s.domainName
+		}
+		if err := unstructured.Update(u, craDTO{Domain: domainName, Replicas: replicas}, updateCompassRuntimeAgent); err != nil {
 			return err
 		}
 		return nil
