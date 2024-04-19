@@ -27,7 +27,7 @@ type craDTO struct {
 	Replicas int32
 }
 
-func buildUpdateCompassRuntimeAgent(ctx context.Context, r *fsm, s *systemState) func(i v1alpha1.ApplicationConnectorSpec, objs uList, _ uList) error {
+func buildUpdateCompassRuntimeAgent(ctx context.Context, r *fsm, _ *systemState) (func(i v1alpha1.ApplicationConnectorSpec, objs uList, _ uList) error, error) {
 	var secret v1.Secret
 	err := r.Get(ctx, keyCompassAgentCfg, &secret)
 
@@ -35,22 +35,21 @@ func buildUpdateCompassRuntimeAgent(ctx context.Context, r *fsm, s *systemState)
 	if errors.IsNotFound(err) {
 		replicas = 0
 	}
+	if err != nil && !errors.IsNotFound(err) {
+		return nil, err
+	}
 
-	return func(_ v1alpha1.ApplicationConnectorSpec, objs uList, _ uList) error {
+	return func(i v1alpha1.ApplicationConnectorSpec, objs uList, _ uList) error {
 		u, err := unstructured.IsDeployment("compass-runtime-agent").First(objs)
 		if err != nil {
 			return err
 		}
 
-		domainName := s.instance.Spec.DomainName
-		if domainName == "" {
-			domainName = s.domainName
-		}
-		if err := unstructured.Update(u, craDTO{Domain: domainName, Replicas: replicas}, updateCompassRuntimeAgent); err != nil {
+		if err := unstructured.Update(u, craDTO{Domain: i.DomainName, Replicas: replicas}, updateCompassRuntimeAgent); err != nil {
 			return err
 		}
 		return nil
-	}
+	}, nil
 }
 
 func updateCompassRuntimeAgent(d *appv1.Deployment, dto craDTO) error {
