@@ -118,7 +118,7 @@ func main() {
 	config := zap.NewDevelopmentConfig()
 	config.EncoderConfig.TimeKey = "timestamp"
 	config.Encoding = "json"
-	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("Jan 02 15:04:05.000000000")
+	config.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
 
 	appConLogger, err := config.Build()
 	if err != nil {
