@@ -163,4 +163,4 @@ go test./...
 
 ### Contribution
 
-To learn how you can contribute to this project, see the [Contributing](/CONTRIBUTING.md) document.
+To learn how you can contribute to this project, see the [Contributing](https://github.com/kyma-project/community/blob/main/CONTRIBUTING.md) document.
