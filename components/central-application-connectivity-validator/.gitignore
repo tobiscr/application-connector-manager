@@ -1,0 +1,16 @@
+# Editors and IDEs
+/.idea
+*.iml
+*~
+*.swp
+*.swo
+
+# Binaries
+/centralapplicationconnectivityvalidator
+bin
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Software licenses
+/licenses
