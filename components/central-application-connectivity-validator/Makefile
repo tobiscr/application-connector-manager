@@ -1,15 +1,5 @@
-APP_NAME = central-application-connectivity-validator
-APP_PATH = components/$(APP_NAME)
-SCRIPTS_DIR = $(realpath $(shell pwd)/../..)/common/makefiles
-
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.25.0
-
-override ENTRYPOINT = cmd/centralapplicationconnectivityvalidator/
-
-include $(SCRIPTS_DIR)/generic-make-go.mk
-
-VERIFY_IGNORE := /vendor\|/mocks
 
 release:
 	$(MAKE) gomod-release-local
