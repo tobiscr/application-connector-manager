@@ -1,4 +1,4 @@
-name: compass-runtime-agent
+name: compass-runtime-agent-unit-test
 on:
   push:
     branches: [ "main" ]
@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 jobs:
-  unit-tests:
+  cra-unit-test:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code

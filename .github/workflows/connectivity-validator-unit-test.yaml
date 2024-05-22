@@ -1,4 +1,4 @@
-name: central-connectivity-validator
+name: central-connectivity-validator-unit-test
 on:
   push:
     branches: [ "main" ]
@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 jobs:
-  unit-tests:
+  validator-unit-test:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code

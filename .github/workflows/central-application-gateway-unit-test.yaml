@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
 jobs:
-  unit-tests:
+  gateway-unit-test:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
