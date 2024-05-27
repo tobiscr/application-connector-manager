@@ -1,5 +1,4 @@
-
-name: central-application-gateway
+name: compass-runtime-agent-unit-test
 on:
   push:
     branches: [ "main" ]
@@ -7,7 +6,7 @@ on:
 permissions:
   contents: read
 jobs:
-  unit-tests:
+  cra-unit-test:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -15,8 +14,8 @@ jobs:
     - name: Set up go environment
       uses: actions/setup-go@v5
       with:
-        go-version-file: components/central-application-gateway/go.mod
-        cache-dependency-path: components/central-application-gateway/go.sum
+        go-version-file: components/compass-runtime-agent/go.mod
+        cache-dependency-path: components/compass-runtime-agent/go.sum
     - name: Run unit tests
-      working-directory: ./components/central-application-gateway
-      run: go test ./...
+      working-directory: ./components/compass-runtime-agent
+      run: make test
