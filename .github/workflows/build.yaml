@@ -6,19 +6,27 @@ on:
       - main
     paths:
       - ".github/workflows/build.yaml"
+      - "main.go"
+      - "api/**"
       - "pkg/**"
       - "controllers/**"
-      - "config/**"
-      - "api/**"
+      - "application-connector.yaml"
+      - "application-connector-dependencies.yaml"
+      - "go.sum"
+      - "go.mod"
       - "Dockerfile"
   pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     paths:
       - ".github/workflows/build.yaml"
+      - "main.go"
+      - "api/**"
       - "pkg/**"
       - "controllers/**"
-      - "config/**"
-      - "api/**"
+      - "application-connector.yaml"
+      - "application-connector-dependencies.yaml"
+      - "go.sum"
+      - "go.mod"
       - "Dockerfile"
 
 permissions:
