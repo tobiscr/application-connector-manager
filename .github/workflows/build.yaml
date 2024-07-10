@@ -15,7 +15,7 @@ on:
       - "go.sum"
       - "go.mod"
       - "Dockerfile"
-  pull_request:
+  pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     paths:
       - ".github/workflows/build.yaml"
