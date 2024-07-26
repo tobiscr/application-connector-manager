@@ -53,7 +53,12 @@ jobs:
       with:
         go-version-file: go.mod
     - name: Run unit tests
-      run: make test
+      run: make test | tee test.log
+    - uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: test.log
+        path: test.log
 
   build-image:
     needs: setup
