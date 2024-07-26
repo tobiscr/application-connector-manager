@@ -4,40 +4,49 @@ on:
   push:
     branches:
       - main
-    paths:
-      - ".github/workflows/build.yaml"
-      - "main.go"
-      - "api/**"
-      - "pkg/**"
-      - "controllers/**"
-      - "application-connector.yaml"
-      - "application-connector-dependencies.yaml"
-      - "go.sum"
-      - "go.mod"
-      - "Dockerfile"
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
+
   pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
-    paths:
-      - ".github/workflows/build.yaml"
-      - "main.go"
-      - "api/**"
-      - "pkg/**"
-      - "controllers/**"
-      - "application-connector.yaml"
-      - "application-connector-dependencies.yaml"
-      - "go.sum"
-      - "go.mod"
-      - "Dockerfile"
+    types: [opened, synchronize, reopened]
 
 permissions:
   id-token: write # This is required for requesting the JWT token
   contents: read # This is required for actions/checkout
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.changes.outputs.acm }}
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            acm:
+              - .github/workflows/build.yaml
+              - main.go
+              - api/**
+              - pkg/**
+              - controllers/**
+              - application-connector.yaml
+              - application-connector-dependencies.yaml
+              - go.sum
+              - go.mod
+              - Dockerfile
+      - id: tag
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        run: echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+
   build-image:
+    needs: setup
+    if: needs.setup.changed == 'true'
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: application-connector-manager
       dockerfile: Dockerfile
       context: .
-      export-tags: true
+      tags: ${{ needs.setup.tag }}
