@@ -1,0 +1,71 @@
+name: ACM
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
+
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.changes.outputs.acm }}
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            acm:
+              - .github/workflows/build.yaml
+              - main.go
+              - api/**
+              - pkg/**
+              - controllers/**
+              - application-connector.yaml
+              - application-connector-dependencies.yaml
+              - go.sum
+              - go.mod
+              - Dockerfile
+      - id: tag
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        run: echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+
+  unit-tests:
+    needs: setup
+    if: needs.setup.changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up go environment
+      uses: actions/setup-go@v4
+      with:
+        go-version-file: go.mod
+    - name: Run unit tests
+      run: make test | tee test.log
+    - uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: test.log
+        path: test.log
+
+  build-image:
+    needs: setup
+    if: needs.setup.changed == 'true'
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: application-connector-manager
+      dockerfile: Dockerfile
+      context: .
+      tags: ${{ needs.setup.tag }}
