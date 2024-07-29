@@ -72,3 +72,14 @@ jobs:
       dockerfile: Dockerfile
       context: .
       tags: ${{ needs.setup.tag }}
+
+  summary:
+    needs: [setup, build-image]
+    steps:
+      - run: |
+          echo "# ACM Build" >> $GITHUB_STEP_SUMMARY
+          echo "Tag: ${{ needs.setup.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "## images"
+          echo "```json" >> $GITHUB_STEP_SUMMARY
+          echo "${{ needs.build-image.images }}" | jq >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
