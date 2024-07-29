@@ -7,9 +7,31 @@ on:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
       - '[0-9]+.[0-9]+.[0-9]+-*'
+    paths:
+      - .github/workflows/acm.yaml
+      - main.go
+      - api/**
+      - pkg/**
+      - controllers/**
+      - application-connector.yaml
+      - application-connector-dependencies.yaml
+      - go.sum
+      - go.mod
+      - Dockerfile
 
   pull_request_target:
     types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/acm.yaml
+      - main.go
+      - api/**
+      - pkg/**
+      - controllers/**
+      - application-connector.yaml
+      - application-connector-dependencies.yaml
+      - go.sum
+      - go.mod
+      - Dockerfile
 
 permissions:
   id-token: write # This is required for requesting the JWT token
@@ -19,31 +41,13 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      changed: ${{ steps.changes.outputs.acm }}
       tag: ${{ steps.tag.outputs.tag }}
     steps:
-      - uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            acm:
-              - .github/workflows/build.yaml
-              - main.go
-              - api/**
-              - pkg/**
-              - controllers/**
-              - application-connector.yaml
-              - application-connector-dependencies.yaml
-              - go.sum
-              - go.mod
-              - Dockerfile
       - id: tag
         if: github.event_name == 'push' && github.ref_type == 'tag'
         run: echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
   unit-tests:
-    needs: setup
-    if: needs.setup.changed == 'true'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -62,7 +66,6 @@ jobs:
 
   build-image:
     needs: setup
-    if: needs.setup.changed == 'true'
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main # Usage: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: application-connector-manager
