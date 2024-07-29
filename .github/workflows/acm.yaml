@@ -74,6 +74,7 @@ jobs:
       tags: ${{ needs.setup.outputs.tag }}
 
   summary:
+    runs-on: ubuntu-latest
     needs: [setup, build-image]
     steps:
       - run: |
