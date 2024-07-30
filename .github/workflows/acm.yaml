@@ -85,12 +85,14 @@ jobs:
           name: test.log
       - name: "Generate summary"
         run: |
-          echo '# ACM Build' >> $GITHUB_STEP_SUMMARY
-          echo '## Test Log'
-          echo '```'
-          cat test.log >> $GITHUB_STEP_SUMMARY
-          echo '```'
-          echo '## Images' >> $GITHUB_STEP_SUMMARY
-          echo '```json' >> $GITHUB_STEP_SUMMARY
-          echo '${{ needs.build-image.outputs.images }}' | jq >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          {
+            echo '# ACM Build'
+            echo '## Test Log'
+            echo '```'
+            cat test.log
+            echo '```'
+            echo '## Images'
+            echo '```json'
+            echo '${{ needs.build-image.outputs.images }}' | jq
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
