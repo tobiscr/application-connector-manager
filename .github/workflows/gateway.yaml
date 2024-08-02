@@ -86,6 +86,5 @@ jobs:
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: central-application-gateway
-      dockerfile: components/central-application-gateway/Dockerfile
+      dockerfile: Dockerfile
       context: components/central-application-gateway
-      export-tags: true
