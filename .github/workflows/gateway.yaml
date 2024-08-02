@@ -8,7 +8,7 @@ on:
       - ".github/workflows/gateway.yaml"
       - "components/central-application-gateway"
   pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
     paths:
       - ".github/workflows/gateway.yaml"
       - "components/central-application-gateway"
