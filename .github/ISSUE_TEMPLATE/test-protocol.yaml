@@ -43,7 +43,7 @@ body:
       description: Steps of the test
       options:
         - label: Register events in back-office
-        - label: pare Serverless Function in Kyma
+        - label: Prepare Serverless Function in Kyma
         - label: Trigger an event in EC
         - label: Verify event was delivered and API called
   - type: textarea
