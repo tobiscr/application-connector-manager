@@ -163,7 +163,9 @@ func (r *repository) getApplication(appName string) (*v1alpha1.Application, appe
 		return nil, apperrors.Internal(message)
 	}
 
-	r.cache.Add(cacheKey, app, cache.DefaultExpiration)
+	if err := r.cache.Add(cacheKey, app, cache.DefaultExpiration); err != nil {
+		zap.L().Warn("Failed to update application cache entity '%s': %v", zap.String("appName", cacheKey), zap.Error(err))
+	}
 	return app, nil
 }
 
