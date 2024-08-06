@@ -27,6 +27,7 @@ type repository struct {
 	secretsManager Manager
 	application    string
 	cache          *cache.Cache
+	cacheRetention time.Duration
 }
 
 // Manager contains operations for managing k8s secrets
@@ -38,13 +39,15 @@ type Manager interface {
 
 // NewRepository creates a new secrets repository
 func NewRepository(secretsManager Manager) Repository {
-	cacheDuration, err := time.ParseDuration(os.Getenv("ACM_GATEWAY_SECRETCACHE_RETENTION"))
-	if err != nil || cacheDuration <= 0 {
-		cacheDuration = 5 * time.Minute
+	cacheRetention, err := time.ParseDuration(os.Getenv("ACM_GATEWAY_SECRETCACHE_RETENTION"))
+	if err != nil || cacheRetention <= 0 {
+		cacheRetention = 5 * time.Minute
 	}
+	zap.L().Info("Configuring application cache to store application data for %.2fm", zap.Float64("cacheDuration", cacheRetention.Minutes()))
 	return &repository{
 		secretsManager: secretsManager,
-		cache:          cache.New(cacheDuration, 3*time.Minute),
+		cache:          cache.New(cacheRetention, 3*time.Minute),
+		cacheRetention: cacheRetention,
 	}
 }
 
@@ -72,7 +75,7 @@ func (r *repository) Get(name string) (map[string][]byte, apperrors.AppError) {
 		return nil, apperrors.Internal("failed to get '%s' secret, %s", name, err)
 	}
 
-	if err := r.cache.Add(cacheKey, secret.Data, cache.DefaultExpiration); err != nil {
+	if err := r.cache.Add(cacheKey, secret.Data, r.cacheRetention); err != nil {
 		zap.L().Warn("Failed to update secret cache entity '%s': %v", zap.String("secretName", cacheKey), zap.Error(err))
 	}
 

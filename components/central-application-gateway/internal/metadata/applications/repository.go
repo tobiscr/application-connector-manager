@@ -32,8 +32,9 @@ type Manager interface {
 }
 
 type repository struct {
-	appManager Manager
-	cache      *cache.Cache
+	appManager     Manager
+	cache          *cache.Cache
+	cacheRetention time.Duration
 }
 
 // Credentials stores information about credentials needed to call an API
@@ -83,14 +84,15 @@ type ServiceRepository interface {
 
 // NewServiceRepository creates a new ApplicationServiceRepository
 func NewServiceRepository(appManager Manager) ServiceRepository {
-	cacheDuration, err := time.ParseDuration(os.Getenv("ACM_GATEWAY_APPCACHE_RETENTION"))
-	if err != nil || cacheDuration <= 0 {
-		cacheDuration = 5 * time.Minute
+	cacheRetention, err := time.ParseDuration(os.Getenv("ACM_GATEWAY_APPCACHE_RETENTION"))
+	if err != nil || cacheRetention <= 0 {
+		cacheRetention = 5 * time.Minute
 	}
-	zap.L().Info("Configuring application cache to store application data for %.2fm", zap.Float64("cacheDuration", cacheDuration.Minutes()))
+	zap.L().Info("Configuring application cache to store application data for %.2fm", zap.Float64("cacheDuration", cacheRetention.Minutes()))
 	return &repository{
-		appManager: appManager,
-		cache:      cache.New(cacheDuration, 3*time.Minute),
+		appManager:     appManager,
+		cache:          cache.New(cacheRetention, 3*time.Minute),
+		cacheRetention: cacheRetention,
 	}
 }
 
@@ -169,7 +171,7 @@ func (r *repository) getApplication(appName string) (*v1alpha1.Application, appe
 		return nil, apperrors.Internal(message)
 	}
 
-	if err := r.cache.Add(cacheKey, app, cache.DefaultExpiration); err != nil {
+	if err := r.cache.Add(cacheKey, app, r.cacheRetention); err != nil {
 		zap.L().Warn("Failed to update application cache entity '%s': %v", zap.String("appName", cacheKey), zap.Error(err))
 	}
 	return app, nil
