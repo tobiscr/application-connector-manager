@@ -25,7 +25,6 @@ type Repository interface {
 
 type repository struct {
 	secretsManager Manager
-	application    string
 	cache          *cache.Cache
 	cacheRetention time.Duration
 }
