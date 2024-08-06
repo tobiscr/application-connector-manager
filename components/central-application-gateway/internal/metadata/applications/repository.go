@@ -83,14 +83,14 @@ type ServiceRepository interface {
 
 // NewServiceRepository creates a new ApplicationServiceRepository
 func NewServiceRepository(appManager Manager) ServiceRepository {
-	cacheDuration, err := time.ParseDuration(os.Getenv("ACM_GATEWAY_APPCACHE_DURATION"))
+	cacheDuration, err := time.ParseDuration(os.Getenv("ACM_GATEWAY_APPCACHE_RETENTION"))
 	if err != nil || cacheDuration <= 0 {
 		cacheDuration = 5 * time.Minute
 	}
 	zap.L().Info("Configuring application cache to store application data for %.2fm", zap.Float64("cacheDuration", cacheDuration.Minutes()))
 	return &repository{
 		appManager: appManager,
-		cache:      cache.New(cacheDuration, 2*time.Minute),
+		cache:      cache.New(cacheDuration, 3*time.Minute),
 	}
 }
 
@@ -143,8 +143,14 @@ func (r *repository) getApplication(appName string) (*v1alpha1.Application, appe
 	var app *v1alpha1.Application
 	cacheKey := fmt.Sprintf("app-%s", appName)
 	if cachedItem, found := r.cache.Get(cacheKey); found {
-		app := cachedItem.(*v1alpha1.Application)
-		return app, nil
+		if cachedItem == nil {
+			zap.L().Warn("found empty application entity '%s' in cache - this is not expected, deleting it from cache now",
+				zap.String("appName", appName))
+			r.cache.Delete(cacheKey)
+		} else {
+			app := cachedItem.(*v1alpha1.Application)
+			return app, nil
+		}
 	}
 
 	app, err := r.appManager.Get(context.Background(), appName, v1.GetOptions{})
