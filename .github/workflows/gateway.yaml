@@ -88,7 +88,24 @@ jobs:
         with:
           name: app-gateway-test-results
           path: application-gateway-test.log
+
+  build-test-image:
+    needs: setup
+    if: needs.setup.outputs.test == 'true'
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: gateway-test
+      dockerfile: Dockerfile.gateway
+      context: tests
     
+  build-mock-app-image:
+    needs: setup
+    if: needs.setup.outputs.test == 'true'
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: mock-app
+      dockerfile: Dockerfile.mockapp
+      context: tests
 
   build-image:
     needs: setup
