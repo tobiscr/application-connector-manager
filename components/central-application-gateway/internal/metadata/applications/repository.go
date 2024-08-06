@@ -4,12 +4,15 @@ package applications
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
+	"time"
 
 	"go.uber.org/zap"
 
 	"github.com/kyma-project/kyma/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
 	"github.com/kyma-project/kyma/components/central-application-gateway/pkg/normalization"
+	"github.com/patrickmn/go-cache"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -30,6 +33,7 @@ type Manager interface {
 
 type repository struct {
 	appManager Manager
+	cache      *cache.Cache
 }
 
 // Credentials stores information about credentials needed to call an API
@@ -79,7 +83,15 @@ type ServiceRepository interface {
 
 // NewServiceRepository creates a new ApplicationServiceRepository
 func NewServiceRepository(appManager Manager) ServiceRepository {
-	return &repository{appManager: appManager}
+	cacheDuration, err := time.ParseDuration(os.Getenv("ACM_GATEWAY_APPCACHE_DURATION"))
+	if err != nil || cacheDuration <= 0 {
+		cacheDuration = 5 * time.Minute
+	}
+	zap.L().Info("Configuring application cache to store application data for %.2fm", zap.Float64("cacheDuration", cacheDuration.Minutes()))
+	return &repository{
+		appManager: appManager,
+		cache:      cache.New(cacheDuration, 2*time.Minute),
+	}
 }
 
 // Get reads Service from Application by service name (bundle SKR mode) and apiName (entry
@@ -128,6 +140,13 @@ func (r *repository) get(appName string, predicate func(service v1alpha1.Service
 }
 
 func (r *repository) getApplication(appName string) (*v1alpha1.Application, apperrors.AppError) {
+	var app *v1alpha1.Application
+	cacheKey := fmt.Sprintf("app-%s", appName)
+	if cachedItem, found := r.cache.Get(cacheKey); found {
+		app := cachedItem.(*v1alpha1.Application)
+		return app, nil
+	}
+
 	app, err := r.appManager.Get(context.Background(), appName, v1.GetOptions{})
 	if err != nil {
 		if k8serrors.IsNotFound(err) {
@@ -144,6 +163,7 @@ func (r *repository) getApplication(appName string) (*v1alpha1.Application, appe
 		return nil, apperrors.Internal(message)
 	}
 
+	r.cache.Add(cacheKey, app, cache.DefaultExpiration)
 	return app, nil
 }
 
