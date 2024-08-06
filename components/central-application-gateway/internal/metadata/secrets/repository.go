@@ -43,7 +43,7 @@ func NewRepository(secretsManager Manager) Repository {
 	if err != nil || cacheRetention <= 0 {
 		cacheRetention = 5 * time.Minute
 	}
-	zap.L().Info("Configuring application cache to store application data for %.2fm", zap.Float64("cacheDuration", cacheRetention.Minutes()))
+	zap.L().Info("Configuring application cache to store application data for %.2fm", zap.Float64("cacheRetention", cacheRetention.Minutes()))
 	return &repository{
 		secretsManager: secretsManager,
 		cache:          cache.New(cacheRetention, 3*time.Minute),
