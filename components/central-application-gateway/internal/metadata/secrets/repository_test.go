@@ -92,8 +92,7 @@ func TestRepository_Get(t *testing.T) {
 
 		// when
 		for i := 0; i < 100; i++ {
-			// only first object will be retrieved from manager and afterwards from cache otherwise manager mock will fail
-			// when
+			// only first secret will be retrieved from manager and afterwards from cache otherwise manager mock will fail
 			secret, err := repository.Get("new-secret")
 			assert.NoError(t, err)
 			assert.Equal(t, []byte("CLIENT_ID"), secret["clientId"])
