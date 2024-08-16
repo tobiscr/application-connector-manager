@@ -36,7 +36,7 @@ func parseArgs(rootCmd *cobra.Command, opts *options, setupLogger *zap.Logger) {
 	rootCmd.Flags().IntVar(&opts.requestTimeout, "requestTimeout", 10, "Timeout for requests sent through Central Application Gateway, expressed in seconds")
 
 	rootCmd.Flags().DurationVar(&opts.secretCacheRetention, "secretCacheRetention", time.Minute*5, "Retention time how long a secret is cached by the Central Application Gateway")
-	rootCmd.Flags().DurationVar(&opts.applicationCacheRetention, "applicationCacheRetention", 10, "Retention time how long an application is cached by the Central Application Gateway")
+	rootCmd.Flags().DurationVar(&opts.applicationCacheRetention, "applicationCacheRetention", time.Minute*5, "Retention time how long an application is cached by the Central Application Gateway")
 
 	opts.logArgs(setupLogger)
 }
