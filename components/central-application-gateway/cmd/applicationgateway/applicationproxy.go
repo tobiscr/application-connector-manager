@@ -88,36 +88,6 @@ func initViper(setupLogger *zap.Logger) {
 	}
 }
 
-func parseArgs(rootCmd *cobra.Command, opts *options, setupLogger *zap.Logger) {
-	rootCmd.Flags().StringVar(&opts.apiServerURL, "apiServerURL", "", "The address of the Kubernetes API server. Overrides any value in kubeconfig. Only required if out-of-cluster.")
-	rootCmd.Flags().StringVar(&opts.applicationSecretsNamespace, "applicationSecretsNamespace", "kyma-system", "Namespace where Application secrets used by the Application Gateway exist")
-	rootCmd.Flags().IntVar(&opts.externalAPIPort, "externalAPIPort", 8081, "Port that exposes the API which allows checking the component status and exposes log configuration")
-	rootCmd.Flags().StringVar(&opts.kubeConfig, "kubeConfig", "", "Path to a kubeconfig. Only required if out-of-cluster")
-	opts.logLevel = zap.LevelFlag("logLevel", zap.InfoLevel, "Log level: panic | fatal | error | warn | info | debug. Can't be lower than info")
-	rootCmd.Flags().IntVar(&opts.proxyCacheTTL, "proxyCacheTTL", 120, "TTL, in seconds, for proxy cache of Remote API information")
-	rootCmd.Flags().IntVar(&opts.proxyPort, "proxyPort", 8080, "Port that acts as a proxy for the calls from services and Functions to an external solution in the default standalone mode or Compass bundles with a single API definition")
-	rootCmd.Flags().IntVar(&opts.proxyPortCompass, "proxyPortCompass", 8082, "Port that acts as a proxy for the calls from services and Functions to an external solution in the Compass mode")
-	rootCmd.Flags().IntVar(&opts.proxyTimeout, "proxyTimeout", 10, "Timeout for requests sent through the proxy, expressed in seconds")
-	rootCmd.Flags().IntVar(&opts.requestTimeout, "requestTimeout", 10, "Timeout for requests sent through Central Application Gateway, expressed in seconds")
-
-	opts.logArgs(setupLogger)
-}
-
-func (o options) logArgs(log *zap.Logger) {
-	log.Info("Parsed flags",
-		zap.String("-apiServerURL", o.apiServerURL),
-		zap.String("-applicationSecretsNamespace", o.applicationSecretsNamespace),
-		zap.Int("-externalAPIPort", o.externalAPIPort),
-		zap.String("-kubeConfig", o.kubeConfig),
-		zap.String("-logLevel", o.logLevel.String()),
-		zap.Int("-proxyCacheTTL", o.proxyCacheTTL),
-		zap.Int("-proxyPort", o.proxyPort),
-		zap.Int("-proxyPortCompass", o.proxyPortCompass),
-		zap.Int("-proxyTimeout", o.proxyTimeout),
-		zap.Int("-requestTimeout", o.requestTimeout),
-	)
-}
-
 func runCmd(setupLogger *zap.Logger, options *options) {
 
 	setupLogger.Info("Starting Application Gateway")
@@ -151,7 +121,7 @@ func runCmd(setupLogger *zap.Logger, options *options) {
 	serviceDefinitionService, err := newServiceDefinitionService(
 		k8sConfig,
 		coreClientset,
-		options.applicationSecretsNamespace,
+		options,
 	)
 	if err != nil {
 		log.Fatal("Unable to create ServiceDefinitionService:'", zap.Error(err))
@@ -265,20 +235,20 @@ func newAuthenticationStrategyFactory(oauthClientTimeout int) authorization.Stra
 	})
 }
 
-func newServiceDefinitionService(k8sConfig *restclient.Config, coreClientset kubernetes.Interface, namespace string) (metadata.ServiceDefinitionService, error) {
-	applicationServiceRepository, apperror := newApplicationRepository(k8sConfig)
+func newServiceDefinitionService(k8sConfig *restclient.Config, coreClientset kubernetes.Interface, options *options) (metadata.ServiceDefinitionService, error) {
+	applicationServiceRepository, apperror := newApplicationRepository(k8sConfig, options.applicationCacheRetention)
 	if apperror != nil {
 		return nil, apperror
 	}
 
-	secretsRepository := newSecretsRepository(coreClientset, namespace)
+	secretsRepository := newSecretsRepository(coreClientset, options.applicationSecretsNamespace, options.secretCacheRetention)
 
 	serviceAPIService := serviceapi.NewService(secretsRepository)
 
 	return metadata.NewServiceDefinitionService(serviceAPIService, applicationServiceRepository), nil
 }
 
-func newApplicationRepository(config *restclient.Config) (applications.ServiceRepository, apperrors.AppError) {
+func newApplicationRepository(config *restclient.Config, cacheRetention time.Duration) (applications.ServiceRepository, apperrors.AppError) {
 	applicationClientset, err := versioned.NewForConfig(config)
 	if err != nil {
 		return nil, apperrors.Internal("failed to create k8s application client, %s", err)
@@ -286,13 +256,13 @@ func newApplicationRepository(config *restclient.Config) (applications.ServiceRe
 
 	rei := applicationClientset.ApplicationconnectorV1alpha1().Applications()
 
-	return applications.NewServiceRepository(rei), nil
+	return applications.NewServiceRepository(rei, cacheRetention), nil
 }
 
-func newSecretsRepository(coreClientset kubernetes.Interface, namespace string) secrets.Repository {
+func newSecretsRepository(coreClientset kubernetes.Interface, namespace string, cacheRetention time.Duration) secrets.Repository {
 	sei := coreClientset.CoreV1().Secrets(namespace)
 
-	return secrets.NewRepository(sei)
+	return secrets.NewRepository(sei, cacheRetention)
 }
 
 func newCSRFClient(timeout int) csrf.Client {
