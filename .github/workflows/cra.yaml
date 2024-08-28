@@ -66,7 +66,20 @@ jobs:
         cache-dependency-path: components/compass-runtime-agent/go.sum
     - name: Run unit tests
       working-directory: ./components/compass-runtime-agent
-      run: make test
+      run: make test | tee test.log
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test.log
+        path: test.log
+    - name: Generate summary
+      run: |
+          {
+            echo '## Test Log'
+            echo '```'
+            cat test.log
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
 
   k3d-integration:
     # we're using reusable because we can't modify workflows as contributors
@@ -96,3 +109,16 @@ jobs:
       name: compass-runtime-agent
       dockerfile: Dockerfile
       context: components/compass-runtime-agent
+  
+  print-images:
+    runs-on: ubuntu-latest
+    needs: [build-image]
+    steps:
+      - name: "Generate summary"
+        run: |
+          {
+            echo '## Images'
+            echo '```json'
+            echo '${{ needs.build-image.outputs.images }}' | jq
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
