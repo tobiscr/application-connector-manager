@@ -38,6 +38,10 @@ jobs:
       cra: ${{ steps.detect-files.outputs.cra_any_changed }}
       test: ${{ steps.detect-files.outputs.test_any_changed }}
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
     - name: Detect files
       id: detect-files
       uses: tj-actions/changed-files@d6babd6899969df1a11d14c368283ea4436bca78
@@ -58,7 +62,9 @@ jobs:
     if: needs.setup.outputs.cra == 'true'
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
     - name: Set up go environment
       uses: actions/setup-go@v5
       with:
