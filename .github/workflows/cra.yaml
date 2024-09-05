@@ -58,7 +58,7 @@ jobs:
               - .github/workflows/cra.yaml
       - name: Fallback values
         id: fallback-values
-        if: steps.detect-files.outcome == 'false'
+        if: steps.detect-files.outcome != 'success'
         run: |
           echo "cra_any_changed=true" >> $GITHUB_OUTPUT
           echo "test_any_changed=true" >> $GITHUB_OUTPUT
