@@ -77,9 +77,11 @@ jobs:
         working-directory: ./components/compass-runtime-agent
         run: |
           echo '## Test Log' >> $GITHUB_STEP_SUMMARY
+          echo "<details>\n<summary>Click to expand logs</summary>" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          make test | tee $GITHUB_STEP_SUMMARY
+          make test | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
 
   k3d-integration:
     # we're using reusable because we can't modify workflows as contributors
@@ -112,13 +114,24 @@ jobs:
 
   print-images:
     runs-on: ubuntu-latest
-    needs: [build-image]
+
+    # if any of the build jobs succeeded - run this job
+    needs: [build-image, build-test-image]
+    if: always() && contains(needs.*.result, 'success')
+
     steps:
       - name: "Generate summary"
         run: |
           {
             echo '## Images'
             echo '```json'
-            echo '${{ needs.build-image.outputs.images }}' | jq
+            if [ "${{ needs.build-image.result }}" == "success" ]; then
+              echo '${{ needs.build-image.outputs.images }}' | jq
+            fi
+
+            if [ "${{ needs.build-test-image.result }}" == "success" ]; then
+              echo '${{ needs.build-test-image.outputs.images }}' | jq
+            fi
+
             echo '```'
           } >> $GITHUB_STEP_SUMMARY
