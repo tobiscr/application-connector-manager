@@ -2,7 +2,7 @@ module github.com/kyma-project/kyma/components/central-application-gateway
 
 go 1.22.0
 
-toolchain go1.22.5
+toolchain go1.22.6
 
 require (
 	github.com/gorilla/mux v1.8.1
