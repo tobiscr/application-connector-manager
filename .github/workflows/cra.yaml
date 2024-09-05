@@ -77,7 +77,7 @@ jobs:
         working-directory: ./components/compass-runtime-agent
         run: |
           echo '## Test Log' >> $GITHUB_STEP_SUMMARY
-          echo "<details>\n<summary>Click to expand logs</summary>"
+          echo "<details>\n<summary>Click to expand logs</summary>" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           make test | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
