@@ -43,6 +43,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+          repository: ${{ github.repository}}
       - name: Detect files
         id: detect-files
         uses: tj-actions/changed-files@d6babd6899969df1a11d14c368283ea4436bca78
@@ -66,6 +67,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+          repository: ${{ github.repository}}
       - name: Set up go environment
         uses: actions/setup-go@v5
         with:
