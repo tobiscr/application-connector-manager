@@ -78,7 +78,7 @@ jobs:
         run: |
           echo '## Test Log' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          make test | tee $GITHUB_STEP_SUMMARY
+          make test | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
   k3d-integration:
