@@ -20,7 +20,7 @@ jobs:
       - uses: azure/setup-helm@v4.1.0
         id: install-helm
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -43,5 +43,14 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: compass-runtime-agent-test-results
+          name: k3d-agent-test-logs
           path: compass-runtime-agent-test.log
+      - name: test summary
+        run: |
+          echo "# K3D Agent Test Summary:" >> $GITHUB_STEP_SUMMARY
+          echo "<details>" >> $GITHUB_STEP_SUMMARY
+          echo "<summary>Click to expand logs</summary>" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat compass-runtime-agent-test.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
