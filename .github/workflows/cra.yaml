@@ -85,15 +85,17 @@ jobs:
         run: |
           touch test.log
           make test | tee -a test.log
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
+      - name: Archive test results
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
         with:
           name: cra-unit-test.log
           path: ./components/compass-runtime-agent/test.log
       - name: Unit test summary
+        if: success() || failure()
         run: |
           {
-            echo '## test log'
+            echo '## CRA Unit Tests'
             echo "<details>"
             echo "<summary>click to expand logs</summary>"
             echo '```'
@@ -142,7 +144,7 @@ jobs:
       - name: "Generate summary"
         run: |
           {
-            echo '## Images'
+            echo '## CRA Images'
             echo '```json'
             if [ "${{ needs.build-image.result }}" == "success" ]; then
               echo '${{ needs.build-image.outputs.images }}' | jq
