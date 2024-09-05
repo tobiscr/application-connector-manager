@@ -90,9 +90,9 @@ jobs:
             echo '## Gateway Unit Tests'
             echo "<details>"
             echo "<summary>click to expand logs</summary>"
-            echo '```'
+            printf '\n```\n'
             cat ./components/central-application-gateway/test.log
-            echo '```'
+            printf '\n```\n'
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
 
@@ -130,9 +130,9 @@ jobs:
             echo '## Gateway Integration Tests'
             echo "<details>"
             echo "<summary>click to expand logs</summary>"
-            echo '```'
+            printf '\n```\n'
             cat application-gateway-test.log
-            echo '```'
+            printf '\n```\n'
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
 
@@ -175,7 +175,7 @@ jobs:
         run: |
           {
             echo '## Gateway Images'
-            echo '```json'
+            printf '\n```json\n'
             if [ "${{ needs.build-image.result }}" == "success" ]; then
               echo '${{ needs.build-image.outputs.images }}' | jq
             fi
@@ -188,5 +188,5 @@ jobs:
               echo '${{ needs.build-mock-app-image.outputs.images }}' | jq
             fi
 
-            echo '```'
+            printf '\n```\n'
           } >> $GITHUB_STEP_SUMMARY

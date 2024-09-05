@@ -84,9 +84,9 @@ jobs:
             echo '## Validator Unit Tests'
             echo "<details>"
             echo "<summary>click to expand logs</summary>"
-            echo "\n"'```'"\n"
+            printf '\n```\n'
             cat ./components/central-application-connectivity-validator/test.log
-            echo "\n"'```'"\n"
+            printf '\n```\n'
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
 
@@ -123,9 +123,9 @@ jobs:
             echo '## CRA Integration Tests'
             echo "<details>"
             echo "<summary>click to expand logs</summary>"
-            echo '```'
+            printf '\n```\n'
             cat application-connectivity-validator-test.log
-            echo '```'
+            printf '\n```\n'
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
 
@@ -160,7 +160,7 @@ jobs:
         run: |
           {
             echo '## Validator Images'
-            echo '```json'
+            printf '\n```json\n'
             if [ "${{ needs.build-image.result }}" == "success" ]; then
               echo '${{ needs.build-image.outputs.images }}' | jq
             fi
@@ -169,5 +169,5 @@ jobs:
               echo '${{ needs.build-test-image.outputs.images }}' | jq
             fi
 
-            echo '```'
+            printf '\n```\n'
           } >> $GITHUB_STEP_SUMMARY
