@@ -36,8 +36,8 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     outputs:
-      cra: ${{ steps.detect-files.outputs.cra_any_changed }} || ${{ steps.fallback-values.outputs.cra_any_changed }}
-      test: ${{ steps.detect-files.outputs.test_any_changed }} || ${{ steps.fallback-values.outputs.test_any_changed }}
+      cra: ${{ steps.detect-files.outputs.cra_any_changed || steps.fallback-values.outputs.cra_any_changed }}
+      test: ${{ steps.detect-files.outputs.test_any_changed || steps.fallback-values.outputs.test_any_changed }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
