@@ -84,9 +84,9 @@ jobs:
             echo '## Validator Unit Tests'
             echo "<details>"
             echo "<summary>click to expand logs</summary>"
-            echo '```'
+            echo "\n"'```'"\n"
             cat ./components/central-application-connectivity-validator/test.log
-            echo '```'
+            echo "\n"'```'"\n"
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
 
