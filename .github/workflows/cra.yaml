@@ -42,8 +42,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
-          repository: ${{ github.repository}}
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Detect files
         id: detect-files
         uses: tj-actions/changed-files@d6babd6899969df1a11d14c368283ea4436bca78
