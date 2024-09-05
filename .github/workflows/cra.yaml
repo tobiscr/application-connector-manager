@@ -83,13 +83,24 @@ jobs:
       - name: Run unit tests
         working-directory: ./components/compass-runtime-agent
         run: |
-          echo '## Test Log' >> $GITHUB_STEP_SUMMARY
-          echo "<details>" >> $GITHUB_STEP_SUMMARY
-          echo "<summary>Click to expand logs</summary>" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          make test | tee -a $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          echo "</details>" >> $GITHUB_STEP_SUMMARY
+          touch test.log
+          make test | tee -a test.log
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: cra-unit-test.log
+          path: ./components/compass-runtime-agent/test.log
+      - name: Unit test summary
+        run: |
+          {
+            echo '## test log'
+            echo "<details>"
+            echo "<summary>click to expand logs</summary>"
+            echo '```'
+            cat ./components/compass-runtime-agent/test.log
+            echo '```'
+            echo "</details>"
+          } >> $GITHUB_STEP_SUMMARY
 
   k3d-integration:
     # we're using reusable because we can't modify workflows as contributors
