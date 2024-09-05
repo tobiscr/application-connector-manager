@@ -114,8 +114,11 @@ jobs:
 
   print-images:
     runs-on: ubuntu-latest
+
+    # if any of the build jobs succeeded - run this job
     needs: [build-image, build-test-image]
     if: always() && contains(needs.*.result, 'success')
+
     steps:
       - name: "Generate summary"
         run: |
