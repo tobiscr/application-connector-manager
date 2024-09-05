@@ -66,8 +66,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
-          repository: ${{ github.repository}}
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Set up go environment
         uses: actions/setup-go@v5
         with:
@@ -79,9 +79,10 @@ jobs:
           {
             echo '## Test Log'
             echo '```'
-            make test
-            echo '```'
           } >> $GITHUB_STEP_SUMMARY
+
+          make test | tee $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
   k3d-integration:
     # we're using reusable because we can't modify workflows as contributors
