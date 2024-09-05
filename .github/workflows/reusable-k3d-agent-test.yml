@@ -1,11 +1,11 @@
-name: Run compass-runtime-agent integration tests on k3d 
+name: Run compass-runtime-agent integration tests on k3d
 on:
   workflow_call:
     inputs:
-       k3d-version:
-         required: true
-         type: string
-         default: v5.6.0
+      k3d-version:
+        required: true
+        type: string
+        default: v5.6.0
     secrets:
       compass-host:
         required: true
@@ -23,6 +23,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
+          repository: ${{ github.repository}}
       - name: Set up go environment
         uses: actions/setup-go@v4
         with:
@@ -36,7 +37,7 @@ jobs:
         env:
           COMPASS_CLIENT_ID: ${{ secrets.compass-client-id }}
           COMPASS_CLIENT_SECRET: ${{ secrets.compass-client-secret }}
-          COMPASS_HOST: ${{ secrets.compass-host }} 
+          COMPASS_HOST: ${{ secrets.compass-host }}
         run: make -C tests/hack/ci k3d-agent-tests
       - name: archive-logs
         if: always()
