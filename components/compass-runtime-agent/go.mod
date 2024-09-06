@@ -7,7 +7,7 @@ toolchain go1.22.6
 require (
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
-	github.com/kofalt/go-memoize v0.0.0-20200917044458-9b55a8d73e1c
+	github.com/kofalt/go-memoize v0.0.0-20240506050413-9e5eb99a0f2a
 	github.com/kyma-incubator/compass/components/connector v0.0.0-20220104122431-99ed924ea212
 	github.com/kyma-incubator/compass/components/director v0.0.0-20220126084901-92232f5eced0
 	github.com/kyma-project/kyma/components/central-application-gateway v0.0.0-20230201152417-102edd243eab
