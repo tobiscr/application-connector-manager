@@ -7,13 +7,13 @@ require (
 	github.com/onsi/gomega v1.33.1
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8
+	golang.org/x/exp v0.0.0-20240904232852-e7e105dedf7e
 	istio.io/client-go v1.22.1
 	k8s.io/api v0.30.1
 	k8s.io/apiextensions-apiserver v0.29.5
 	k8s.io/apimachinery v0.30.3
 	k8s.io/client-go v0.29.5
-	k8s.io/utils v0.0.0-20240502163921-fe8a2dddb1d0
+	k8s.io/utils v0.0.0-20240902221715-702e33fdd3c3
 	sigs.k8s.io/controller-runtime v0.17.2
 )
 
@@ -56,13 +56,13 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/net v0.26.0 // indirect
+	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
-	golang.org/x/sys v0.21.0 // indirect
-	golang.org/x/term v0.21.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/term v0.23.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	golang.org/x/tools v0.22.0 // indirect
+	golang.org/x/tools v0.24.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240610135401-a8a62080eff3 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
@@ -78,4 +78,13 @@ require (
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
-replace google.golang.org/protobuf => google.golang.org/protobuf v1.33.0
+replace (
+	golang.org/x/crypto => golang.org/x/crypto v0.26.0
+	golang.org/x/net => golang.org/x/net v0.28.0
+	golang.org/x/sys => golang.org/x/sys v0.25.0
+	golang.org/x/term => golang.org/x/term v0.24.0
+	golang.org/x/text => golang.org/x/text v0.18.0
+	golang.org/x/time => golang.org/x/time v0.6.0
+	golang.org/x/tools => golang.org/x/tools v0.24.0
+	google.golang.org/protobuf => google.golang.org/protobuf v1.33.0
+)
