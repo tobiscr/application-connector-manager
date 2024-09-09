@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM golang:1.22.6-alpine as builder
+FROM golang:1.23.0-alpine3.20 as builder
 
 WORKDIR /acm-workspace
 
