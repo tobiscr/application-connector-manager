@@ -3,8 +3,8 @@ module github.com/kyma-project/application-connector-manager
 go 1.22.5
 
 require (
-	github.com/onsi/ginkgo/v2 v2.17.2
-	github.com/onsi/gomega v1.33.1
+	github.com/onsi/ginkgo/v2 v2.20.1
+	github.com/onsi/gomega v1.34.2
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/exp v0.0.0-20240904232852-e7e105dedf7e
@@ -37,7 +37,7 @@ require (
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/google/pprof v0.0.0-20240424215950-a892ee059fd6 // indirect
+	github.com/google/pprof v0.0.0-20240827171923-fa2c70bbbfe5 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
