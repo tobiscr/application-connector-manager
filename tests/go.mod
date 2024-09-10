@@ -86,5 +86,6 @@ replace (
 	golang.org/x/crypto => golang.org/x/crypto v0.26.0
 	golang.org/x/net => golang.org/x/net v0.28.0
 	golang.org/x/text => golang.org/x/text v0.18.0
+	golang.org/x/time => golang.org/x/time v0.6.0
 	google.golang.org/protobuf => google.golang.org/protobuf v1.33.0
 )

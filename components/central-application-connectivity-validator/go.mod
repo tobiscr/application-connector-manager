@@ -2,7 +2,7 @@ module github.com/kyma-project/kyma/components/central-application-connectivity-
 
 go 1.22.0
 
-toolchain go1.22.6
+toolchain go1.23.0
 
 require (
 	github.com/gorilla/mux v1.8.1
