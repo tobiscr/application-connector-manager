@@ -17,13 +17,13 @@ func newResult(application v1alpha1.Application, applicationID string, operation
 	}
 }
 
-func ApplicationExists(applicationName string, applicationList []v1alpha1.Application) bool {
+func ApplicationExists(applicationID string, applicationList []v1alpha1.Application) bool {
 	if applicationList == nil {
 		return false
 	}
 
 	for _, runtimeApplication := range applicationList {
-		if runtimeApplication.Name == applicationName {
+		if runtimeApplication.GetApplicationID() == applicationID {
 			return true
 		}
 	}

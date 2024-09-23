@@ -20,11 +20,12 @@ type service struct {
 	converter                applications.Converter
 	credentialsService       appsecrets.CredentialsService
 	requestParametersService appsecrets.RequestParametersService
+	normalizer               applications.DefaultNormalizator
 }
 
 //go:generate mockery --name=Service
 type Service interface {
-	Apply(applications []model.Application) ([]Result, apperrors.AppError)
+	Apply(applications []model.Application, normalizeAppNames bool) ([]Result, apperrors.AppError)
 }
 
 type Operation int
@@ -48,10 +49,11 @@ func NewService(applicationRepository applications.Repository, converter applica
 		converter:                converter,
 		credentialsService:       credentialsService,
 		requestParametersService: requestParametersService,
+		normalizer:               applications.DefaultNormalizator{},
 	}
 }
 
-func (s *service) Apply(directorApplications []model.Application) ([]Result, apperrors.AppError) {
+func (s *service) Apply(directorApplications []model.Application, normalizeAppNames bool) ([]Result, apperrors.AppError) {
 	log.Infof("Applications passed to Sync service: %d", len(directorApplications))
 
 	currentApplications, err := s.getExistingRuntimeApplications()
@@ -61,6 +63,10 @@ func (s *service) Apply(directorApplications []model.Application) ([]Result, app
 	}
 
 	compassCurrentApplications := s.filterCompassApplications(currentApplications)
+
+	if normalizeAppNames {
+		directorApplications = s.normalizeDirectorApplications(directorApplications)
+	}
 
 	return s.apply(compassCurrentApplications, directorApplications), nil
 }
@@ -115,12 +121,19 @@ func (s *service) filterCompassApplications(applications []v1alpha1.Application)
 	return compassApplications
 }
 
+func (s *service) normalizeDirectorApplications(directorApplications []model.Application) []model.Application {
+	for _, application := range directorApplications {
+		application.Name = s.normalizer.Normalize(application.Name) // be really careful with random suffixes here!!!
+	}
+	return directorApplications
+}
+
 func (s *service) createApplications(directorApplications []model.Application, runtimeApplications []v1alpha1.Application) []Result {
 	log.Infof("Creating applications.")
 	results := make([]Result, 0)
 
 	for _, directorApplication := range directorApplications {
-		if !ApplicationExists(directorApplication.Name, runtimeApplications) {
+		if !ApplicationExists(directorApplication.ID, runtimeApplications) {
 			result := s.createApplication(directorApplication, s.converter.Do(directorApplication))
 			results = append(results, result)
 		}
@@ -297,7 +310,7 @@ func (s *service) updateApplications(directorApplications []model.Application, r
 	results := make([]Result, 0)
 
 	for _, directorApplication := range directorApplications {
-		if ApplicationExists(directorApplication.Name, runtimeApplications) {
+		if ApplicationExists(directorApplication.ID, runtimeApplications) {
 			existentApplication := GetApplication(directorApplication.Name, runtimeApplications)
 			result := s.updateApplication(directorApplication, existentApplication, s.converter.Do(directorApplication))
 			results = append(results, result)
