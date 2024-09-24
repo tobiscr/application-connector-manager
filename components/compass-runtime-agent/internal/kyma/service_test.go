@@ -276,7 +276,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		_, err := kymaService.Apply(directorApplications)
+		_, err := kymaService.Apply(directorApplications, false)
 
 		// then
 		assert.Error(t, err)
@@ -331,7 +331,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		result, err := kymaService.Apply(directorApplications)
+		result, err := kymaService.Apply(directorApplications, false)
 
 		// then
 		assert.NoError(t, err)
@@ -400,7 +400,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		result, err := kymaService.Apply(directorApplications)
+		result, err := kymaService.Apply(directorApplications, false)
 
 		// then
 		assert.NoError(t, err)
@@ -461,7 +461,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		result, err := kymaService.Apply(directorApplications)
+		result, err := kymaService.Apply(directorApplications, false)
 
 		// then
 		assert.NoError(t, err)
@@ -539,7 +539,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		result, err := kymaService.Apply(directorApplications)
+		result, err := kymaService.Apply(directorApplications, false)
 
 		// then
 		assert.NoError(t, err)
@@ -578,7 +578,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		result, err := kymaService.Apply([]model.Application{})
+		result, err := kymaService.Apply([]model.Application{}, false)
 
 		// then
 		assert.NoError(t, err)
@@ -620,7 +620,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		result, err := kymaService.Apply([]model.Application{})
+		result, err := kymaService.Apply([]model.Application{}, false)
 
 		// then
 		assert.NoError(t, err)
@@ -663,7 +663,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		result, err := kymaService.Apply([]model.Application{})
+		result, err := kymaService.Apply([]model.Application{}, false)
 
 		// then
 		assert.NoError(t, err)
@@ -732,7 +732,7 @@ func TestKymaService(t *testing.T) {
 
 		// when
 		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
-		result, err := kymaService.Apply(directorApplications)
+		result, err := kymaService.Apply(directorApplications, false)
 
 		// then
 		require.NoError(t, err)

@@ -58,7 +58,7 @@ func (c converter) Do(application model.Application) v1alpha1.Application {
 			APIVersion: "applicationconnector.kyma-project.io/v1alpha1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:   application.Name, // here we must normalize name
+			Name:   application.Name,
 			Labels: map[string]string{managedByLabelKey: managedByLabelValue},
 		},
 		Spec: v1alpha1.ApplicationSpec{

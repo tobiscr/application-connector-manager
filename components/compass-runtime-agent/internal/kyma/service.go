@@ -2,17 +2,16 @@ package kyma
 
 import (
 	"fmt"
-
-	"github.com/kyma-project/kyma/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
-	log "github.com/sirupsen/logrus"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
+	"github.com/kyma-project/kyma/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
 	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/apperrors"
 	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/kyma/applications"
 	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/kyma/model"
 	appsecrets "github.com/kyma-project/kyma/components/compass-runtime-agent/internal/kyma/secrets"
+	log "github.com/sirupsen/logrus"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type service struct {
@@ -65,7 +64,12 @@ func (s *service) Apply(directorApplications []model.Application, normalizeAppNa
 	compassCurrentApplications := s.filterCompassApplications(currentApplications)
 
 	if normalizeAppNames {
-		directorApplications = s.normalizeDirectorApplications(directorApplications)
+		directorApplications, err = s.normalizeDirectorApplications(directorApplications)
+
+		if err != nil {
+			log.Errorf("Failed to synchronize Compass applications: %s.", err)
+			return nil, err
+		}
 	}
 
 	return s.apply(compassCurrentApplications, directorApplications), nil
@@ -121,11 +125,20 @@ func (s *service) filterCompassApplications(applications []v1alpha1.Application)
 	return compassApplications
 }
 
-func (s *service) normalizeDirectorApplications(directorApplications []model.Application) []model.Application {
+func (s *service) normalizeDirectorApplications(directorApplications []model.Application) ([]model.Application, apperrors.AppError) {
+	usedNames := map[string]bool{}
+
 	for _, application := range directorApplications {
 		application.Name = s.normalizer.Normalize(application.Name) // be really careful with random suffixes here!!!
+
+		if _, found := usedNames[application.Name]; found {
+			return nil, apperrors.AlreadyExists("The compass application name is duplicated %s", application.Name)
+		} else {
+			usedNames[application.Name] = true
+		}
 	}
-	return directorApplications
+
+	return directorApplications, nil
 }
 
 func (s *service) createApplications(directorApplications []model.Application, runtimeApplications []v1alpha1.Application) []Result {
@@ -310,7 +323,7 @@ func (s *service) updateApplications(directorApplications []model.Application, r
 	results := make([]Result, 0)
 
 	for _, directorApplication := range directorApplications {
-		if ApplicationExists(directorApplication.ID, runtimeApplications) {
+		if ApplicationExists(directorApplication.Name, runtimeApplications) {
 			existentApplication := GetApplication(directorApplication.Name, runtimeApplications)
 			result := s.updateApplication(directorApplication, existentApplication, s.converter.Do(directorApplication))
 			results = append(results, result)

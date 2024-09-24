@@ -162,8 +162,7 @@ func (s *crSupervisor) SynchronizeWithCompass(ctx context.Context, connection *v
 	}
 
 	normalizeAppNames := true
-	val, exists := runtimeLabels[isNormalizedLabel]
-	if exists {
+	if val, exists := runtimeLabels[isNormalizedLabel]; exists {
 		if isNormalized, ok := val.(string); ok {
 			normalizeAppNames = isNormalized != "true"
 		}
