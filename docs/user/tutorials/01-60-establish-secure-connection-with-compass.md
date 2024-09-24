@@ -1,8 +1,5 @@
 # Establish a Secure Connection with Compass
 
-> [!WARNING]
-> Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality.
-
 To establish a secure connection with Compass and generate the client certificate, follow this tutorial.
 
 ## Prerequisites
