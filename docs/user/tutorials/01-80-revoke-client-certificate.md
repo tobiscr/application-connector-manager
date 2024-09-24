@@ -1,8 +1,5 @@
 # Revoke a Client Certificate (RA)
 
-> [!WARNING]
-> Runtime Agent is currently not integrated into the Application Connector module. Proceed with caution and consult the respective documentation for the Application Connector module's current configuration and functionality.
-
 After you have established a secure connection with Compass and generated a client certificate, you may want to revoke this certificate at some point. To revoke a client certificate, follow the steps in this tutorial.
 
 > [!NOTE]
