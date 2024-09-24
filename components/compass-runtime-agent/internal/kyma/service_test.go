@@ -340,6 +340,107 @@ func TestKymaService(t *testing.T) {
 		applicationsManagerMock.AssertExpectations(t)
 	})
 
+	t.Run("should apply Create operation and normalize application name", func(t *testing.T) {
+		// given
+		applicationsManagerMock := &appMocks.Repository{}
+		converterMock := &appMocks.Converter{}
+		credentialsServiceMock := &appSecrets.CredentialsService{}
+		requestParametersServiceMock := &appSecrets.RequestParametersService{}
+
+		api := fixDirectorAPiDefinition("API1", "name", "API description")
+		eventAPI := fixDirectorEventAPIDefinition("EventAPI1", "name", "Event API 1 description")
+
+		apiBundle1 := fixAPIBundle("bundle1", []model.APIDefinition{api}, nil, nil)
+		apiBundle2 := fixAPIBundle("bundle2", nil, []model.EventAPIDefinition{eventAPI}, nil)
+		apiBundle3 := fixAPIBundle("bundle3", []model.APIDefinition{api}, []model.EventAPIDefinition{eventAPI}, nil)
+		directorApplication := fixDirectorApplication("id1", "test@application", apiBundle1, apiBundle2, apiBundle3)
+
+		entry1 := fixAPIEntry("API1", "api1")
+		entry2 := fixEventAPIEntry("EventAPI1", "eventapi1")
+
+		newRuntimeService1 := fixService("bundle1", entry1)
+		newRuntimeService2 := fixService("bundle2", entry2)
+		newRuntimeService3 := fixService("bundle3", entry1, entry2)
+
+		newRuntimeApplication := getTestApplication("mp-test-application", "id1", []v1alpha1.Service{newRuntimeService1, newRuntimeService2, newRuntimeService3})
+
+		directorApplications := []model.Application{
+			directorApplication,
+		}
+
+		existingRuntimeApplications := v1alpha1.ApplicationList{
+			Items: []v1alpha1.Application{},
+		}
+
+		directorNormalizedApplication := fixDirectorApplication("id1", "mp-test-application", apiBundle1, apiBundle2, apiBundle3)
+
+		converterMock.On("Do", directorNormalizedApplication).Return(newRuntimeApplication)
+		applicationsManagerMock.On("Create", &newRuntimeApplication).Return(&newRuntimeApplication, nil)
+		applicationsManagerMock.On("List", metav1.ListOptions{}).Return(&existingRuntimeApplications, nil)
+
+		expectedResult := []Result{
+			{
+				ApplicationName: "mp-test-application",
+				ApplicationID:   "id1",
+				Operation:       Create,
+				Error:           nil,
+			},
+		}
+
+		// when
+		kymaService := NewService(applicationsManagerMock, converterMock, credentialsServiceMock, requestParametersServiceMock)
+		result, err := kymaService.Apply(directorApplications, true)
+
+		// then
+		assert.NoError(t, err)
+		assert.Equal(t, expectedResult, result)
+		converterMock.AssertExpectations(t)
+		applicationsManagerMock.AssertExpectations(t)
+	})
+
+	t.Run("should fail apply Create operation when after normalization we have duplicate names", func(t *testing.T) {
+		// given
+		applicationsManagerMock := &appMocks.Repository{}
+
+		api := fixDirectorAPiDefinition("API1", "name", "API description")
+		eventAPI := fixDirectorEventAPIDefinition("EventAPI1", "name", "Event API 1 description")
+
+		authBundle1 := fixAuthOauth()
+		authBundle1.RequestParameters = nil
+		authBundle2 := fixAuthBasic()
+		authBundle4 := fixAuthRequestParameters()
+
+		apiBundle1 := fixAPIBundle("bundle1", []model.APIDefinition{api}, nil, authBundle1)
+		apiBundle2 := fixAPIBundle("bundle2", nil, []model.EventAPIDefinition{eventAPI}, authBundle2)
+		apiBundle3 := fixAPIBundle("bundle3", []model.APIDefinition{api}, []model.EventAPIDefinition{eventAPI}, nil)
+		apiBundle4 := fixAPIBundle("bundle4", []model.APIDefinition{api}, nil, authBundle4)
+
+		directorApplication1 := fixDirectorApplication("id1", "test@app", apiBundle1, apiBundle2, apiBundle3, apiBundle4)
+		directorApplication2 := fixDirectorApplication("id2", "test&app", apiBundle1, apiBundle2, apiBundle3, apiBundle4)
+
+		directorApplications := []model.Application{
+			directorApplication1,
+			directorApplication2,
+		}
+
+		existingRuntimeApplications := v1alpha1.ApplicationList{
+			Items: []v1alpha1.Application{},
+		}
+
+		applicationsManagerMock.On("List", metav1.ListOptions{}).Return(&existingRuntimeApplications, nil)
+
+		// when
+		kymaService := NewService(applicationsManagerMock, nil, nil, nil)
+		result, err := kymaService.Apply(directorApplications, true)
+
+		var expectedResult []Result
+
+		// then
+		assert.Error(t, err)
+		assert.Equal(t, expectedResult, result)
+		applicationsManagerMock.AssertExpectations(t)
+	})
+
 	t.Run("should apply Create operation and create credentials", func(t *testing.T) {
 		// given
 		applicationsManagerMock := &appMocks.Repository{}
@@ -669,6 +770,49 @@ func TestKymaService(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, expectedResult, result)
 		converterMock.AssertExpectations(t)
+		applicationsManagerMock.AssertExpectations(t)
+	})
+
+	t.Run("should fail if some Director applications have duplicated names", func(t *testing.T) {
+		// given
+		applicationsManagerMock := &appMocks.Repository{}
+
+		api := fixDirectorAPiDefinition("API1", "name", "API description")
+		eventAPI := fixDirectorEventAPIDefinition("EventAPI1", "name", "Event API 1 description")
+
+		authBundle1 := fixAuthOauth()
+		authBundle1.RequestParameters = nil
+		authBundle2 := fixAuthBasic()
+		authBundle4 := fixAuthRequestParameters()
+
+		apiBundle1 := fixAPIBundle("bundle1", []model.APIDefinition{api}, nil, authBundle1)
+		apiBundle2 := fixAPIBundle("bundle2", nil, []model.EventAPIDefinition{eventAPI}, authBundle2)
+		apiBundle3 := fixAPIBundle("bundle3", []model.APIDefinition{api}, []model.EventAPIDefinition{eventAPI}, nil)
+		apiBundle4 := fixAPIBundle("bundle4", []model.APIDefinition{api}, nil, authBundle4)
+
+		directorApplication1 := fixDirectorApplication("id1", "name1", apiBundle1, apiBundle2, apiBundle3, apiBundle4)
+		directorApplication2 := fixDirectorApplication("id2", "name1", apiBundle1, apiBundle2, apiBundle3, apiBundle4)
+
+		directorApplications := []model.Application{
+			directorApplication1,
+			directorApplication2,
+		}
+
+		existingRuntimeApplications := v1alpha1.ApplicationList{
+			Items: []v1alpha1.Application{},
+		}
+
+		applicationsManagerMock.On("List", metav1.ListOptions{}).Return(&existingRuntimeApplications, nil)
+
+		// when
+		kymaService := NewService(applicationsManagerMock, nil, nil, nil)
+		result, err := kymaService.Apply(directorApplications, false)
+
+		var expectedResult []Result
+
+		// then
+		assert.Error(t, err)
+		assert.Equal(t, expectedResult, result)
 		applicationsManagerMock.AssertExpectations(t)
 	})
 

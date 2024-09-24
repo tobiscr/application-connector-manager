@@ -64,12 +64,13 @@ func (s *service) Apply(directorApplications []model.Application, normalizeAppNa
 	compassCurrentApplications := s.filterCompassApplications(currentApplications)
 
 	if normalizeAppNames {
-		directorApplications, err = s.normalizeDirectorApplications(directorApplications)
+		directorApplications = s.normalizeDirectorApplications(directorApplications)
+	}
 
-		if err != nil {
-			log.Errorf("Failed to synchronize Compass applications: %s.", err)
-			return nil, err
-		}
+	err = s.checkDuplicateDirectorApplications(directorApplications)
+	if err != nil {
+		log.Errorf("Failed to synchronize Compass applications: %s.", err)
+		return nil, err
 	}
 
 	return s.apply(compassCurrentApplications, directorApplications), nil
@@ -125,20 +126,25 @@ func (s *service) filterCompassApplications(applications []v1alpha1.Application)
 	return compassApplications
 }
 
-func (s *service) normalizeDirectorApplications(directorApplications []model.Application) ([]model.Application, apperrors.AppError) {
+func (s *service) normalizeDirectorApplications(directorApplications []model.Application) []model.Application {
+	for i, application := range directorApplications {
+		directorApplications[i].Name = s.normalizer.Normalize(application.Name)
+	}
+	return directorApplications
+}
+
+func (s *service) checkDuplicateDirectorApplications(directorApplications []model.Application) apperrors.AppError {
 	usedNames := map[string]bool{}
 
 	for _, application := range directorApplications {
-		application.Name = s.normalizer.Normalize(application.Name) // be really careful with random suffixes here!!!
-
 		if _, found := usedNames[application.Name]; found {
-			return nil, apperrors.AlreadyExists("The compass application name is duplicated %s", application.Name)
+			return apperrors.AlreadyExists("The compass application name is duplicated %s", application.Name)
 		} else {
 			usedNames[application.Name] = true
 		}
 	}
 
-	return directorApplications, nil
+	return nil
 }
 
 func (s *service) createApplications(directorApplications []model.Application, runtimeApplications []v1alpha1.Application) []Result {
