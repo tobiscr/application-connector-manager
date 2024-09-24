@@ -146,7 +146,7 @@ func (s *service) createApplications(directorApplications []model.Application, r
 	results := make([]Result, 0)
 
 	for _, directorApplication := range directorApplications {
-		if !ApplicationExists(directorApplication.ID, runtimeApplications) {
+		if !ApplicationExists(directorApplication.Name, runtimeApplications) {
 			result := s.createApplication(directorApplication, s.converter.Do(directorApplication))
 			results = append(results, result)
 		}
