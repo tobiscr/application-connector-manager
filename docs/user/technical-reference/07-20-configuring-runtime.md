@@ -12,15 +12,15 @@ Each Application contains only credentials that are valid for the Runtime that c
 Each Runtime Agent can fetch the configurations for Runtimes that belong to its tenant.
 
 The names of Applications assigned to the Runtime must be unique.
-If the name of an Application fetched from Compass is not unique in Kyma - the synchronization process will fail.  
+If the name of an Application fetched from Compass is not unique, the synchronization fails.  
 
 > [!NOTE]
-> The Runtime Agent can possibly normalize names of Applications fetched from Compass by converting them to lowercase and removing special characters and spaces.\
-> This feature is controlled by **isNormalized** label which can be set on the Runtime in Compass\
-> When Runtime is initially labeled with **isNormalized=true** - Runtime Agent will normalize the names of Applications.\
-> When the Runtime is initially labeled with **isNormalized=false**, or if the Runtime does not contain such a label - Runtime Agent will not normalize the names.\
-> If normalized Application names fetched from Compass is not unique in Kyma - the synchronization process will fail.\
-> Because of that it is required to use unique names for Applications with lowercase letters only and do not use any special characters or spaces in their names.
+> The Runtime Agent can normalize the names of Applications fetched from Compass by converting them to lowercase and removing special characters and spaces.\
+> This feature is controlled by the **isNormalized** label, which can be set on the Runtime in Compass\
+> When the Runtime is initially labeled with `isNormalized=true`, Runtime Agent normalizes the names of Applications.\
+> When the Runtime is initially labeled with `isNormalized=false`, or if the Runtime does not contain such a label, Runtime Agent doesn't normalize the names.\
+> If the normalized Application names fetched from Compass are not unique, the synchronization process fails.\
+> Because of that, it is required to use unique names for Applications with lowercase characters only and not use any special characters or spaces in their names.
   
 
 Runtime Agent reports back to the Director the Runtime-specific [LabelDefinitions](https://github.com/kyma-incubator/compass/blob/master/docs/compass/03-04-labels.md#labeldefinitions), which represent Runtime configuration, together with their values.
