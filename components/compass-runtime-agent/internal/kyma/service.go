@@ -129,6 +129,7 @@ func (s *service) filterCompassApplications(applications []v1alpha1.Application)
 func (s *service) normalizeDirectorApplications(directorApplications []model.Application) []model.Application {
 	for i, application := range directorApplications {
 		directorApplications[i].Name = s.normalizer.Normalize(application.Name)
+		log.Infof("Normalized application name from '%s' to '%s'", application.Name, directorApplications[i].Name)
 	}
 	return directorApplications
 }
