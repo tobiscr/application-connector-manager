@@ -24,7 +24,7 @@ If the name of an Application fetched from Compass is not unique, the synchroniz
 ## Normalization of Application names 
 
 The Runtime Agent can normalize the names of Applications fetched from Compass by converting them to lowercase and removing special characters and spaces.\
-This feature is controlled by the **isNormalized** label, which can be set on the Runtime in Compass\
+This feature is controlled by the **isNormalized** label, which can be set on the Runtime in Compass.\
 When the Runtime is initially labeled with `isNormalized=true`, Runtime Agent normalizes the names of Applications.\
 When the Runtime is initially labeled with `isNormalized=false`, or if the Runtime does not contain such a label, Runtime Agent doesn't normalize the names.\
 If the normalized Application names fetched from Compass are not unique, the synchronization process fails.\
