@@ -11,7 +11,7 @@ The response for the query contains Applications assigned for the Runtime.
 Each Application contains only credentials that are valid for the Runtime that called the query. Runtime Agent uses the credentials to create Secrets used by Application Gateway.
 Each Runtime Agent can fetch the configurations for Runtimes that belong to its tenant.
 
-The names of Applications assigned for the Runtime must be unique in Kyma.
+The names of Applications assigned to the Runtime must be unique.
 If the name of an Application fetched from Compass is not unique in Kyma - the synchronization process will fail.  
 
 > [!NOTE]
