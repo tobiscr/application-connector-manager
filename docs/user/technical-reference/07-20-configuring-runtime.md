@@ -17,8 +17,8 @@ If the name of an Application fetched from Compass is not unique in Kyma - the s
 > [!NOTE]
 > The Runtime Agent can possibly normalize names of Applications fetched from Compass by converting them to lowercase and removing special characters and spaces.\
 > This feature is controlled by **isNormalized** label which can be set on the Runtime in Compass\
-> When Runtime is initially labeled with **isNormalized=true** The Runtime Agent will normalize the names of Applications.\
-> When the Runtime is initially labeled with **isNormalized=false**, or if the Runtime does not contain such a label The Runtime Agent will not normalize the names.\
+> When Runtime is initially labeled with **isNormalized=true** - Runtime Agent will normalize the names of Applications.\
+> When the Runtime is initially labeled with **isNormalized=false**, or if the Runtime does not contain such a label - Runtime Agent will not normalize the names.\
 > If normalized Application names fetched from Compass is not unique in Kyma - the synchronization process will fail.\
 > Because of that it is required to use unique names for Applications with lowercase letters only and do not use any special characters or spaces in their names.
   
