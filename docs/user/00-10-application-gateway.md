@@ -14,6 +14,9 @@ Application Gateway can call services which are not secured, or are secured with
 - [OAuth 2.0 mTLS](https://datatracker.ietf.org/doc/html/rfc8705)
 - Client certificates
 
+> [!NOTE]
+> Non-secured APIs are supported too, however, they are not recommended in the production environment.
+
 Additionally, Application Gateway supports cross-site request forgery (CSRF) tokens as an optional layer of API protection.
 
 Application Gateway calls the registered APIs accordingly, based on the security type specified for the API in the Application CR.
