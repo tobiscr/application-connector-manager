@@ -37,14 +37,14 @@ In summary, the Application Connector module provides the following features:
 
 ### Integration of external systems
 
-#### Fully automated by UCL
+#### Automatically by UCL
 
 If an external systems is registered for Kyma in BTP's UCL, its automatically configured by the Application Connector and able to send requests to Kyma workloads. The Application Connector Modules includes a [`Runtime Agent`](components/00-10-runtime-agent.md) which acts as client and communicates with the UCL backend. It retrieves the configuration of each external system and integrates it in Kyma.
 
 An example how a system can be registered in UCL and gets integrated into Kyma is provided in [this tutorial](tutorials/mode-ucl/README.md).
 
 
-#### Manual
+#### Manually
 
 It is always possible to integrate any exernal system into Kyma by applying the configuration by hand. The steps for configuring a new external system are described in [this tutrorial](tutorials/mode-manual/README.md).
 
@@ -64,11 +64,11 @@ The diagram shows all componentes included in a common Application Connector Mod
 |--|--|
 |External Application|The remote system which wants to interact with a Kyma workload or should be called by it.|
 |UCL|The UCL (Unified Customer Landscape) implements the BTP Extensibility Concept and administrates system formations.|
-|[Runtime Agent](./technical-reference/04-30-runtime-agent-workflow.md)|The Runtime Agent is a client of the UCL system and integrates system formations automatically in the Kyma cluster.|
+|[Runtime Agent](./technical-reference/04-30-runtime-agent.md)|The Runtime Agent is a client of the UCL system and integrates system formations automatically in the Kyma cluster.|
 |Certificate Secret|Stores the UCL managed certificates used for trusted communications.|
-|[Application Customer Resource (CR)](./resources/README.md)|Used to store metadata of the external system (like endpoints, authentication method etc.).|
+|[Application Customer Resource (CR)](./resources/06-10-application.md)|Used to store metadata of the external system (like endpoints, authentication method etc.). Each Application custom resource corresponds to a single external system.|
 |Application Credentials Secret|Stores endpoint/API credentials of the external system.|
-|Istio Ingress Gateway|The Application Connector Module uses an Istio Gateway as endpoint for incoming requests from external system. The Gateway supports mTLS for establishing trusted connections between the external system and the Kyma cluster.|
+|[Istio Ingress Gateway](./technical-reference/04-10-istio-gateway.md)|The Application Connector Module uses an Istio Gateway as endpoint for incoming requests from external system. The Gateway supports mTLS for establishing trusted connections between the external system and the Kyma cluster.|
 |Application Connectivity Validator|Verifies incoming requests (e.g. by analying the certificate subject) and passes the request to the Kyma eventing module.|
 |Eventing Module|The Kyma Eventing Module is used for dispatching incoming requests from external systems to Kyma worloads.|
 |Kyma Workload|Can be a customer workload (e.g. deployed applications) or Kyma hosted serverless function.|
@@ -76,7 +76,7 @@ The diagram shows all componentes included in a common Application Connector Mod
 |Application Connector Manager|It takes care of installation and configuration of all the Application Connector module components on your cluster. It manages the lifecycle of the Application Connector module based on the dedicated ApplicationConnector custom resource (CR).|
 
 
-### Flow
+### Workflow
 
 The diagram includes also the flow from registring an external system at UCL until it is interacting with Kyma workloads. Some flow steps are only relevant when the integartion of the external system is managed manually, but all of them are applied when the integration happens automatically via UCL.
 
@@ -156,7 +156,7 @@ These credentials are used for outbound communication by the Application Gateway
     </tr>
     <tr>
         <td>b</td>
-        <td>The Application Gateway takes care about security and authentication during the communication with the external API.</td>
+        <td>The Application Gateway takes care about security and authentication during the communication with the external system API.</td>
         <td>X</td>
         <td>X</td>
     </tr>

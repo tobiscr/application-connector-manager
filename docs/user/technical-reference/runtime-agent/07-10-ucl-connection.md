@@ -1,6 +1,6 @@
-# Runtime Agent Connection with Compass
+# Connection with UCL
 
-Runtime Agent connects to Compass using a one-time token from the Connector and exchanges it for a certificate, which is later used to fetch Applications from the Director.
+Runtime Agent connects to UCL using a one-time token from the Connector and exchanges it for a certificate, which is later used to fetch Applications from the UCL Director.
 
 The initial connection requires the following parameters:
 
@@ -15,12 +15,14 @@ Runtime Agent reads this configuration from the Secret specified in the Runtime 
 
 To see how to create the Secret, see the [tutorial](../tutorials/01-90-configure-runtime-agent-with-compass.md).
 
+
 ## Connection Status
 
 The connection status is preserved in the [CompassConnection](../resources/06-20-compassconnection.md) custom resource (CR). This CR also stores the Connector URL and the Director URL.
 
-## Reconnecting Runtime Agent
 
-If the connection with Compass fails, Runtime Agent keeps trying to connect with the token from the Secret. If the connection is established successfully, Runtime Agent ignores the Secret until the connection is lost.
+## Reconnecting
+
+If the connection with UCL fails, Runtime Agent keeps trying to connect with the token from the Secret. If the connection is established successfully, Runtime Agent ignores the Secret until the connection is lost.
 
 To see how to reconnect Runtime Agent with Compass, see the [tutorial](../tutorials/01-100-reconnect-runtime-agent-with-compass.md).
