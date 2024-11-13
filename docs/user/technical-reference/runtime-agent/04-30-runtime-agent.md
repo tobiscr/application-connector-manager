@@ -50,14 +50,7 @@ The diagram illustrates the workflow of the Runtime Agent and the involved compo
 If you're a developer and interested in learning more about Runtime Agent, follow these links to:
 
 - [Guides](./developer/README.md) for Application Connector Developer
-
-- Runtime Agent specification and configuration files:
-
-  - [UCL Connection](resources/06-20-compassconnection.md) custom resource (CR)
-  - [Connection with UCL](./07-10-ucl-connection.md)
-
-- Understand technicalities behind the Runtime Agent implementation:
-
-  - [Runtime Agent workflow](technical-reference/04-30-runtime-agent-workflow.md)
-  - [Configuring the Runtime](technical-reference/07-20-configuring-runtime.md)
+- Details about the [UCL Connection](../../resources/06-20-compassconnection.md) custom resource (CR)
+- How the [connection to UCL](./07-10-ucl-connection.md) is established
+- Understand how the Runtime Agent [configures runtimes](./07-20-configuring-runtime.md)
 
