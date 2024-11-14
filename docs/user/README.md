@@ -21,7 +21,7 @@ Application Connectivity in Kyma simplifies the interaction between external sys
 
 The Application Connector module bundles all features of Application Connectivity in Kyma. You can install and manage the module using Kyma dashboard.
 
-The module includes Kubernetes operators and is fully configurable over its own Kubernetes custom resources (CRs). For each external system, a dedicated configuration is used. This allows for individual configuration of security and aspects (like encryption and authentication) per system.
+The module includes Kubernetes operators and is fully configurable over its own Kubernetes custom resources (CRs). For each external system, a dedicated configuration is used. This allows for individual configuration of security aspects (like encryption and authentication) per system.
 
 Besides proxying any ingress and egress requests to external systems and dealing with security concerns, it also includes full integration with SAP BTP Unified Customer Landscape (UCL) to simplify the consumption of SAP BTP services.
 
@@ -30,7 +30,7 @@ Besides proxying any ingress and egress requests to external systems and dealing
 
 The Application Connector module provides the following features:
 
-* Easy installation of Kyma's Application Connectivity capabilities by enabling the Application Connector module on your Kyma cluster.
+* Easy installation of Kyma's Application Connectivity capabilities by enabling the Application Connector module in your Kyma Runtime.
 
 * Simple configuration using Kubernetes CRs and easy management with Kyma dashboard.
 
@@ -47,14 +47,14 @@ The Application Connector module provides the following features:
 
 #### Automatically by UCL
 
-If an external systems is registered for Kyma in BTP's UCL (Unified Customer Landscape), it's automatically configured by the Application Connector and able to send requests to Kyma workloads. The Application Connector Modules includes a [`Runtime Agent`](components/00-10-runtime-agent.md) and acts as client of the UCL backend. It retrieves automatically the configuration of each external system and integrates it with Kyma.
+If an external systems is registered for the Kyma Runtime in BTP's UCL (Unified Customer Landscape), it's automatically configured by the Application Connector and able to send requests to Kyma workloads. The Application Connector Modules includes a [`Runtime Agent`](components/00-10-runtime-agent.md) and acts as client of the UCL backend. It retrieves automatically the configuration of each external system and integrates it with Kyma.
 
-An example how a system can be registered in UCL and gets integrated into Kyma is provided in [this tutorial](tutorials/mode-ucl/README.md).
+An example how a system can be registered in UCL and gets integrated into a Kyma Runtime is provided in [this tutorial](tutorials/mode-ucl/README.md).
 
 
 #### Manually
 
-It is always possible to integrate any exernal system into Kyma by applying the configuration by hand. The steps for configuring a new external system are described in [this tutorial](tutorials/mode-manual/README.md).
+It is always possible to integrate any exernal system into Kyma by applying the configuration by hand. The steps for configuring and integrating a new external system in your Kyma Runtime are described in [this tutorial](tutorials/mode-manual/README.md).
 
 
 ## Architecture
@@ -72,16 +72,16 @@ To get more details of a particular component, please follow the link.
 |--|--|
 |External Application|The external system which wants to interact with your Kyma workload or should be called by it.|
 |UCL|The UCL system implements the BTP Extensibility Concept and administrates system formations.|
-|[Runtime Agent](./technical-reference/runtime-agent/04-30-runtime-agent.md)|The Runtime Agent is a client of the UCL system. It synchronizes regularly the defined system formations and integrates them into the Kyma cluster.|
+|[Runtime Agent](./technical-reference/runtime-agent/README.md)|The Runtime Agent is a client of the UCL system. It synchronizes regularly the defined system formations and integrates them into the Kyma Runtime.|
 |Certificate Secret|Stores the UCL managed certificates used for trusted communication between the external system and Kyma.|
-|[Application Customer Resource (CR)](./resources/06-10-application.md)|Stores metadata of the external system (like endpoints, authentication method etc.). Each Application CR corresponds to a single external system.|
+|[Application Custom Resource (CR)](./resources/06-10-application.md)|Stores metadata of the external system (like endpoints, authentication method etc.). Each Application CR corresponds to a single external system.|
 |Application Credentials Secret|Stores endpoint/API credentials of the external system.|
-|[Istio Ingress Gateway](./technical-reference/04-10-istio-gateway.md)|The Application Connector Module uses an Istio Gateway as endpoint for incoming requests from external systems. The Gateway supports mTLS for establishing trusted connections between the external system and the Kyma cluster.|
+|[Istio Ingress Gateway](./technical-reference/04-10-istio-gateway.md)|The Application Connector Module uses an Istio Gateway as endpoint for incoming requests from external systems. The Gateway supports mTLS for establishing trusted connections between the external system and the Kyma Runtime.|
 |Application Connectivity Validator|Verifies incoming requests by analying the certificate subject and passes the request to the Kyma eventing module.|
 |Eventing Module|The Kyma Eventing Module is used for dispatching incoming requests from external systems to Kyma worloads.|
 |Kyma Workload|Can be a customer workload (e.g. deployed applications) or any Kyma hosted serverless function.|
 |[Application Gateway](./technical-reference/04-20-application-gateway.md)|This component acts as an proxy for outgoing communication from a Kyma workload to an external system. It supports various types of authentication methods.|
-|Application Connector Manager|This Kubernetes Operator takes care of the installation and configuration of all Application Connector module components on your cluster. It manages the lifecycle of the Application Connector module based on the dedicated ApplicationConnector custom resource (CR).|
+|Application Connector Manager|This Kubernetes Operator takes care of the installation and configuration of all Application Connector module components in the Kyma Runtime. It manages the lifecycle of the Application Connector module based on the dedicated ApplicationConnector custom resource (CR).|
 
 
 ### Workflow
@@ -100,13 +100,13 @@ The workflow in the diagram shows the steps from registering an external system 
     </tr>
     <tr>
         <td>1</td>
-        <td>The external system is registered in the UCL system (Unified Customer Landscape) and configured in a UCL system formation for Kyma.</td>
+        <td>The external system is registered in the UCL system (Unified Customer Landscape) and configured in a UCL system formation for the Kyma Runtime.</td>
         <td></td>
         <td>X</td>
     </tr>
     <tr>
         <td>2</td>
-        <td>Runtime Agent connects to the UCL system and gathers all registered applications for this Kyma runtime.</td>
+        <td>Runtime Agent connects to the UCL system and gathers all registered applications for this Kyma Runtime.</td>
         <td></td>
         <td>X</td>
     </tr>
@@ -131,7 +131,7 @@ These credentials are used for outbound communication proxied by the Application
     </tr>
     <tr>
         <td>6</td>
-        <td>The external systems communicate with the Kyma cluster trough the Istio Ingress Gateway.</td>
+        <td>The external systems communicate with the Kyma Runtime trough the Istio Ingress Gateway.</td>
         <td>X</td>
         <td>X</td>
     </tr>

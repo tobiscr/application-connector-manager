@@ -8,7 +8,7 @@ His responsibilities are:
 
 - Establishing (or renewing) a trusted connection between the Kyma Runtime and UCL services.
 
-- Enable a birectional communication between external systems and Kyma runtimes, by uploading the Kyma runtime configuration (e.g. the Event Gateway URL) to the UCL backend. UCL shares these data with the external application. To learn more, read the section on [configuring the Runtime](./runtime-agent/07-20-configuring-runtime.md).
+- Enable a birectional communication between external systems and Kyma runtimes, by uploading the Kyma runtime configuration (e.g. the Event Gateway URL) to the UCL backend. UCL shares these data with the external application. To learn more, read the section on [configuring the Runtime](./07-20-configuring-runtime.md).
 
 
 ## Architecture
@@ -16,7 +16,7 @@ His responsibilities are:
 The diagram illustrates the workflow of the Runtime Agent and the involved components.
 
 
-![Runtime Agent architecture](./assets/agent-architecture.png)
+![Runtime Agent architecture](../../assets/agent-architecture.png)
 
 
 ### Components
@@ -27,6 +27,7 @@ The diagram illustrates the workflow of the Runtime Agent and the involved compo
 |[UCL Connector](https://github.com/kyma-incubator/compass/blob/main/docs/connector/02-01-connector-service.md)|Connector establishes trust between external systems and and runtimes-|
 |[UCL Director](https://github.com/kyma-incubator/compass/blob/master/docs/compass/02-01-components.md#director)|UCL Director handles the process of managing external systems and runtimes.|
 |Certificate Secret|Stores the certificate used by the Runtime Agent to establish a trusted connection with a UCL service|
+
 
 ### Workflow
 
@@ -40,7 +41,7 @@ The diagram illustrates the workflow of the Runtime Agent and the involved compo
 
     * Removing from the KYma Runtime the external systems that no longer exist in the UCL Director.
 
-4. It shares the Event Gateway URL and the Dashboard URL of the Kyma Runtime with the UCL Director. These URLs are also displayed in the UCL UI.
+4. It reports the Event Gateway URL and the Dashboard URL of the Kyma Runtime to the UCL Director. These URLs are also displayed in the UCL UI.
 
 5. Regularly is a renewal of the certificate (used for the UCL Connector and the UCL Director communication) applied. This happens when the remaining validity for the certificate exhausts a certain threshold.
 
@@ -49,8 +50,8 @@ The diagram illustrates the workflow of the Runtime Agent and the involved compo
 
 If you're a developer and interested in learning more about Runtime Agent, follow these links to:
 
-- [Guides](./developer/README.md) for Application Connector Developer
-- Details about the [UCL Connection](../../resources/06-20-compassconnection.md) custom resource (CR)
+- [Tutorials](./tutorials/README.md) for Application Connector Developer
+- Details about the [Connection](../../resources/06-20-compassconnection.md) custom resource (CR) for UCL (please be aware that UCL was previously called `Compass` - for historical reasons the CR is still named `CompassConnection`)
 - How the [connection to UCL](./07-10-ucl-connection.md) is established
 - Understand how the Runtime Agent [configures runtimes](./07-20-configuring-runtime.md)
 

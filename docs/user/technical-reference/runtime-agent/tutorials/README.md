@@ -2,7 +2,7 @@
 
 ## Runtime Agent
 
-Guides to perform some simple and more advanced tasks manually:
+As deep dive into the Runtime Agent, we prepared some tutorials for performing simple and more advanced tasks manually:
 
   - [Establish a secure connection with Compass](/01-60-establish-secure-connection-with-compass.md)
   - [Maintain a secure connection with Compass](tutorials/01-70-maintain-secure-connection-with-compass.md)

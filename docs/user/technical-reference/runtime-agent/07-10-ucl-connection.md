@@ -18,11 +18,13 @@ To see how to create the Secret, see the [tutorial](./developer/01-90-configure-
 
 ## Connection Status
 
-The connection status is preserved in the [CompassConnection](../../resources/06-20-compassconnection.md) custom resource (CR). This CR also stores the Connector URL and the Director URL.
+The connection status is preserved in the [Connection](../../resources/06-20-compassconnection.md) custom resource (CR). This CR also stores the Connector URL and the Director URL.
+
+Please be aware that UCL was previously called `Compass`. For historical reasons, the Connection CR is still called `CompassConnection`.
 
 
 ## Reconnecting
 
 If the connection with UCL fails, Runtime Agent keeps trying to connect with the token from the Secret. If the connection is established successfully, Runtime Agent ignores the Secret until the connection is lost.
 
-To see how to reconnect Runtime Agent with Compass, see the [tutorial](./developer/01-100-reconnect-runtime-agent-with-compass.md).
+To see how to reconnect Runtime Agent with UCL, see the [tutorial](./developer/01-100-reconnect-runtime-agent-with-compass.md).

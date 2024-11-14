@@ -1,37 +1,37 @@
 # Application Gateway
 
-Application Gateway is an intermediary component between a Kyma workload and an external system. It proxies outgoing requests from Kyma to the external system API based on the configuration stored in the [Application CR](../resources/06-10-application.md).
+Application Gateway is an intermediary component between a Kyma workload and an external system. It proxies outgoing requests from Kyma to the external system API based on the configuration stored in the [`Application`](../resources/06-10-application.md) CR.
 
 The following diagram illustrates how Application Gateway interacts with other modules and external APIs, which are either unsecured or secured with various security mechanisms and protected against cross-site request forgery (CSRF) attacks.
 
 
 ## Workflow
 
-![Application Gateway Diagram](../../assets/ac-architecture-proxy-service.svg)
+![Application Gateway Diagram](../assets/gw-architecture.png)
 
 1. A Kyma workload calls the Application Gateway.
-2. Application Gateway extracts the application name and the service name from the path.
-3. Using the extracted application name, the gateway finds the respective Application CR and obtains the information about the registered external API, such as the API URL and security credentials.
+2. Application Gateway extracts the application name and the service name from the URL path.
+3. Using the extracted application name, the gateway finds the corresponding Application CR and obtains the information about the registered external API, such as the API URL and security credentials.
 4. Application Gateway gets a token from the OAuth server.
-5. Application Gateway gets a CSRF token from the endpoint exposed by the upstream service. This step is optional and is valid only for the API which was registered with a CSRF token enabled.
+5.  This step is optional and is valid only for the API which was registered with a CSRF token enabled: Application Gateway gets a CSRF token from the endpoint exposed by the upstream service.
 6. Application Gateway calls the target API.
 
 
 ## Request Proxying
 
-Application Gateway proxies requests from Kyma workloads to external system APIs based on the configuration stored in the [Application CR](../resources/06-10-application.md) and Kubernetes Secrets.
+Application Gateway proxies requests from Kyma workloads to external system APIs based on the configuration stored in the [`Application` CR](../resources/06-10-application.md) and Kubernetes Secrets.
 
 For examples of configurations and credentials, see the [tutorial on registering a secured API](../tutorials/01-30-register-secured-api.md).
 
 > [!NOTE]
-> All APIs defined in a single Secret use the same configuration - the same credentials, CSRF tokens, and request parameters.
+> All APIs defined in a one Secret use the same configuration - the same credentials, CSRF tokens, and request parameters.
 
 
 ### Application Gateway URL
 
 The URL a Kyma workload has to use for proxing calls to an external system API starts always with `central-application-gateway.kyma-system`. The  port and URL-path defines which application API will be called.
 
-Depending if the external system was integrated manually or automatically by UCL, the URL pattern looks a bit different:
+Depending if the external system was integrated manually or automatically by UCL, the URL pattern looks different:
 
 | **Integration** | **Application Gateway URL** |
 |-----------|-------------------------|
@@ -59,19 +59,27 @@ In addition, the `User-Agent` header is set to an empty value not specified in t
 
 ### Response Rewriting
 
-Application Gateway performs response rewriting in situations when during a call to the external system, the target responds with a redirect (`3xx` status code) that points to the URL with the same host and a different path.
-In such a case, the `Location` header is modified so that the original target path is replaced with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end.
-The modified `Location` header has the following format: `{APP_GATEWAY_URL}:{APP_GATEWAY_PORT}/{APP_NAME}/{SERVICE_NAME}/{SUB-PATH}`.
+#### Redirects
 
-This functionality makes the HTTP clients that originally called Application Gateway follow redirects through the Gateway, and not to the service directly.
-This allows for passing authorization, custom headers, URL parameters, and the body without an issue.
+The Application Gateway performs response rewriting in situations, when the external system responds a redirect (`3xx` status code) that points to a URL with the same host but a different path:
+
+The `Location` header is modified so that the original target path is replaced with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end.
+
+The modified `Location` header has finally the following format:
+
+`{APP_GATEWAY_URL}:{APP_GATEWAY_PORT}/{APP_NAME}/{SERVICE_NAME}/{SUB-PATH}`
+
+This ensures that the calling Kyma workload will also send the redirected request through the Application Gateway instead starting a direct communication with the external system. Passing authorization or custom headers, URL parameters and the body will consistently work.
+
+
+#### 5xx Error responses
 
 Application Gateway also rewrites all the `5xx` status codes to `502`. In such a case, the `Target-System-Status` header contains the original code returned by the target.
 
 
 ## Supported API Authentication Methods
 
-Application Gateway can call remote system APIs which are not secured, or are secured with:
+Application Gateway can call external system APIs which are not secured, or are secured by:
 
 - [Basic Authentication](https://tools.ietf.org/html/rfc7617)
 - [OAuth](https://tools.ietf.org/html/rfc6750)
