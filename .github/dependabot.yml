@@ -6,7 +6,12 @@
 version: 2
 updates:
   - package-ecosystem: "gomod" # See documentation for possible values
-    directory: "/" # Location of package manifests
+    directories: 
+      - "/"
+      - "tests/"
+      - "components/compass-runtime-agent/"
+      - "components/central-application-connectivity-validator/"
+      - "components/central-application-gateway/"
     schedule:
       interval: "weekly"
     groups:
