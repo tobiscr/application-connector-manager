@@ -1,4 +1,4 @@
-<span class="fd-avatar--thumbnail fd-avatar fd-avatar--40 fd-avatar--accent-color-10" style="background-image: url('https://avatars.githubusercontent.com/tobiscr')" role="img"></span> [Tobias Schuhmacher](https://people.wdf.sap.corp/profiles/I539990) - Product Owner of Team Framefrog, Kyma runtime
+<span class="fd-avatar--thumbnail fd-avatar fd-avatar--40 fd-avatar--accent-color-10" style="background-image: url('https://avatars.githubusercontent.com/tobiscr')" role="img"></span> [Tobias Schuhmacher](https://github.com/tobiscr) - Product Owner of Team Framefrog, Kyma runtime
 
 Last update: Nov 2024
 
