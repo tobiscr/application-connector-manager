@@ -11,7 +11,7 @@ This tutorial shows how to configure Runtime Agent with UCL.
 - Tenant ID
 
 > [!NOTE]
-> Learn also about the [parameters required](../07-10-ucl-connection.md) to initialize the connection between Runtime Agent and Compass.
+> Learn also about the [parameters required](../03-10-ucl-connection.md) to initialize the connection between Runtime Agent and Compass.
 
 ## Steps
 

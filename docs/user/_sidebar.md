@@ -10,8 +10,8 @@
     * [Configuring Rubtime](/application-connector-manager/user/technical-reference/runtime-agent/03-20-configuring-runtime.md)
     * [Tutorials](/application-connector-manager/user/technical-reference/runtime-agent/tutorials/README.md)
 * [Resources](/application-connector-manager/user/resources/README.md)
-  * [Application CR](/application-connector-manager/user/resources/06-10-application.md)
-  * [Application Connector CR](/application-connector-manager/user/resources/06-30-application-connector.md)
-  * [CompassConnection CR](/application-connector-manager/user/resources/06-20-compassconnection.md)
+  * [Application CR](/application-connector-manager/user/resources/04-10-application.md)
+  * [Application Connector CR](/application-connector-manager/user/resources/04-30-application-connector.md)
+  * [CompassConnection CR](/application-connector-manager/user/resources/04-20-compassconnection.md)
 * [Tutorials](/application-connector-manager/user/tutorials/README.md)
 <!-- markdown-link-check-enable -->

@@ -8,7 +8,7 @@ His responsibilities are:
 
 - Establishing (or renewing) a trusted connection between the Kyma Runtime and UCL services.
 
-- Enable a birectional communication between external systems and Kyma runtimes, by uploading the Kyma runtime configuration (e.g. the Event Gateway URL) to the UCL backend. UCL shares these data with the external application. To learn more, read the section on [configuring the Runtime](./07-20-configuring-runtime.md).
+- Enable a birectional communication between external systems and Kyma runtimes, by uploading the Kyma runtime configuration (e.g. the Event Gateway URL) to the UCL backend. UCL shares these data with the external application. To learn more, read the section on [configuring the Runtime](./03-20-configuring-runtime.md).
 
 
 ## Architecture
