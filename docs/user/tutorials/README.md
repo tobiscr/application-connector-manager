@@ -1,3 +1,48 @@
-# Application Connectivity - Tutorials
+<span class="fd-avatar--thumbnail fd-avatar fd-avatar--40 fd-avatar--accent-color-10" style="background-image: url('https://avatars.githubusercontent.com/tobiscr')" role="img"></span> [Tobias Schuhmacher](https://people.wdf.sap.corp/profiles/I539990) - Product Owner of Team Framefrog, Kyma runtime
 
-Browse the tutorials for Application Connectivity to learn how to use it step-by-step in different scenarios.
+Last update: Nov 2024
+
+# Integrate external system with Kyma
+
+## Table of Contents
+
+- [Integrate external system with Kyma](#integrate-external-system-with-kyma)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+    - [Prerequisites](#prerequisites)
+  - [Initial Setup](#initial-setup)
+    - [Create a Kyma Runtime and enable the required Modules](#create-a-kyma-runtime-and-enable-the-required-modules)
+  - [Steps](#steps)
+
+
+## Introduction
+
+The document describes the steps for connecting an external system (e.g. HTTPBin) with a Kyma runtime.
+
+In this example, Kyma will send an authenticated requests to an external service.
+
+
+### Prerequisites
+
+Besides the Kyma default modules like Istio and API Gateway, you must enable the following Kyma modules:
+
+* `Application Connector` as it includes the Application Gateway for proxing requests to external systems.
+* `Serverless` is in this example used to run a Function which is sending an HTTP request to the external system.
+
+
+## Initial Setup
+
+### Create a Kyma Runtime and enable the required Modules
+
+1. Create a Kyma Runtime either by using the [BTP cockpit](https://help.sap.com/docs/btp/sap-business-technology-platform/create-kyma-environment-instance) or by following the [Kyma Quick Install](https://kyma-project.io/#/02-get-started/01-quick-install) tutorial.
+
+2. Add following Kyma modules: `Application Connector` and `Serverless`. If you created the Kyma runtime via BTP, follow this tutorial for [Adding and Deleting a Kyma Module](https://help.sap.com/docs/btp/sap-business-technology-platform/enable-and-disable-kyma-module?#add-and-delete-a-kyma-module-using-kyma-dashboard). Alterantively, continue with the steps described in the [Kyma Quick Install](https://kyma-project.io/#/02-get-started/01-quick-install?id=steps) tutorial.
+
+
+## Steps
+
+1. [Create an Application Custom Resource](./01-10-create-application.md): the Application CR represents an external system and contains all information about exposed endpoints and their security configuration etc.
+2. [Register a service for the external system](./01-20-register-manage-services.md) in the Application CR: the service is an abstraction of the external system. Kyma workloads can send their requests to the the service URL and the Application Gateway will proxy these requests to the external system and handling all security related aspects transparently (e.g. establishing a trusted connection or authentication).
+    * [Register a secured API](./01-30-register-secured-api.md):  many different authentication methods are supported by the Application Connector, you can find in this step for each method an example.
+    * [Disable TLS certificate validation](./01-50-disable-tls-certificate-verification.md): for testing purposes, it can be helpful to disable the TLS certificate validation. The Application  Connector is per default validating TLS certificates when estalishing a secure connection.
+3. [Call the registered API](./01-40-call-registered-service-from-kyma.md): this step shows how to call an external system by using a Kyma function.
