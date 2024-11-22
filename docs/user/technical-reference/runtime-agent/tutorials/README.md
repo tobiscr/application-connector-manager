@@ -1,6 +1,4 @@
-# Tutorials for Application Connector Developer
-
-## Runtime Agent
+# Runtime Agent Tutorials
 
 As deep dive into the Runtime Agent, we prepared some tutorials for performing simple and more advanced tasks manually:
 
