@@ -47,7 +47,7 @@ The Application Connector module provides the following features:
 
 #### Automatically by UCL
 
-If an external systems is registered for the Kyma Runtime in BTP's UCL (Unified Customer Landscape), it's automatically configured by the Application Connector and able to send requests to Kyma workloads. The Application Connector Modules includes a [`Runtime Agent`](components/00-10-runtime-agent.md) and acts as client of the UCL backend. It retrieves automatically the configuration of each external system and integrates it with Kyma.
+If an external systems is registered for the Kyma Runtime in SAP BTP's UCL (Unified Customer Landscape), it's automatically configured by the Application Connector and able to send requests to Kyma workloads. The Application Connector Module includes a [`Runtime Agent`](components/00-10-runtime-agent.md) and acts as client of the UCL backend. It retrieves automatically the configuration of each external system and integrates it in Kyma.
 
 
 #### Manually
