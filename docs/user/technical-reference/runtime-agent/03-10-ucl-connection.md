@@ -15,13 +15,12 @@ Runtime Agent reads this configuration from the Secret specified in the Runtime 
 
 To see how to create the Secret, see the [tutorial](./tutorials/01-90-configure-runtime-agent-with-compass.md).
 
-
 ## Connection Status
 
 The connection status is preserved in the [Connection](../../resources/04-20-compassconnection.md) custom resource (CR). This CR also stores the Connector URL and the Director URL.
 
-Please be aware that UCL was previously called `Compass`. For historical reasons, the Connection CR is still called `CompassConnection`.
-
+> [!NOTE]
+> Mind that UCL was previously called Compass. For historical reasons, the Connection CR is still called `CompassConnection`.
 
 ## Reconnecting
 

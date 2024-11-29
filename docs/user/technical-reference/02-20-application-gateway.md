@@ -43,7 +43,6 @@ The placeholders in the URLs map to the following:
 - `APP_NAME` is the name of the Application CR.
 - `SERVICE_NAME` represents the API Definition.
 - `TARGET_PATH` is the destination API URL.
-
 ### Handling of Headers
 
 Application Gateway proxies the following headers while making calls to the external system:
@@ -69,11 +68,9 @@ The modified `Location` header has finally the following format:
 
 This ensures that the calling Kyma workload will also send the redirected request through the Application Gateway instead of starting direct communication with the external system. Passing authorization or custom headers, URL parameters, and the body works consistently.
 
-
 #### 5xx Error responses
 
 Application Gateway also rewrites all the `5xx` status codes to `502`. In such a case, the `Target-System-Status` header contains the original code returned by the target.
-
 
 ## Supported API Authentication Methods
 
@@ -91,10 +88,9 @@ Additionally, Application Gateway supports cross-site request forgery (CSRF) tok
 
 Application Gateway calls the registered APIs accordingly, based on the security type specified for the API in the Application CR.
 
-
 ### Provide a Custom Access Token
 
-Application Gateway overrides the registered API's security type if it gets a request which contains the **Access-Token** header. In such a case, Application Gateway rewrites the token from the **Access-Token** header into an OAuth-compliant **Authorization** header and forwards it to the target API.
+Application Gateway overrides the registered API's security type if it gets a request that contains the **Access-Token** header. In such a case, Application Gateway rewrites the token from the **Access-Token** header into an OAuth-compliant **Authorization** header and forwards it to the target API.
 
 This mechanism is suited for implementations in which an external application handles user authentication:
 

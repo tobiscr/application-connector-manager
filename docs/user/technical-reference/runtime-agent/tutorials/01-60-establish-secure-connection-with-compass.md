@@ -5,7 +5,7 @@ To establish a secure connection with UCL and generate the client certificate, f
 ## Prerequisites
 
 - [OpenSSL toolkit](https://openssl-library.org/source/index.html) to create a Certificate Signing Request (CSR), keys, and certificates which meet high security standards
-- [UCL](https://github.com/kyma-incubator/compass) (previously called `Compass`)
+- [UCL](https://github.com/kyma-incubator/compass) (previously called Compass)
 - Registered Application
 - Kyma Runtime connected to UCL
 

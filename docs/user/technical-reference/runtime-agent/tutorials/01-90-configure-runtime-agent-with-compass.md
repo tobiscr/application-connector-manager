@@ -4,8 +4,8 @@ This tutorial shows how to configure Runtime Agent with UCL.
 
 ## Prerequisites
 
-- [UCL](https://github.com/kyma-incubator/compass) (previously called `Compass`)
-- Kyma Runtime connected to UCL and the Runtime ID
+- [UCL](https://github.com/kyma-incubator/compass) (previously called Compass)
+- Kyma runtime connected to UCL and the Runtime ID
 - [Connector URL](01-60-establish-secure-connection-with-compass.md)
 - One-time token from the Connector
 - Tenant ID
