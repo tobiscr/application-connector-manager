@@ -46,7 +46,7 @@ This table lists all the possible parameters of a given resource together with t
 | **spec.services.id** | Yes | Identifies the service that the Application provides. |
 | **spec.services.identifier** | No | Represents an additional identifier unique in the Application scope. Allows the external system to provide its own identifier. |
 | **spec.services.name** | No | Represents a unique name of the service. Used for proxying in Application Gateway. |
-| **spec.services.providerDisplayName** | Yes | Specifies a human-readable name of the Application service provider. |Yes|Yes|
+| **spec.services.providerDisplayName** | Yes | Specifies a human-readable name of the Application service provider. |
 | **spec.services.tags** | No | Specifies additional tags used for better documentation of the available APIs.|
 | **spec.services.labels** | No | Specifies additional labels for the service offered by the Application. |
 | **spec.services.entries** | Yes | Contains the information about the APIs and events that the service offered by the Application provides.|
