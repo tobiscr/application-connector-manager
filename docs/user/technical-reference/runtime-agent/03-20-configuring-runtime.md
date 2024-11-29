@@ -23,7 +23,6 @@ The name of the `Application` is used as a key within the Application Connector 
 ### Uniqueness
 
 The names of Applications assigned to the Runtime must be unique in Kyma Runtime. If they are not unique, the synchronization fails.
-
 ### Normalization of Application Names 
 
 Runtime Agent can normalize the names of Applications fetched from UCL Director by converting them to lowercase and removing special characters and spaces.
