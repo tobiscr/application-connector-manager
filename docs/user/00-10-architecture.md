@@ -1,7 +1,7 @@
 
 # Architecture
 
-In the architectural diagram below are all components of the Application Connector Module included. It describes also the workflow how the different components integrate an external system into Kyma.
+The following architectural diagram includes all components of the Application Connector module and describes the workflow for integrating an external system into Kyma using the different components.
 
 
 ## Components
