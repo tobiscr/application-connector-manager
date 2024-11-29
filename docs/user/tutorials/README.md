@@ -1,16 +1,12 @@
-<span class="fd-avatar--thumbnail fd-avatar fd-avatar--40 fd-avatar--accent-color-10" style="background-image: url('https://avatars.githubusercontent.com/tobiscr')" role="img"></span> [Tobias Schuhmacher](https://github.com/tobiscr) - Product Owner of Team Framefrog, Kyma runtime
-
-Last update: Nov 2024
-
 # Integrate an External System with Kyma
 
 ## Table of Contents
 
-- [Integrate external system with Kyma](#integrate-external-system-with-kyma)
+- [Integrate an External System with Kyma](#integrate-an-external-system-with-kyma)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Prerequisites](#prerequisites)
-  - [Steps](#steps)
+  - [Integrate an External System with Kyma Runtime](#integrate-an-external-system-with-kyma-runtime)
 
 
 ## Introduction
