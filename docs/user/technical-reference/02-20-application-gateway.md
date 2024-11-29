@@ -29,9 +29,9 @@ For examples of configurations and credentials, see the [tutorial on registering
 
 ### Application Gateway URL
 
-The URL a Kyma workload has to use for proxing calls to an external system API starts always with `central-application-gateway.kyma-system`. The  port and URL-path defines which application API will be called.
+The URL a Kyma workload uses to proxy calls to an external system API always starts with `central-application-gateway.kyma-system`. The port and URL path define which application API is called.
 
-Depending if the external system was integrated manually or automatically by UCL, the URL pattern looks different:
+Depending on whether the external system was integrated manually or automatically by UCL, the URL pattern looks different:
 
 | **Integration** | **Application Gateway URL** |
 |-----------|-------------------------|
@@ -44,7 +44,6 @@ The placeholders in the URLs map to the following:
 - `SERVICE_NAME` represents the API Definition.
 - `TARGET_PATH` is the destination API URL.
 
-
 ### Handling of Headers
 
 Application Gateway proxies the following headers while making calls to the external system:
@@ -56,20 +55,19 @@ Application Gateway proxies the following headers while making calls to the exte
 
 In addition, the `User-Agent` header is set to an empty value not specified in the call, which prevents setting the default value.
 
-
 ### Response Rewriting
 
 #### Redirects
 
-The Application Gateway performs response rewriting in situations, when the external system responds a redirect (`3xx` status code) that points to a URL with the same host but a different path:
+The Application Gateway performs response rewriting in situations when an external system responds to a redirect (`3xx` status code) that points to a URL with the same host but a different path:
 
-The `Location` header is modified so that the original target path is replaced with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end.
+The `Location` header is modified to replace the original target path with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end.
 
 The modified `Location` header has finally the following format:
 
 `{APP_GATEWAY_URL}:{APP_GATEWAY_PORT}/{APP_NAME}/{SERVICE_NAME}/{SUB-PATH}`
 
-This ensures that the calling Kyma workload will also send the redirected request through the Application Gateway instead starting a direct communication with the external system. Passing authorization or custom headers, URL parameters and the body will consistently work.
+This ensures that the calling Kyma workload will also send the redirected request through the Application Gateway instead of starting direct communication with the external system. Passing authorization or custom headers, URL parameters, and the body works consistently.
 
 
 #### 5xx Error responses

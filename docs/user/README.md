@@ -30,27 +30,27 @@ Besides proxying any ingress and egress requests to external systems and dealing
 
 The Application Connector module provides the following features:
 
-* Easy installation of Kyma's Application Connectivity capabilities by enabling the Application Connector module in your Kyma Runtime.
+* Easy installation of Kyma's Application Connectivity capabilities by enabling the Application Connector module in your Kyma runtime.
 
 * Simple configuration using Kubernetes CRs and easy management with Kyma dashboard.
 
 * Full integration of BTP's UCL service, which implements the SAP BTP Extensibility concept. This allows for the automated integration of external systems registered in the UCL service.
 
-* Dispatching of incoming requests from external systems to Kyma workloads (for example, a Kyma Serverless Function) by using an Istio Gateway with mTLS and the Kyma Eventing module.
+* Dispatching of incoming requests from external systems to Kyma workloads (for example, a [Kyma Serverless Function](https://kyma-project.io/#/serverless-manager/user/resources/06-10-function-cr)) by using an Istio Gateway with mTLS and the [Kyma Eventing module](https://kyma-project.io/#/eventing-manager/user/README).
 
 * Proxying outgoing requests to external APIs and transparently covering security requirements like encryption and authentication (like OAuth 2.0 + mTLS, Basic Auth, and Client Certificates).
 
 * Metering of throughput and exposing monitoring metrics.
 
 
-### Options for integrating external systems
+### Options for Integrating External Systems
 
 #### Automatically by UCL
 
-If an external systems is registered for the Kyma Runtime in SAP BTP's UCL (Unified Customer Landscape), it's automatically configured by the Application Connector and able to send requests to Kyma workloads. The Application Connector Module includes a [`Runtime Agent`](./technical-reference/runtime-agent/README.md) and acts as client of the UCL backend. It retrieves automatically the configuration of each external system and integrates it in Kyma.
+If an external system is registered for Kyma runtime in SAP BTP's UCL, the Application Connector module automatically configures it and can send requests to Kyma workloads. The Application Connector module includes [`Runtime Agent`](./technical-reference/runtime-agent/README.md) and acts as a client of the UCL backend. It automatically retrieves the configuration of each external system and integrates it into Kyma.
 
 
 #### Manually
 
-It is always possible to integrate any exernal system into Kyma by applying the configuration by hand. The steps for configuring and integrating a new external system in your Kyma Runtime are described in [this tutorial](tutorials/README.md).
+It is always possible to integrate any external system into Kyma by applying the configuration by hand. The steps for configuring and integrating a new external system in your Kyma runtime are described in the [Integrate an External System with Kyma](tutorials/01-11-integrate-external-system.md).
 

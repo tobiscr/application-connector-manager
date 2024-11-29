@@ -7,7 +7,7 @@
   * [Application Gateway](/application-connector-manager/user/technical-reference/runtime-agent/02-20-application-gateway.md)
   * [Runtime Agent](/application-connector-manager/user/technical-reference/runtime-agent/README.md)
     * [UCL Connection](/application-connector-manager/user/technical-reference/runtime-agent/03-10-ucl-connection.md)
-    * [Configuring Rubtime](/application-connector-manager/user/technical-reference/runtime-agent/03-20-configuring-runtime.md)
+    * [Configuring Runtime](/application-connector-manager/user/technical-reference/runtime-agent/03-20-configuring-runtime.md)
     * [Tutorials](/application-connector-manager/user/technical-reference/runtime-agent/tutorials/README.md)
 * [Resources](/application-connector-manager/user/resources/README.md)
   * [Application CR](/application-connector-manager/user/resources/04-10-application.md)

@@ -1,24 +1,22 @@
 # Istio Ingress Gateway
 
-The Application Connector Module relies on an Istio Ingress Gateway as endpoint for incoming requests from external systems.
+The Application Connector module relies on Istio Ingress Gateway as an endpoint for incoming requests from external systems.
 
-On a managed Kyma Runtime is the Kyma Istio Module per deault pre-installed. Alterantively, it's also possible to use a custom Istio installation.
+The Kyma Istio module is pre-installed by default on a managed Kyma runtime. Alternatively, a custom Istio installation is also possible.
 
-The Istio gateway will be created during the Application Connector Module installation.
+Istio Gateway is created during the Application Connector module installation.
 
+## DNS Name
 
-## DNS name
-
-The DNS name of the Ingress Gatway is cluster-dependent. fir SKR clsuters it follows the format `gateway.{cluster-dns}`.
-
+The DNS name of Ingress Gateway is cluster-dependent. For the managed Kyma clusters, it follows the `gateway.{cluster-dns}` format.
 
 ## Security
 
 ### Client Certificates
 
-For external systems which were automatically integrated by UCL, the Application Connector uses the mutual TLS protocol (mTLS) with Client Authentication enabled. As a result, anyone attempting to connect to Application Connector must present a valid client certificate, which is dedicated to a specific Application. In this way, the traffic is fully encrypted, and the client has a valid identity.
+For external systems automatically integrated by UCL, the Application Connector module uses the mutual TLS protocol (mTLS) with client authentication enabled. As a result, anyone attempting to connect to the Application Connector module must present a valid client certificate dedicated to a specific Application. This way, the traffic is fully encrypted, and the client has a valid identity.
 
 ### TLS Certificate Verification
 
-By default, the TLS certificate verification is enabled when sending data and requests to every application.
+By default, the TLS certificate verification is enabled when you send data and requests to any application.
 You can [disable the TLS certificate verification](../tutorials/01-50-disable-tls-certificate-verification.md) in the communication between Kyma and an application to allow Kyma to send requests and data to an unsecured application. Disabling the certificate verification can be useful in certain testing scenarios.
