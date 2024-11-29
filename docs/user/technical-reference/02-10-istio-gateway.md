@@ -6,7 +6,6 @@ The Kyma Istio module is pre-installed by default on a managed Kyma runtime. Alt
 
 Istio Gateway is created during the Application Connector module installation.
 ## DNS Name
-
 The DNS name of Ingress Gateway is cluster-dependent. For the managed Kyma clusters, it follows the `gateway.{cluster-dns}` format.
 
 ## Security

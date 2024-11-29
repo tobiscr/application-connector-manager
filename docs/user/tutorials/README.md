@@ -18,7 +18,6 @@ Last update: Nov 2024
 The document describes the steps needed to connect an external system (for example, HTTPBin) with a Kyma runtime.
 
 In this example, Kyma sends authenticated requests to an external service.
-
 ## Prerequisites
 
 Besides the Kyma default modules like Istio and API Gateway, you must enable the following Kyma modules:
@@ -29,7 +28,6 @@ Besides the Kyma default modules like Istio and API Gateway, you must enable the
 2. Add following Kyma modules:
     * `Application Connector`: it includes the Application Gateway for proxing requests to external systems.
     * `Serverless`: used to run a Function which is sending an HTTP request to the external system.
-
     If you created the Kyma runtime via BTP, follow this tutorial for [Adding and Deleting a Kyma Module](https://help.sap.com/docs/btp/sap-business-technology-platform/enable-and-disable-kyma-module?#add-and-delete-a-kyma-module-using-kyma-dashboard). Alterantively, continue with the steps described in the [Kyma Quick Install](https://kyma-project.io/#/02-get-started/01-quick-install?id=steps) tutorial.
 
 ## Integrate an External System with Kyma Runtime

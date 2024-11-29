@@ -18,7 +18,6 @@ This data mapping shows how the retrieved configuration of an `Application` from
 
 
 ## Application Name
-
 The name of the `Application` is used as a key within the Application Connector module and has special requirements:
 
 ### Uniqueness

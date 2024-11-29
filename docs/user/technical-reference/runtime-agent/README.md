@@ -7,7 +7,6 @@ Its responsibilities are:
 - Regularly synchronizing external systems (so-called `Applications` in UCL) over UCL Director by fetching new Applications from the Director and integrating them into Kyma or removing those that no longer exist.
 
 - Establishing (or renewing) a trusted connection between Kyma runtime and the UCL services.
-
 - Enable bidirectional communication between external systems and Kyma runtimes by uploading the Kyma runtime configuration (for example, the Event Gateway URL) to the UCL backend. UCL shares this data with the external application. To learn more, read the section on [configuring the Runtime](./03-20-configuring-runtime.md).
 
 ## Architecture
@@ -40,7 +39,6 @@ The diagram illustrates the workflow of Runtime Agent and the involved component
 4. It reports the Event Gateway URL and the Dashboard URL of Kyma runtime to UCL Director. These URLs are also displayed in the UCL UI.
 
 5. Regular renewal of the certificate (used for the UCL Connector and the UCL Director communication) is applied. This happens when the remaining validity for the certificate exceeds a certain threshold.
-
 ## Useful Links
 
 If you're interested in learning more about Runtime Agent, see the following links:
