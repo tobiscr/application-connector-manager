@@ -41,7 +41,7 @@ Besides the Kyma default modules like Istio and API Gateway, you must enable the
 
 ## Steps
 
-1. [Create an Application Custom Resource](./01-10-create-application.md): the Application CR represents an external system and contains all information about exposed endpoints and their security configuration etc.
+1. [Create an Application custom resource (CR)](./01-10-create-application.md). The Application CR represents an external system and contains all information about exposed endpoints and their security configuration etc.
 2. [Register a service for the external system](./01-20-register-manage-services.md) in the Application CR: the service is an abstraction of the external system. Kyma workloads can send their requests to the the service URL and the Application Gateway will proxy these requests to the external system and handling all security related aspects transparently (e.g. establishing a trusted connection or authentication).
     * [Register a secured API](./01-30-register-secured-api.md):  many different authentication methods are supported by the Application Connector, you can find in this step for each method an example.
     * [Disable TLS certificate validation](./01-50-disable-tls-certificate-verification.md): for testing purposes, it can be helpful to disable the TLS certificate validation. The Application  Connector is per default validating TLS certificates when estalishing a secure connection.
