@@ -9,9 +9,7 @@ Last update: Nov 2024
 - [Integrate external system with Kyma](#integrate-external-system-with-kyma)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
-    - [Prerequisites](#prerequisites)
-  - [Initial Setup](#initial-setup)
-    - [Create a Kyma Runtime and enable the required Modules](#create-a-kyma-runtime-and-enable-the-required-modules)
+  - [Prerequisites](#prerequisites)
   - [Steps](#steps)
 
 
@@ -22,21 +20,18 @@ The document describes the steps for connecting an external system (e.g. HTTPBin
 In this example, Kyma will send an authenticated requests to an external service.
 
 
-### Prerequisites
+## Prerequisites
 
 Besides the Kyma default modules like Istio and API Gateway, you must enable the following Kyma modules:
 
-* `Application Connector` as it includes the Application Gateway for proxing requests to external systems.
-* `Serverless` is in this example used to run a Function which is sending an HTTP request to the external system.
-
-
-## Initial Setup
-
-### Create a Kyma Runtime and enable the required Modules
 
 1. Create a Kyma Runtime either by using the [BTP cockpit](https://help.sap.com/docs/btp/sap-business-technology-platform/create-kyma-environment-instance) or by following the [Kyma Quick Install](https://kyma-project.io/#/02-get-started/01-quick-install) tutorial.
 
-2. Add following Kyma modules: `Application Connector` and `Serverless`. If you created the Kyma runtime via BTP, follow this tutorial for [Adding and Deleting a Kyma Module](https://help.sap.com/docs/btp/sap-business-technology-platform/enable-and-disable-kyma-module?#add-and-delete-a-kyma-module-using-kyma-dashboard). Alterantively, continue with the steps described in the [Kyma Quick Install](https://kyma-project.io/#/02-get-started/01-quick-install?id=steps) tutorial.
+2. Add following Kyma modules:
+    * `Application Connector`: it includes the Application Gateway for proxing requests to external systems.
+    * `Serverless`: used to run a Function which is sending an HTTP request to the external system.
+
+    If you created the Kyma runtime via BTP, follow this tutorial for [Adding and Deleting a Kyma Module](https://help.sap.com/docs/btp/sap-business-technology-platform/enable-and-disable-kyma-module?#add-and-delete-a-kyma-module-using-kyma-dashboard). Alterantively, continue with the steps described in the [Kyma Quick Install](https://kyma-project.io/#/02-get-started/01-quick-install?id=steps) tutorial.
 
 
 ## Steps
