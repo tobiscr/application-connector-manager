@@ -12,7 +12,7 @@ To get more details about a particular component, please follow the link.
 |--|--|
 |External Application|The external system which wants to interact with your Kyma workload or should be called by it.|
 |UCL|The UCL system implements the BTP Extensibility Concept and administrates system formations.|
-|[Runtime Agent](./technical-reference/runtime-agent/README.md)|The Runtime Agent is a client of the UCL system. It synchronizes regularly the defined system formations and integrates them into the Kyma Runtime.|
+|[Runtime Agent](./technical-reference/runtime-agent/README.md)|Runtime Agent is a client of the UCL system. It regularly synchronizes the defined system formations and integrates them into Kyma runtime.|
 |Certificate Secret|Stores the UCL managed certificates used for trusted communication between the external system and Kyma.|
 |[Application Custom Resource (CR)](./resources/04-10-application.md)|Stores metadata of the external system (like endpoints, authentication method etc.). Each Application CR corresponds to a single external system.|
 |Application Credentials Secret|Stores endpoint/API credentials of the external system.|
