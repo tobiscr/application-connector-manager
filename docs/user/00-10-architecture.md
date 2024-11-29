@@ -13,7 +13,7 @@ To get more details about a particular component, please follow the link.
 |External Application|The external system which wants to interact with your Kyma workload or should be called by it.|
 |UCL|The UCL system implements the BTP Extensibility Concept and administrates system formations.|
 |[Runtime Agent](./technical-reference/runtime-agent/README.md)|Runtime Agent is a client of the UCL system. It regularly synchronizes the defined system formations and integrates them into Kyma runtime.|
-|Certificate Secret|Stores the UCL managed certificates used for trusted communication between the external system and Kyma.|
+|Certificate Secret|Stores the UCL-managed certificates used for trusted communication between an external system and Kyma.|
 |[Application Custom Resource (CR)](./resources/04-10-application.md)|Stores metadata of the external system (like endpoints, authentication method etc.). Each Application CR corresponds to a single external system.|
 |Application Credentials Secret|Stores endpoint/API credentials of the external system.|
 |[Istio Ingress Gateway](./technical-reference/02-10-istio-gateway.md)|The Application Connector Module uses an Istio Gateway as endpoint for incoming requests from external systems. The Gateway supports mTLS for establishing trusted connections between the external system and the Kyma Runtime.|
