@@ -6,8 +6,6 @@ The following architectural diagram includes all components of the Application C
 
 ## Components
 
-To get more details about a particular component, please follow the link.
-
 |Component|Purpose|
 |--|--|
 |External application|An external system that interacts with your Kyma workload or is called by it.|
