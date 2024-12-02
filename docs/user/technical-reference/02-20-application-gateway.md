@@ -9,12 +9,11 @@ The following diagram illustrates how Application Gateway interacts with other m
 
 ![Application Gateway Diagram](../assets/gw-architecture.png)
 
-1. A Kyma workload calls the Application Gateway.
-2. Application Gateway extracts the application name and the service name from the URL path.
-3. Using the extracted application name, the gateway finds the corresponding Application CR and obtains the information about the registered external API, such as the API URL and security credentials.
-4. Application Gateway gets a token from the OAuth server.
-5.  This step is optional and is valid only for the API which was registered with a CSRF token enabled: Application Gateway gets a CSRF token from the endpoint exposed by the upstream service.
-6. Application Gateway calls the target API.
+1. A Kyma workload calls Application Gateway which extracts the application name and the service name from the URL path.
+2. Using the extracted application name, the gateway finds the corresponding Application CR and obtains the information about the registered external API, such as the API URL and security credentials.
+3. Application Gateway gets a token from the OAuth server.
+4.  This step is optional and is valid only for the API which was registered with a CSRF token enabled: Application Gateway gets a CSRF token from the endpoint exposed by the upstream service.
+5. Application Gateway calls the target API.
 
 
 ## Request Proxying
