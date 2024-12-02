@@ -4,7 +4,6 @@ Application Gateway is an intermediary component between a Kyma workload and an 
 
 The following diagram illustrates how Application Gateway interacts with other modules and external APIs, which are either unsecured or secured with various security mechanisms and protected against cross-site request forgery (CSRF) attacks.
 
-
 ## Workflow
 
 ![Application Gateway Diagram](../assets/gw-architecture.png)
@@ -12,9 +11,8 @@ The following diagram illustrates how Application Gateway interacts with other m
 1. A Kyma workload calls Application Gateway which extracts the application name and the service name from the URL path.
 2. Using the extracted application name, the gateway finds the corresponding Application CR and obtains the information about the registered external API, such as the API URL and security credentials.
 3. Application Gateway gets a token from the OAuth server.
-4.  This step is optional and is valid only for the API which was registered with a CSRF token enabled: Application Gateway gets a CSRF token from the endpoint exposed by the upstream service.
+4. This step is optional and is valid only for the API which was registered with a CSRF token enabled: Application Gateway gets a CSRF token from the endpoint exposed by the upstream service.
 5. Application Gateway calls the target API.
-
 
 ## Request Proxying
 
@@ -24,7 +22,6 @@ For examples of configurations and credentials, see the [tutorial on registering
 
 > [!NOTE]
 > All APIs defined in a one Secret use the same configuration - the same credentials, CSRF tokens, and request parameters.
-
 
 ### Application Gateway URL
 
@@ -42,6 +39,7 @@ The placeholders in the URLs map to the following:
 - `APP_NAME` is the name of the Application CR.
 - `SERVICE_NAME` represents the API Definition.
 - `TARGET_PATH` is the destination API URL.
+
 ### Handling of Headers
 
 Application Gateway proxies the following headers while making calls to the external system:
@@ -67,7 +65,7 @@ The modified `Location` header has finally the following format:
 
 This ensures that the calling Kyma workload will also send the redirected request through the Application Gateway instead of starting direct communication with the external system. Passing authorization or custom headers, URL parameters, and the body works consistently.
 
-#### 5xx Error responses
+#### 5xx Error Responses
 
 Application Gateway also rewrites all the `5xx` status codes to `502`. In such a case, the `Target-System-Status` header contains the original code returned by the target.
 
@@ -95,9 +93,7 @@ This mechanism is suited for implementations in which an external application ha
 
 If the user is already authenticated to the target API, the access token can be passed in a custom `Access-token` header. The header's value is of the `Bearer {TOKEN}` or `Basic {TOKEN}` form. If the Application Gateway service detects that the custom header is present, instead of performing authentication steps, it removes the `Access-token` header and passes the received value in the `Authorization` header.
 
-
 ### Token Caching
 
 To ensure optimal performance, Application Gateway caches the OAuth tokens and CSRF tokens it obtains. If the service doesn't find valid tokens for the call it makes, it gets new tokens from the OAuth server and the CSRF token endpoint.
 Additionally, the service caches ReverseProxy objects used to proxy requests to the underlying URL.
-
