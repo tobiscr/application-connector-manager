@@ -52,5 +52,5 @@ If an external system is registered for Kyma runtime in SAP BTP's UCL, the Appli
 
 #### Manually
 
-It is always possible to integrate any external system into Kyma by applying the configuration by hand. The steps for configuring and integrating a new external system in your Kyma runtime are described in the [Integrate an External System with Kyma](tutorials/01-11-integrate-external-system.md).
+It is always possible to integrate any external system into Kyma by applying the configuration by hand. The steps for configuring and integrating a new external system in your Kyma runtime are described in the [Integrate an External System with Kyma](tutorials/01-00-integrate-external-system.md).
 
