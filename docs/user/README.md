@@ -38,7 +38,7 @@ The Application Connector module provides the following features:
 
 * Dispatching of incoming requests from external systems to Kyma workloads (for example, a [Kyma Serverless Function](https://kyma-project.io/#/serverless-manager/user/resources/06-10-function-cr)) by using an Istio Gateway with mTLS and the [Kyma Eventing module](https://kyma-project.io/#/eventing-manager/user/README).
 
-* Proxying outgoing requests to external APIs and transparently covering security requirements like encryption and authentication (like OAuth 2.0 + mTLS, Basic Auth, and Client Certificates).
+* Proxying outgoing requests to external APIs and transparently covering security requirements like encryption and authentication (like OAuth 2.0 + mTLS, Basic Auth, and client certificates).
 
 * Metering of throughput and exposing monitoring metrics.
 

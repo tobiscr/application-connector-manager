@@ -32,11 +32,11 @@ The diagram illustrates the workflow of Runtime Agent and the involved component
 
 3. The agent synchronizes the Kyma-integrated external systems with the UCL Director by:
 
-    * Fetching new external systems from UCL Director and creating them in Kyma runtime
+    * Fetching new external systems from the UCL Director and creating them in Kyma runtime
 
     * Removing from Kyma runtime the external systems that no longer exist in the UCL Director.
 
-4. It reports the Event Gateway URL and the Dashboard URL of Kyma runtime to UCL Director. These URLs are also displayed in the UCL UI.
+4. It reports the Event Gateway URL and the Dashboard URL of Kyma runtime to the UCL Director. These URLs are also displayed in the UCL UI.
 
 5. Regular renewal of the certificate (used for the UCL Connector and the UCL Director communication) is applied. This happens when the remaining validity for the certificate exceeds a certain threshold.
 ## Useful Links

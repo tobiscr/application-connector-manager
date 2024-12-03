@@ -4,11 +4,11 @@ Runtime Agent periodically requests for the configuration of Kyma runtime from U
 
 To fetch the Kyma runtime configuration, Runtime Agent calls the [`applicationsForRuntime`](https://github.com/kyma-incubator/compass/blob/master/components/director/pkg/graphql/schema.graphql) query offered by the component called UCL Director.
 
-The response for the query contains Applications (an `Application` represents an external system) assigned for Kyma runtime.
+The response for the query contains Applications (an Application represents an external system) assigned for Kyma runtime.
 
-Each `Application` contains credentials that are only valid and unique for the querying Kyma runtime (another requestor cannot use them). Runtime Agent stores the credentials in a Secrets which will be used by Application Gateway for establishing a trusted outbound communication to an external system.
+Each Application contains credentials that are only valid and unique for querying Kyma runtime (another requestor cannot use them). Runtime Agent stores the credentials in Secrets, which are used by Application Gateway to establish a trusted outbound communication to an external system.
 
-This data mapping shows how the retrieved configuration of an `Application` from UCL Director is stored in Kyma runtime:
+This data mapping shows how the retrieved configuration of an Application from UCL Director is stored in Kyma runtime:
 
 | **UCL Director**    | **Kyma Runtime**                    |
 |---------------------------|-------------------------------|
@@ -18,7 +18,7 @@ This data mapping shows how the retrieved configuration of an `Application` from
 
 
 ## Application Name
-The name of the `Application` is used as a key within the Application Connector module and has special requirements:
+The name of the Application is used as a key within the Application Connector module and has the following special requirements:
 
 ### Uniqueness
 

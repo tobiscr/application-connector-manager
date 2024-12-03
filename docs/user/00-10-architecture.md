@@ -11,7 +11,7 @@ The following architectural diagram includes all components of the Application C
 |[Runtime Agent](./technical-reference/runtime-agent/README.md)|Runtime Agent is a client of the UCL system. It regularly synchronizes the defined system formations and integrates them into Kyma runtime.|
 |Certificate Secret|Stores the UCL-managed certificates used for trusted communication between an external system and Kyma.|
 |[Application custom resource (CR)](./resources/04-10-application.md)|Stores metadata of an external system (like endpoints, authentication method, etc.). Each Application CR corresponds to a single external system.|
-|Application credentials Secret|Stores endpoint/API credentials of the external system.|
+|Application credentials Secret|Stores endpoint/API credentials of an external system.|
 |[Istio Ingress Gateway](./technical-reference/02-10-istio-gateway.md)|The Application Connector module uses Istio Gateway as an endpoint for incoming requests from external systems. The Gateway supports mTLS for establishing trusted connections between an external system and Kyma runtime.|
 |Application Connectivity Validator|Verifies incoming requests by analyzing the certificate subject and passes the request to the Kyma Eventing module.|
 |[Eventing module](https://kyma-project.io/#/eventing-manager/user/README)|The Kyma Eventing module dispatches incoming requests from external systems to Kyma workloads.|
