@@ -4,7 +4,7 @@ Runtime Agent acts as a client for UCL (Unified Customer Landscape). Its purpose
 
 Its responsibilities are:
 
-- Regularly synchronizing external systems (so-called `Applications` in UCL) over UCL Director by fetching new Applications from the Director and integrating them into Kyma or removing those that no longer exist.
+- Regularly synchronizing external systems (so-called `Applications` in UCL) over the UCL Director by fetching new Applications from the Director and integrating them into Kyma or removing those that no longer exist.
 
 - Establishing (or renewing) a trusted connection between Kyma runtime and the UCL services.
 - Enable bidirectional communication between external systems and Kyma runtimes by uploading the Kyma runtime configuration (for example, the Event Gateway URL) to the UCL backend. UCL shares this data with the external application. To learn more, read the section on [configuring the Runtime](./03-20-configuring-runtime.md).
@@ -21,7 +21,7 @@ The diagram illustrates the workflow of Runtime Agent and the involved component
 |--|--|
 |Runtime Agent|Client of the UCL system, which integrates and synchronizes external applications with Kyma runtime. It also ensures trusted communication with the UCL services by exchanging certificates.|
 |[UCL Connector](https://github.com/kyma-incubator/compass/blob/main/docs/connector/02-01-connector-service.md)|Connector establishes trust between external systems and runtimes.|
-|[UCL Director](https://github.com/kyma-incubator/compass/blob/master/docs/compass/02-01-components.md#director)|UCL Director handles the process of managing external systems and runtimes.|
+|[UCL Director](https://github.com/kyma-incubator/compass/blob/master/docs/compass/02-01-components.md#director)|The UCL Director handles the process of managing external systems and runtimes.|
 |Certificate Secret|Stores the certificate used by Runtime Agent to establish a trusted connection with a UCL service|
 
 ### Workflow

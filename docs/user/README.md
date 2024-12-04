@@ -5,7 +5,7 @@
 Application Connectivity in Kyma simplifies the interaction between external systems and your Kyma workloads. The main benefits are:
 
 * Smooth and loosely coupled integration of external systems with Kyma workloads using [Kyma Eventing](https://kyma-project.io/#/eventing-manager/user/README)
-* Easy consumption of SAP BTP services by supporting the SAP BTP Extensibility approach
+* Easy consumption of SAP BTP services by supporting the SAP Extensibility approach
 * Establishing high-security standards for any interaction between systems by using trusted communication channels and authentication methods
 * Reducing configuration changes for Kyma workloads through encapsulating configuration details of external API endpoints
 * Monitoring and tracing capabilities to facilitate operational aspects
@@ -24,7 +24,7 @@ The Application Connector module provides the following features:
 
 * Easy installation of Kyma's Application Connectivity capabilities by enabling the Application Connector module in your Kyma runtime.
 * Simple configuration using Kubernetes CRs and easy management with Kyma dashboard.
-* Full integration of BTP's UCL service, which implements the SAP BTP Extensibility concept. This allows for the automated integration of external systems registered in the UCL service.
+* Full integration of SAP BTP's UCL service, which implements the SAP Extensibility concept. This allows for the automated integration of external systems registered in the UCL service.
 * Dispatching of incoming requests from external systems to Kyma workloads (for example, a [Kyma Serverless Function](https://kyma-project.io/#/serverless-manager/user/resources/06-10-function-cr)) by using an Istio Gateway with mTLS and the [Kyma Eventing module](https://kyma-project.io/#/eventing-manager/user/README).
 * Proxying outgoing requests to external APIs and transparently covering security requirements like encryption and authentication (like OAuth 2.0 + mTLS, Basic Auth, and client certificates).
 * Metering of throughput and exposing monitoring metrics.

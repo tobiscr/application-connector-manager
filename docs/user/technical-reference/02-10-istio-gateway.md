@@ -14,7 +14,7 @@ The DNS name of Ingress Gateway is cluster-dependent. For the managed Kyma clust
 
 ### Client Certificates
 
-For external systems automatically integrated by UCL, the Application Connector module uses the mutual TLS protocol (mTLS) with client authentication enabled. As a result, anyone attempting to connect to the Application Connector module must present a valid client certificate dedicated to a specific Application. This way, the traffic is fully encrypted, and the client has a valid identity.
+For external systems automatically integrated by Unified Customer Landscape (UCL), the Application Connector module uses the mutual TLS protocol (mTLS) with client authentication enabled. As a result, anyone attempting to connect to the Application Connector module must present a valid client certificate dedicated to a specific Application. This way, the traffic is fully encrypted, and the client has a valid identity.
 
 ### TLS Certificate Verification
 

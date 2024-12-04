@@ -7,7 +7,7 @@ The following architectural diagram includes all components of the Application C
 |Component|Purpose|
 |--|--|
 |External application|An external system that interacts with your Kyma workload or is called by it.|
-|Unified Customer Landscape (UCL)|The UCL system implements the BTP Extensibility Concept and administrates system formations.|
+|Unified Customer Landscape (UCL)|The UCL system implements the SAP Extensibility concept and administrates system formations.|
 |[Runtime Agent](./technical-reference/runtime-agent/README.md)|Runtime Agent is a client of the UCL system. It regularly synchronizes the defined system formations and integrates them into Kyma runtime.|
 |Certificate Secret|Stores the UCL-managed certificates used for trusted communication between an external system and Kyma.|
 |[Application custom resource (CR)](./resources/04-10-application.md)|Stores metadata of an external system (like endpoints, authentication method, etc.). Each Application CR corresponds to a single external system.|

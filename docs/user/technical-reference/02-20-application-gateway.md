@@ -1,6 +1,6 @@
 # Application Gateway
 
-Application Gateway is an intermediary component between a Kyma workload and an external system. It proxies outgoing requests from Kyma to the external system API based on the configuration stored in the [`Application`](../resources/04-10-application.md) CR.
+Application Gateway is an intermediary component between a Kyma workload and an external system. It proxies outgoing requests from Kyma to the external system API based on the configuration stored in the [Application](../resources/04-10-application.md) CR.
 
 The following diagram illustrates how Application Gateway interacts with other modules and external APIs, which are either unsecured or secured with various security mechanisms and protected against cross-site request forgery (CSRF) attacks.
 
@@ -16,7 +16,7 @@ The following diagram illustrates how Application Gateway interacts with other m
 
 ## Request Proxying
 
-Application Gateway proxies requests from Kyma workloads to external system APIs based on the configuration stored in the [`Application` CR](../resources/04-10-application.md) and Kubernetes Secrets.
+Application Gateway proxies the requests from Kyma workloads to external system APIs based on the configuration stored in the [Application CR](../resources/04-10-application.md) and Kubernetes Secrets.
 
 For examples of configurations and credentials, see the [tutorial on registering a secured API](../tutorials/01-30-register-secured-api.md).
 

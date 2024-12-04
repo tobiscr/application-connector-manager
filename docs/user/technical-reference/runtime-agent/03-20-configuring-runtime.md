@@ -2,13 +2,13 @@
 
 Runtime Agent periodically requests for the configuration of Kyma runtime from Unified Customer Landscape (UCL).
 
-To fetch the Kyma runtime configuration, Runtime Agent calls the [`applicationsForRuntime`](https://github.com/kyma-incubator/compass/blob/master/components/director/pkg/graphql/schema.graphql) query offered by the component called UCL Director.
+To fetch the Kyma runtime configuration, Runtime Agent calls the [`applicationsForRuntime`](https://github.com/kyma-incubator/compass/blob/master/components/director/pkg/graphql/schema.graphql) query offered by the component called the UCL Director.
 
 The response for the query contains Applications (an Application represents an external system) assigned for Kyma runtime.
 
 Each Application contains credentials that are only valid and unique for querying Kyma runtime (another requestor cannot use them). Runtime Agent stores the credentials in Secrets, which are used by Application Gateway to establish a trusted outbound communication to an external system.
 
-This data mapping shows how the retrieved configuration of an Application from UCL Director is stored in Kyma runtime:
+This data mapping shows how the retrieved configuration of an Application from the UCL Director is stored in Kyma runtime:
 
 | **UCL Director**    | **Kyma Runtime**                    |
 |---------------------------|-------------------------------|
@@ -26,7 +26,7 @@ The names of Applications assigned to the Runtime must be unique in Kyma Runtime
 
 ### Normalization of Application Names
 
-Runtime Agent can normalize the names of Applications fetched from UCL Director by converting them to lowercase and removing special characters and spaces.
+Runtime Agent can normalize the names of Applications fetched from the UCL Director by converting them to lowercase and removing special characters and spaces.
 
 This feature is controlled by the `isNormalized` label, which can be set on the Runtime in UCL.
 
