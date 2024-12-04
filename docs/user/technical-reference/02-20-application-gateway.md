@@ -55,7 +55,7 @@ In addition, the `User-Agent` header is set to an empty value not specified in t
 
 #### Redirects
 
-The Application Gateway performs response rewriting in situations when an external system responds to a redirect (`3xx` status code) that points to a URL with the same host but a different path:
+Application Gateway performs response rewriting in situations when an external system responds to a redirect (`3xx` status code) that points to a URL with the same host but a different path:
 
 The `Location` header is modified to replace the original target path with the Application Gateway URL and port. The sub-path pointing to the called service remains attached at the end.
 
@@ -63,7 +63,7 @@ The modified `Location` header has finally the following format:
 
 `{APP_GATEWAY_URL}:{APP_GATEWAY_PORT}/{APP_NAME}/{SERVICE_NAME}/{SUB-PATH}`
 
-This ensures that the calling Kyma workload will also send the redirected request through the Application Gateway instead of starting direct communication with the external system. Passing authorization or custom headers, URL parameters, and the body works consistently.
+This ensures that the calling Kyma workload also sends the redirected request through Application Gateway instead of starting direct communication with the external system. Passing authorization or custom headers, URL parameters, and the body works consistently.
 
 #### 5xx Error Responses
 
@@ -87,7 +87,7 @@ Application Gateway calls the registered APIs accordingly, based on the security
 
 ### Provide a Custom Access Token
 
-Application Gateway overrides the registered API's security type if it gets a request that contains the **Access-Token** header. In such a case, Application Gateway rewrites the token from the **Access-Token** header into an OAuth-compliant **Authorization** header and forwards it to the target API.
+Application Gateway overrides the registered API's security type if it gets a request that contains the `Access-Token` header. In such a case, Application Gateway rewrites the token from the `Access-Token` header into an OAuth-compliant `Authorization` header and forwards it to the target API.
 
 This mechanism is suited for implementations in which an external application handles user authentication:
 
