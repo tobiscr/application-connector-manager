@@ -27,18 +27,13 @@ The diagram illustrates the workflow of Runtime Agent and the involved component
 ### Workflow
 
 1. The Runtime Agent fetches the certificate from the UCL Connector to initialize the connection with the UCL system.
-
 2. The certificate and key for the UCL Connector and the UCL Director are stored in a Kubernetes Secret.
-
 3. The agent synchronizes the Kyma-integrated external systems with the UCL Director by:
-
     * Fetching new external systems from the UCL Director and creating them in Kyma runtime
-
     * Removing from Kyma runtime the external systems that no longer exist in the UCL Director.
-
 4. It reports the Event Gateway URL and the Dashboard URL of Kyma runtime to the UCL Director. These URLs are also displayed in the UCL UI.
-
 5. Regular renewal of the certificate (used for the UCL Connector and the UCL Director communication) is applied. This happens when the remaining validity for the certificate exceeds a certain threshold.
+
 ## Useful Links
 
 If you're interested in learning more about Runtime Agent, see the following links:
@@ -47,4 +42,3 @@ If you're interested in learning more about Runtime Agent, see the following lin
 - Find out more details about the [CompassConnection](../../resources/04-20-compassconnection.md) custom resource (CR) for UCL (mind that, for historical reasons, UCL was previously called Compass and the CR is still named `CompassConnection`)
 - Learn how the [connection to UCL](./03-10-ucl-connection.md) is established
 - Understand how Runtime Agent [configures runtimes](./03-20-configuring-runtime.md)
-

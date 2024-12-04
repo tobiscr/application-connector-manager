@@ -8,9 +8,7 @@ In this example, Kyma sends authenticated requests to an external service.
 
 ## Prerequisites
 
-
 1. Create Kyma runtime either by using the [SAP BTP cockpit](https://help.sap.com/docs/btp/sap-business-technology-platform/create-kyma-environment-instance) or by following the [Kyma Quick Install](https://kyma-project.io/#/02-get-started/01-quick-install) tutorial.
-
 2. Besides the Kyma default modules like Istio and API Gateway, you must enable the following Kyma modules:
     * `Application Connector`: it includes the Application Gateway for proxing requests to external systems.
     * `Serverless`: used to run a Function which is sending an HTTP request to an external system.

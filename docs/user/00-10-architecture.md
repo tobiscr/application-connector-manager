@@ -106,4 +106,3 @@ These credentials are used for outbound communication proxied by the Application
         <td>X</td>
     </tr>
 </table>
-
