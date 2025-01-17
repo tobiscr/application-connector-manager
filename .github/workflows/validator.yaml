@@ -116,7 +116,7 @@ jobs:
         run: sudo go install github.com/mikefarah/yq/v4@latest
       - name: Run unit tests
         run: make -C tests/hack/ci k3d-validator-tests
-      - name: Archive test resgitults
+      - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
