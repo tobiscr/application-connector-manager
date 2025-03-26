@@ -86,8 +86,8 @@ func main() {
 	internalHandlerForCompass := newInternalHandlerForCompass(serviceDefinitionService, options)
 	externalHandler := externalapi.NewHandler(logCfg.Level)
 
-	internalHandler = httptools.RequestLogger("Internal handler: ", internalHandler)
-	internalHandlerForCompass = httptools.RequestLogger("Internal handler: ", internalHandlerForCompass)
+	internalHandler = httptools.RequestLogger("Internalf handler: ", internalHandler)
+	internalHandlerForCompass = httptools.RequestLogger("Internalf handler: ", internalHandlerForCompass)
 	externalHandler = httptools.RequestLogger("External handler: ", externalHandler)
 
 	externalSrv := &http.Server{
@@ -206,7 +206,7 @@ func newServiceDefinitionService(k8sConfig *restclient.Config, coreClientset kub
 func newApplicationRepository(config *restclient.Config) (applications.ServiceRepository, apperrors.AppError) {
 	applicationClientset, err := versioned.NewForConfig(config)
 	if err != nil {
-		return nil, apperrors.Internal("failed to create k8s application client, %s", err)
+		return nil, apperrors.Internalf("failed to create k8s application client, %s", err)
 	}
 
 	rei := applicationClientset.ApplicationconnectorV1alpha1().Applications()
