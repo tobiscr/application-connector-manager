@@ -86,8 +86,8 @@ func main() {
 	internalHandlerForCompass := newInternalHandlerForCompass(serviceDefinitionService, options)
 	externalHandler := externalapi.NewHandler(logCfg.Level)
 
-	internalHandler = httptools.RequestLogger("Internalf handler: ", internalHandler)
-	internalHandlerForCompass = httptools.RequestLogger("Internalf handler: ", internalHandlerForCompass)
+	internalHandler = httptools.RequestLogger("Internal handler: ", internalHandler)
+	internalHandlerForCompass = httptools.RequestLogger("Internal handler: ", internalHandlerForCompass)
 	externalHandler = httptools.RequestLogger("External handler: ", externalHandler)
 
 	externalSrv := &http.Server{
