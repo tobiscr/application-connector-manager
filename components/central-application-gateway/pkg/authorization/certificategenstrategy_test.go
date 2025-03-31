@@ -1,10 +1,7 @@
 package authorization
 
 import (
-	"crypto/rsa"
 	"crypto/tls"
-	"crypto/x509"
-	"encoding/pem"
 	"net/http"
 	"testing"
 
@@ -22,7 +19,6 @@ var (
 )
 
 func TestCertificateGenStrategy(t *testing.T) {
-
 	t.Run("should add certificates to proxy", func(t *testing.T) {
 		// given
 		clientCert := clientcert.NewClientCertificate(nil)
@@ -38,10 +34,10 @@ func TestCertificateGenStrategy(t *testing.T) {
 		require.NoError(t, err)
 
 		// then
-		assert.Equal(t, &tls.Certificate{
-			Certificate: [][]byte{cert()},
-			PrivateKey:  key(),
-		}, clientCert.GetCertificate())
+		expectedCert, err := tls.X509KeyPair(certificate, privateKey)
+		require.NoError(t, err)
+
+		assert.Equal(t, expectedCert, *clientCert.GetCertificate())
 	})
 
 	t.Run("should return error when key is invalid", func(t *testing.T) {
@@ -72,15 +68,4 @@ func TestCertificateGenStrategy(t *testing.T) {
 		// then
 		require.Error(t, err)
 	})
-}
-
-func key() *rsa.PrivateKey {
-	pemBlock, _ := pem.Decode(privateKey)
-	key, _ := x509.ParsePKCS1PrivateKey(pemBlock.Bytes)
-	return key
-}
-
-func cert() []byte {
-	pemBlock, _ := pem.Decode(certificate)
-	return pemBlock.Bytes
 }
