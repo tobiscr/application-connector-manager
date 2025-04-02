@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"io/ioutil"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"time"
@@ -173,7 +173,7 @@ func drainBody(b io.ReadCloser) (r1, r2 io.ReadCloser, err error) {
 	if err = b.Close(); err != nil {
 		return nil, b, err
 	}
-	return ioutil.NopCloser(&buf), ioutil.NopCloser(bytes.NewReader(buf.Bytes())), nil
+	return io.NopCloser(&buf), io.NopCloser(bytes.NewReader(buf.Bytes())), nil
 }
 
 func handleErrors(w http.ResponseWriter, apperr apperrors.AppError) {
@@ -186,5 +186,7 @@ func respondWithBody(w http.ResponseWriter, code int, body httperrors.ErrorRespo
 
 	w.WriteHeader(code)
 
-	json.NewEncoder(w).Encode(body)
+	if err := json.NewEncoder(w).Encode(body); err != nil {
+		slog.Warn("encode failed", "body", body, "err", err.Error())
+	}
 }
