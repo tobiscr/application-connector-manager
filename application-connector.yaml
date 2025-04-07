@@ -248,6 +248,13 @@ spec:
         app.kubernetes.io/part-of: application-connector-manager
         release: application-connector
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "topology.kubernetes.io/zone"
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: central-application-connectivity-validator
       serviceAccountName: central-application-connectivity-validator
       containers:
         - name: central-application-connectivity-validator
@@ -329,6 +336,13 @@ spec:
         app.kubernetes.io/part-of: application-connector-manager
         release: application-connector
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "topology.kubernetes.io/zone"
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: central-application-gateway
       serviceAccountName: central-application-gateway
       containers:
         - name: central-application-gateway
