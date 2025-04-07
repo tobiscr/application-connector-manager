@@ -390,8 +390,8 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 spec:
-  minReplicas: 1
-  maxReplicas: 1
+  minReplicas: 2
+  maxReplicas: 2
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
@@ -418,8 +418,8 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 spec:
-  minReplicas: 1
-  maxReplicas: 1
+  minReplicas: 2
+  maxReplicas: 2
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
