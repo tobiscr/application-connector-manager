@@ -1,6 +1,6 @@
 module github.com/kyma-project/application-connector-manager
 
-go 1.24.1
+go 1.24.2
 
 require (
 	github.com/onsi/ginkgo/v2 v2.23.3
@@ -56,11 +56,11 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/term v0.30.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/term v0.31.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	golang.org/x/tools v0.32.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect
@@ -79,12 +79,12 @@ require (
 )
 
 replace (
-	golang.org/x/net => golang.org/x/net v0.37.0
-	golang.org/x/oauth2 => golang.org/x/oauth2 v0.27.0
-	golang.org/x/sys => golang.org/x/sys v0.31.0
-	golang.org/x/term => golang.org/x/term v0.30.0
-	golang.org/x/text => golang.org/x/text v0.23.0
-	golang.org/x/time => golang.org/x/time v0.6.0
-	golang.org/x/tools => golang.org/x/tools v0.31.0
+	golang.org/x/net => golang.org/x/net v0.39.0
+	golang.org/x/oauth2 => golang.org/x/oauth2 v0.29.0
+	golang.org/x/sys => golang.org/x/sys v0.32.0
+	golang.org/x/term => golang.org/x/term v0.31.0
+	golang.org/x/text => golang.org/x/text v0.24.0
+	golang.org/x/time => golang.org/x/time v0.11.0
+	golang.org/x/tools => golang.org/x/tools v0.32.0
 	google.golang.org/protobuf => google.golang.org/protobuf v1.36.6
 )
