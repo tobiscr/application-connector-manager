@@ -6,7 +6,7 @@ type queryProvider struct{}
 
 func (qp queryProvider) configuration() string {
 	return fmt.Sprintf(`query {
-	result: configuration() {
+	result: configuration {
 		%s
 	}
 }`, configurationResult())
