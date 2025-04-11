@@ -1,6 +1,6 @@
 module github.com/kyma-project/kyma/components/compass-runtime-agent
 
-go 1.24.1
+go 1.24.2
 
 require (
 	github.com/google/uuid v1.6.0
@@ -67,12 +67,12 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
-	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
-	golang.org/x/sync v0.12.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/term v0.30.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/sync v0.13.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/term v0.31.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
@@ -93,12 +93,12 @@ replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.4.11
 	github.com/docker/distribution => github.com/docker/distribution v0.0.0-20191216044856-a8371794149d
 	github.com/docker/docker => github.com/docker/docker v20.10.27+incompatible
-	golang.org/x/crypto => golang.org/x/crypto v0.31.0
-	golang.org/x/net => golang.org/x/net v0.37.0
-	golang.org/x/oauth2 => golang.org/x/oauth2 v0.27.0
-	golang.org/x/sys => golang.org/x/sys v0.31.0
-	golang.org/x/term => golang.org/x/term v0.30.0
-	golang.org/x/text => golang.org/x/text v0.23.0
-	golang.org/x/time => golang.org/x/time v0.6.0
-	golang.org/x/tools => golang.org/x/tools v0.31.0
+	golang.org/x/crypto => golang.org/x/crypto v0.37.0
+	golang.org/x/net => golang.org/x/net v0.39.0
+	golang.org/x/oauth2 => golang.org/x/oauth2 v0.29.0
+	golang.org/x/sys => golang.org/x/sys v0.32.0
+	golang.org/x/term => golang.org/x/term v0.31.0
+	golang.org/x/text => golang.org/x/text v0.24.0
+	golang.org/x/time => golang.org/x/time v0.11.0
+	golang.org/x/tools => golang.org/x/tools v0.32.0
 )
