@@ -109,8 +109,10 @@ jobs:
     # we're using reusable because we can't modify workflows as contributors
     # it could cause the secret leakeages
     uses: "./.github/workflows/reusable-k3d-agent-test.yml"
+    needs: build-image
     with:
       k3d-version: v5.6.0
+      cra-image: ${{ fromJSON(needs.build-image.outputs.images)[0] }}
     secrets:
       compass-host: ${{ secrets.COMPASS_HOST }}
       compass-client-id: ${{ secrets.COMPASS_CLIENT_ID }}

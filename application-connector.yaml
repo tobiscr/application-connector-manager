@@ -248,10 +248,17 @@ spec:
         app.kubernetes.io/part-of: application-connector-manager
         release: application-connector
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "topology.kubernetes.io/zone"
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: central-application-connectivity-validator
       serviceAccountName: central-application-connectivity-validator
       containers:
         - name: central-application-connectivity-validator
-          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20240920-8cc34ee6
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20250403-2fe746fb
           imagePullPolicy: IfNotPresent
           args:
             - "/app/centralapplicationconnectivityvalidator"
@@ -329,10 +336,17 @@ spec:
         app.kubernetes.io/part-of: application-connector-manager
         release: application-connector
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "topology.kubernetes.io/zone"
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: central-application-gateway
       serviceAccountName: central-application-gateway
       containers:
         - name: central-application-gateway
-          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20240920-8cc34ee6
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20250403-2fe746fb
           imagePullPolicy: IfNotPresent
           args:
             - "/app/applicationgateway"
@@ -390,8 +404,8 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 spec:
-  minReplicas: 1
-  maxReplicas: 1
+  minReplicas: 2
+  maxReplicas: 2
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
@@ -418,8 +432,8 @@ metadata:
     app.kubernetes.io/instance: application-connector
     app.kubernetes.io/part-of: application-connector-manager
 spec:
-  minReplicas: 1
-  maxReplicas: 1
+  minReplicas: 2
+  maxReplicas: 2
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
