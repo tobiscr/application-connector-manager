@@ -11,7 +11,7 @@ require (
 	github.com/onsi/gomega v1.37.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/stretchr/testify v1.10.0
-	github.com/vrischmann/envconfig v1.3.0
+	github.com/vrischmann/envconfig v1.4.1
 	go.uber.org/zap v1.27.0
 	k8s.io/apimachinery v0.27.4
 	k8s.io/client-go v0.26.7
