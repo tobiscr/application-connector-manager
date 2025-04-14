@@ -47,12 +47,18 @@ jobs:
           COMPASS_CLIENT_SECRET: ${{ secrets.compass-client-secret }}
           COMPASS_HOST: ${{ secrets.compass-host }}
         run: make -C tests/hack/ci k3d-agent-tests
-      - name: archive-logs
+      - name: archive-test-logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: k3d-agent-test-logs
           path: compass-runtime-agent-test.log
+      - name: archive-cra-logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k3d-agent-logs
+          path: compass-runtime-agent.log
       - name: test summary
         run: |
           {
