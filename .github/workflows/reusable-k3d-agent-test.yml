@@ -64,9 +64,15 @@ jobs:
           {
             echo "# K3D Agent Test Summary:"
             echo "<details>"
-            echo "<summary>Click to expand logs</summary>"
+            echo "<summary>Click to expand test logs</summary>"
             printf '\n```\n'
             cat compass-runtime-agent-test.log
+            printf '\n```\n'
+            echo "</details>"
+            echo "<details>"
+            echo "<summary>Click to expand CRA logs</summary>"
+            printf '\n```\n'
+            cat compass-runtime-agent.log
             printf '\n```\n'
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
