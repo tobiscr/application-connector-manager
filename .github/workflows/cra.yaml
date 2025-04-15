@@ -123,7 +123,6 @@ jobs:
     # it could cause the secret leakeages
     uses: "./.github/workflows/reusable-k3d-agent-test.yml"
     if: github.ref == 'refs/heads/main'
-    needs: build-image
     with:
       k3d-version: v5.6.0
       cra-image: ''
