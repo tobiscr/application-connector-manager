@@ -105,7 +105,7 @@ jobs:
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
 
-  k3d-integration:
+  k3d-PR-integration:
     # we're using reusable because we can't modify workflows as contributors
     # it could cause the secret leakeages
     uses: "./.github/workflows/reusable-k3d-agent-test.yml"
@@ -113,6 +113,19 @@ jobs:
     with:
       k3d-version: v5.6.0
       cra-image: ${{ fromJSON(needs.build-image.outputs.images)[0] }}
+    secrets:
+      compass-host: ${{ secrets.COMPASS_HOST }}
+      compass-client-id: ${{ secrets.COMPASS_CLIENT_ID }}
+      compass-client-secret: ${{ secrets.COMPASS_CLIENT_SECRET }}
+      
+  k3d-integration:
+    # we're using reusable because we can't modify workflows as contributors
+    # it could cause the secret leakeages
+    uses: "./.github/workflows/reusable-k3d-agent-test.yml"
+    if: github.ref == 'refs/heads/main'
+    with:
+      k3d-version: v5.6.0
+      cra-image: ''
     secrets:
       compass-host: ${{ secrets.COMPASS_HOST }}
       compass-client-id: ${{ secrets.COMPASS_CLIENT_ID }}
