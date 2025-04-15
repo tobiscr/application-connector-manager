@@ -9,6 +9,10 @@ on:
       cra-image:
         required: false
         type: string
+      artifact-prefix:
+        required: false
+        type: string
+        default: ""
     secrets:
       compass-host:
         required: true
@@ -51,13 +55,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: k3d-agent-test-logs
+          name: ${{inputs.artifact-prefix}}k3d-agent-test-logs
           path: compass-runtime-agent-test.log
       - name: archive-cra-logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: k3d-agent-logs
+          name: ${{inputs.artifact-prefix}}k3d-agent-logs
           path: compass-runtime-agent.log
       - name: test summary
         run: |
