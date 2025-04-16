@@ -9,7 +9,6 @@ import (
 	"golang.org/x/exp/slices"
 	appv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -28,7 +27,7 @@ type craDTO struct {
 }
 
 func buildUpdateCompassRuntimeAgent(ctx context.Context, r *fsm, _ *systemState) (func(i v1alpha1.ApplicationConnectorSpec, objs uList, _ uList) error, error) {
-	var secret v1.Secret
+	var secret corev1.Secret
 	err := r.Get(ctx, keyCompassAgentCfg, &secret)
 
 	var replicas int32 = 1
