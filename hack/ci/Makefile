@@ -2,8 +2,7 @@ PROJECT_ROOT ?= ../..
 PROJECT_COMMON ?= ../common
 
 K3D_URL=https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
-DEFAULT_K3D_VERSION=latest
-# DEFAULT_K3D_VERSION=v5.6.0
+DEFAULT_K3D_VERSION=v5.8.3
 
 include ${PROJECT_ROOT}/.env
 
