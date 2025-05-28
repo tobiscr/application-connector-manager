@@ -111,7 +111,7 @@ jobs:
     uses: "./.github/workflows/reusable-k3d-agent-test.yml"
     needs: build-image
     with:
-      k3d-version: v5.6.0
+      k3d-version: v5.8.3
       cra-image: ${{ fromJSON(needs.build-image.outputs.images)[0] }}
       artifact-prefix: "pr-"
     secrets:
@@ -125,7 +125,7 @@ jobs:
     uses: "./.github/workflows/reusable-k3d-agent-test.yml"
     if: github.ref == 'refs/heads/main'
     with:
-      k3d-version: v5.6.0
+      k3d-version: v5.8.3
       cra-image: ""
     secrets:
       compass-host: ${{ secrets.COMPASS_HOST }}
