@@ -1,5 +1,5 @@
 K3D_URL=https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
-K3S ?= "rancher/k3s:v1.33.1+k3s1"
+K3S ?= "rancher/k3s:v1.29.5-k3s1"
 
 PROJECT_ROOT  ?= ../../..
 CLUSTER_NAME  ?= kyma

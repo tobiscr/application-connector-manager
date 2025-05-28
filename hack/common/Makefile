@@ -18,8 +18,8 @@ help:
 
 .PHONY: install-istio
 install-istio:
-	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-manager.yaml
-	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-default-cr.yaml
+	kubectl apply -f https://github.com/kyma-project/istio/releases/download/1.17.2/istio-manager.yaml
+	kubectl apply -f https://github.com/kyma-project/istio/releases/download/1.17.2/istio-default-cr.yaml
 	kubectl wait -n kyma-system istios/default --for=jsonpath='{.status.state}'=Ready --timeout=300s
 
 .PHONY: create-cra-config
