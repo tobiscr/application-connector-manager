@@ -51,6 +51,7 @@ run-without-lifecycle-manager: \
 create-k3d: ## Create k3d with kyma CRDs.
 	@echo "::group::create-k3d"
 	k3d cluster create ${CLUSTER_NAME} \
+		--image docker.io/rancher/k3s:v1.29.5-k3s1 \
 		--api-port 6550 \
 		-p 8080:80@loadbalancer \
 		-p 8443:443@loadbalancer \
