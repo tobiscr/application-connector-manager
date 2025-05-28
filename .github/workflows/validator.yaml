@@ -43,7 +43,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Detect files
         id: detect-files
-        uses: step-security/changed-files@52f756978519f427e38a119d8c4f0c8f549d1402
+        uses: tj-actions/changed-files@0b975f61488402a699abcebd6a1e25924cf85218
         with:
           files_yaml: |
             validator:
@@ -76,9 +76,7 @@ jobs:
           cache-dependency-path: components/central-application-connectivity-validator/go.sum
       - name: Run unit tests
         working-directory: ./components/central-application-connectivity-validator
-        run: |
-          set -o pipefail
-          make test | tee test.log
+        run: make test | tee test.log
       - name: Archive test results
         if: success() || failure()
         uses: actions/upload-artifact@v4
@@ -101,25 +99,23 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: azure/setup-helm@v4.3.0
+      - uses: azure/setup-helm@v4.1.0
         id: install
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Set up go environment
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.24.2
+          go-version: 1.24.1
       - name: Install k3d
         env:
           K3D_URL: https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
-          DEFAULT_K3D_VERSION: v5.6.0
+          DEFAULT_K3D_VERSION: v5.8.3
         run: curl --silent --fail $K3D_URL | TAG=$DEFAULT_K3D_VERSION bash
       - name: Install yq
         run: sudo go install github.com/mikefarah/yq/v4@latest
       - name: Run unit tests
-        run: |
-          set -o pipefail
-          make -C tests/hack/ci k3d-validator-tests
+        run: make -C tests/hack/ci k3d-validator-tests
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v4
