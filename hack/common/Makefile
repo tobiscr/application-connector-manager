@@ -1,6 +1,7 @@
 CLUSTER_NAME ?= kyma
 REGISTRY_PORT ?= 5001
 REGISTRY_NAME ?= ${CLUSTER_NAME}-registry
+K3S ?= "rancher/k3s:v1.33.1+k3s1"
 
 MANAGER_IMAGE_NAME ?= appcon-manager-dev-local
 MANAGER_IMAGE_TAG ?= 0.0.1
@@ -18,8 +19,8 @@ help:
 
 .PHONY: install-istio
 install-istio:
-	kubectl apply -f https://github.com/kyma-project/istio/releases/download/1.17.2/istio-manager.yaml
-	kubectl apply -f https://github.com/kyma-project/istio/releases/download/1.17.2/istio-default-cr.yaml
+	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-manager.yaml
+	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-default-cr.yaml
 	kubectl wait -n kyma-system istios/default --for=jsonpath='{.status.state}'=Ready --timeout=300s
 
 .PHONY: create-cra-config
@@ -35,7 +36,6 @@ create-cra-config:
 .PHONY: run-without-lifecycle-manager
 run-without-lifecycle-manager: ## Create k3d cluster and deploy module without the lifecycle-manager.
 run-without-lifecycle-manager: \
-        kyma \
 	create-k3d \
 	create-kyma-system-ns \
 	install-istio \
@@ -49,7 +49,16 @@ run-without-lifecycle-manager: \
 
 .PHONY: create-k3d
 create-k3d: ## Create k3d with kyma CRDs.
-	${KYMA} provision k3d --registry-port ${REGISTRY_PORT} --name ${CLUSTER_NAME} -p 8080:80@loadbalancer -p 8443:443@loadbalancer --ci
+	@echo "::group::create-k3d"
+	k3d cluster create ${CLUSTER_NAME} \
+		--api-port 6550 \
+		-p 8080:80@loadbalancer \
+		-p 8443:443@loadbalancer \
+		-p 9090-9099:9090-9099@loadbalancer \
+		--agents 2 \
+		--registry-create k3d-${REGISTRY_NAME}:${REGISTRY_PORT}
+	kubectl version
+	@echo "::endgroup::"
 
 .PHONY: delete-k3d
 delete-k3d: ## Delete k3d with kyma CRDs.
@@ -62,10 +71,6 @@ delete-k3d-registry: ## Delete k3d kyma registry.
 .PHONY: patch-with-istio-crds
 patch-with-istio-crds: ## Delete k3d kyma cluster.
 	kubectl apply -f ./k3d-patches/patch-istio-crds.yaml
-
-.PHONY: create-k3d
-create-k3d: ## Create k3d with kyma CRDs.
-	${KYMA} provision k3d --registry-port ${REGISTRY_PORT} --name ${CLUSTER_NAME} -p 8080:80@loadbalancer -p 8443:443@loadbalancer --ci
 
 ##@ Module management
 
