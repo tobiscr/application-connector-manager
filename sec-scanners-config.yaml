@@ -1,7 +1,7 @@
 module-name: application-connector-manager
 kind: kyma
 bdba:
-  - europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:1.1.11
+  - europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:latest
   - europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20250411-2e63148e
   - europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20250411-2e63148e
   - europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:v20250411-1bd93c30
@@ -10,6 +10,6 @@ mend:
   exclude:
     - "**/*_test.go"
 checkmarx-one:
-    preset: go-default
-    exclude:
-        - '**/*_test.go'
+  preset: go-default
+  exclude:
+    - "**/*_test.go"
