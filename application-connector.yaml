@@ -258,7 +258,7 @@ spec:
       serviceAccountName: central-application-connectivity-validator
       containers:
         - name: central-application-connectivity-validator
-          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20250411-2e63148e
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:1.1.13
           imagePullPolicy: IfNotPresent
           args:
             - "/app/centralapplicationconnectivityvalidator"
@@ -346,7 +346,7 @@ spec:
       serviceAccountName: central-application-gateway
       containers:
         - name: central-application-gateway
-          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20250411-2e63148e
+          image: europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:1.1.13
           imagePullPolicy: IfNotPresent
           args:
             - "/app/applicationgateway"
@@ -468,14 +468,14 @@ spec:
                 compassMetadata:
                   type: object
                   required:
-                  - "authentication"
+                    - "authentication"
                   properties:
                     applicationId:
                       type: string
                     authentication:
                       type: object
                       required:
-                      - "clientIds"
+                        - "clientIds"
                       properties:
                         clientIds:
                           type: array
@@ -520,12 +520,12 @@ spec:
                   items:
                     type: object
                     required:
-                    - "id"
-                    - "name"
-                    - "displayName"
-                    - "providerDisplayName"
-                    - "description"
-                    - "entries"
+                      - "id"
+                      - "name"
+                      - "displayName"
+                      - "providerDisplayName"
+                      - "description"
+                      - "entries"
                     properties:
                       id:
                         type: string
@@ -555,15 +555,15 @@ spec:
                         items:
                           type: object
                           required:
-                          - "type"
+                            - "type"
                           properties:
                             apiType:
                               type: string
                             type:
                               type: string
                               enum:
-                              - "API"
-                              - "Events"
+                                - "API"
+                                - "Events"
                             gatewayUrl:
                               type: string
                             centralGatewayUrl:
@@ -586,8 +586,8 @@ spec:
                             credentials:
                               type: object
                               required:
-                              - "type"
-                              - "secretName"
+                                - "type"
+                                - "secretName"
                               properties:
                                 type:
                                   type: string
@@ -598,7 +598,7 @@ spec:
                                 csrfInfo:
                                   type: object
                                   required:
-                                  - "tokenEndpointURL"
+                                    - "tokenEndpointURL"
                                   properties:
                                     tokenEndpointURL:
                                       type: string
@@ -617,10 +617,10 @@ spec:
                     status:
                       type: string
                   required:
-                  - status
+                    - status
                   type: object
               required:
-              - installationStatus
+                - installationStatus
               type: object
   scope: Cluster
   names:
@@ -628,7 +628,7 @@ spec:
     singular: application
     kind: Application
     shortNames:
-    - app
+      - app
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -650,14 +650,10 @@ spec:
         openAPIV3Schema:
           properties:
             apiVersion:
-              description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
               type: string
             kind:
-              description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
               type: string
             metadata:
               type: object
@@ -689,8 +685,7 @@ spec:
                 connectionState:
                   type: string
                 connectionStatus:
-                  description: 'Represents the status of the connection to
-                    Compass.'
+                  description: 'Represents the status of the connection to Compass.'
                   properties:
                     certificateStatus:
                       description: 'Specifies the certificate issue and expiration dates.'
@@ -1043,7 +1038,7 @@ spec:
             - containerPort: 8090
               hostPort: 0
               name: http-health
-          image: europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:v20250411-1bd93c30
+          image: europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:1.1.13
           imagePullPolicy: IfNotPresent
           args:
             - "/app/compass-runtime-agent"
