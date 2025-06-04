@@ -2,9 +2,9 @@ module-name: application-connector-manager
 kind: kyma
 bdba:
   - europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:latest
-  - europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:v20250411-2e63148e
-  - europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:v20250411-2e63148e
-  - europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:v20250411-1bd93c30
+  - europe-docker.pkg.dev/kyma-project/prod/central-application-connectivity-validator:latest
+  - europe-docker.pkg.dev/kyma-project/prod/central-application-gateway:latest
+  - europe-docker.pkg.dev/kyma-project/prod/compass-runtime-agent:latest
 mend:
   language: golang-mod
   exclude:
