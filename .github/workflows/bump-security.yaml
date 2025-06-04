@@ -20,8 +20,17 @@ jobs:
         run: |
           images="$(yq '[.]' application-connector.yaml | yq --output-format json -I0 '[.[] | select(.kind == "Deployment").spec.template.spec.containers[].image]' | sed 's/"//g')" yq -i '.bdba |= filter(. | contains("latest")) + env(images)' ./sec-scanners-config.yaml
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          commit-message: Bump security config
-          delete-branch: true
-          title: Bump security config
+        env:
+          GH_TOKEN: ${{ secrets.GH_BOT }}
+        run: |
+          git config user.name "ghabot"
+          git config user.email "ghabot@example.com"
+
+          git add ./sec-scanners-config.yaml
+          if git diff-index --quiet HEAD; then
+            echo "No changes detected - no action required"
+            exit 0
+          fi
+          git commit -m "Bump security images"
+          git push -f -u origin autobump/sec-scanners-config
+          gh pr create --base main --head autobump/sec-scanners-config --fill
