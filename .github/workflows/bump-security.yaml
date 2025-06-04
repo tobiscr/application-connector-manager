@@ -1,0 +1,27 @@
+name: Bump Security Component Images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - application-connector.yaml
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump images
+        run: |
+          images="$(yq '[.]' application-connector.yaml | yq --output-format json -I0 '[.[] | select(.kind == "Deployment").spec.template.spec.containers[].image]' | sed 's/"//g')" yq -i '.bdba |= filter(. | contains("latest")) + env(images)' ./sec-scanners-config.yaml
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: Bump security config
+          delete-branch: true
+          title: Bump security config
