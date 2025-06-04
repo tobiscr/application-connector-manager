@@ -1,0 +1,50 @@
+name: Tag Components
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+-*"
+
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - id: tag
+        # if: github.event_name == 'push' && github.ref_type == 'tag'
+        run: echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+
+  build-validator:
+    needs: setup
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: central-application-connectivity-validator
+      dockerfile: Dockerfile
+      context: components/central-application-connectivity-validator
+      tags: |
+        ${{ needs.setup.outputs.tag }}
+
+  build-cra:
+    needs: setup
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: compass-runtime-agent
+      dockerfile: Dockerfile
+      context: components/compass-runtime-agent
+      tags: |
+        ${{ needs.setup.outputs.tag }}
+
+  build-gateway:
+    needs: setup
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: central-application-gateway
+      dockerfile: Dockerfile
+      context: components/central-application-gateway
+      tags: |
+        ${{ needs.setup.outputs.tag }}
