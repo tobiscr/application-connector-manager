@@ -95,7 +95,7 @@ replace (
 	github.com/docker/docker => github.com/docker/docker v20.10.27+incompatible
 	golang.org/x/crypto => golang.org/x/crypto v0.37.0
 	golang.org/x/net => golang.org/x/net v0.39.0
-	golang.org/x/oauth2 => golang.org/x/oauth2 v0.29.0
+	golang.org/x/oauth2 => golang.org/x/oauth2 v0.30.0
 	golang.org/x/sys => golang.org/x/sys v0.32.0
 	golang.org/x/term => golang.org/x/term v0.31.0
 	golang.org/x/text => golang.org/x/text v0.24.0
