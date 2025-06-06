@@ -105,5 +105,10 @@ jobs:
               echo '[![ACM](https://github.com/kyma-project/application-connector-manager/actions/workflows/acm.yaml/badge.svg?branch=main&event=push)](https://github.com/kyma-project/application-connector-manager/actions/workflows/acm.yaml) [![Bump images on tag push](https://github.com/kyma-project/application-connector-manager/actions/workflows/bump-images.yaml/badge.svg?event=push)](https://github.com/kyma-project/application-connector-manager/actions/workflows/bump-images.yaml)'
               echo '# Bumped images'
               echo $images | yq -P '.[]' | xargs -I'%' echo "- \`%:${version}\`"
+              printf '\n\n---\n\nTo verify images, run:\n```\n'
+              echo "export version=$version"
+              echo "export images='$images'"
+              echo 'echo $images | yq -P \'.[]\' | xargs -I\'%\' skopeo inspect "docker://%:${version}" > /dev/null'
+              printf '```\n'
           } > pr-description.md
           gh pr create --base main --head autobump/images -F pr-description.md -t "Bump images to $version"
