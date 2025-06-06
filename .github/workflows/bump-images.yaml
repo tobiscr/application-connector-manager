@@ -71,6 +71,13 @@ jobs:
           git fetch origin
           git checkout -f autobump/sec-scanners-config
           git reset --hard origin/main
+      - name: Bump application-connector.yaml images
+        run: |
+          yq -i \
+              '(select(.kind == "Deployment").spec.template.spec.containers[].image
+              | env(images) as $images
+              | select(. | sub(":[\w\d\.]+$", "") as $img | $images | contains([$img])))
+              |= sub(":[\w\d\.]+$", ":" + strenv(version))' application-connector.yaml
       - name: Bump security images
         run: |
           # clear BDBA list
@@ -82,14 +89,6 @@ jobs:
               | (env(images) | map(. + ":" + strenv(version))) as $versioned
               | .bdba |= $latest + $versioned
               | .bdba |= sort' ./sec-scanners-config.yaml
-
-      - name: Bump application-connector.yaml images
-        run: |
-          yq -i \
-              '(select(.kind == "Deployment").spec.template.spec.containers[].image
-              | env(images) as $images
-              | select(. | sub(":[\w\d\.]+$", "") as $img | $images | contains([$img])))
-              |= sub(":[\w\d\.]+$", ":" + strenv(version))' application-connector.yaml
       - name: Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GH_BOT }}
