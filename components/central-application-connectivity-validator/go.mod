@@ -60,7 +60,7 @@ require (
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
+	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/term v0.31.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
@@ -86,7 +86,6 @@ replace (
 	github.com/docker/docker => github.com/docker/docker v28.2.2+incompatible
 	github.com/opencontainers/runc => github.com/opencontainers/runc v1.2.6
 	golang.org/x/net => golang.org/x/net v0.39.0
-	golang.org/x/oauth2 => golang.org/x/oauth2 v0.30.0
 	golang.org/x/sys => golang.org/x/sys v0.32.0
 	golang.org/x/term => golang.org/x/term v0.31.0
 	golang.org/x/text => golang.org/x/text v0.24.0

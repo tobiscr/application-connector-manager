@@ -41,7 +41,7 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/oauth2 v0.21.0 // indirect
+	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/term v0.31.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
@@ -61,7 +61,6 @@ require (
 
 replace (
 	golang.org/x/net => golang.org/x/net v0.39.0
-	golang.org/x/oauth2 => golang.org/x/oauth2 v0.30.0
 	golang.org/x/sys => golang.org/x/sys v0.32.0
 	golang.org/x/term => golang.org/x/term v0.31.0
 	golang.org/x/text => golang.org/x/text v0.24.0
