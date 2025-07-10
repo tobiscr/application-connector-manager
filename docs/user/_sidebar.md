@@ -5,6 +5,7 @@
 * [Technical Reference](/application-connector-manager/user/technical-reference/README.md)
   * [Istio Gateway](/application-connector-manager/user/technical-reference/02-10-istio-gateway.md)
   * [Application Gateway](/application-connector-manager/user/technical-reference/02-20-application-gateway.md)
+  * [Application Connectivity Validator](/application-connector-manager/user/technical-reference/02-30-application-connectivity-validator.md)
   * [Runtime Agent](/application-connector-manager/user/technical-reference/runtime-agent/README.md)
     * [UCL Connection](/application-connector-manager/user/technical-reference/runtime-agent/03-10-ucl-connection.md)
     * [Configuring Runtime](/application-connector-manager/user/technical-reference/runtime-agent/03-20-configuring-runtime.md)
