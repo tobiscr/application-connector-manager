@@ -2,7 +2,7 @@
 
 Application Connectivity Validator is an intermediary component processing incoming events from a connected External System.
 
-It verifies incoming requests for all connected External Systems by analyzing the certificate subjects and passes the requests to the Kyma Eventing module.
+It verifies incoming requests for all connected External Systems by comparing the certificate subjects with the registered applications. If the subject matches with an application name , the request is accepted and the validator passes it to the Kyma Eventing module.
 
 The following diagram shows how Application Connectivity Validator service interacts with other Kyma modules and external system, within Application Connector components.
 
