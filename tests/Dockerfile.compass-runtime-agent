@@ -1,4 +1,6 @@
-FROM golang:1.24.3-alpine as builder
+FROM --platform=$BUILDPLATFORM golang:1.24.4-alpine3.22 AS builder
+ARG TARGETOS
+ARG TARGETARCH
 
 WORKDIR /compass-test/
 
@@ -7,7 +9,7 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN CGO_ENABLED=0 go test -v -c -o compass-test ./test/compass-runtime-agent/
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go test -v -c -o compass-test ./test/compass-runtime-agent/
 
 FROM scratch
 

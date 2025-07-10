@@ -1,17 +1,18 @@
-FROM golang:1.24.3-alpine as builder
-
-
+FROM --platform=$BUILDPLATFORM golang:1.24.4-alpine3.22 AS builder
+ARG TARGETOS
+ARG TARGETARCH
 ARG DOCK_PKG_DIR=/compass-runtime-agent
+
 WORKDIR $DOCK_PKG_DIR
 
 COPY . $DOCK_PKG_DIR
 
 RUN echo "nobody:x:65534:5534:nobody:/:" > /etc_passwd
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o compass-runtime-agent ./cmd
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o compass-runtime-agent ./cmd
 
 
-FROM golang:1.24.3-alpine as certs
+FROM golang:1.24.4-alpine3.22 as certs
 RUN apk add -U --no-cache ca-certificates
 
 FROM scratch
