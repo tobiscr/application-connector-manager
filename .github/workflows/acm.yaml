@@ -67,6 +67,13 @@ jobs:
         run: |
           set -o pipefail
           make test | tee test.log
+      - name: coveralls github action
+        uses: coverallsapp/github-action@v2.3.6
+        with:
+          format: golang
+          file: ./cover.out
+          fail-on-error: false
+          base-path: /
       - name: Archive test results
         uses: actions/upload-artifact@v4
         if: success() || failure()
