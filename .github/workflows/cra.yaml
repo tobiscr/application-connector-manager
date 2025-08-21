@@ -106,6 +106,7 @@ jobs:
           base-path: /components/compass-runtime-agent
           flag-name: CRA
           carryforward: ACM,CACV,CAG
+          build-number: ${{ github.sha }}
       - name: Archive test results
         if: success() || failure()
         uses: actions/upload-artifact@v4

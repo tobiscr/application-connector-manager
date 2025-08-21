@@ -97,6 +97,7 @@ jobs:
           base-path: /components/central-application-gateway
           flag-name: CAG
           carryforward: ACM,CACV,CRA
+          build-number: ${{ github.sha }}
       - name: Archive test results
         if: success() || failure()
         uses: actions/upload-artifact@v4
