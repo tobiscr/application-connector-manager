@@ -91,10 +91,19 @@ jobs:
           cache-dependency-path: components/compass-runtime-agent/go.sum
       - name: Run unit tests
         working-directory: ./components/compass-runtime-agent
+        env:
+          ARTIFACTS: "./"
         run: |
           set -o pipefail
           touch test.log
           make test | tee -a test.log
+      - name: coveralls github action
+        uses: coverallsapp/github-action@v2.3.6
+        with:
+          format: golang
+          file: ./components/compass-runtime-agent/filtered.cov
+          fail-on-error: false
+          base-path: /components/compass-runtime-agent
       - name: Archive test results
         if: success() || failure()
         uses: actions/upload-artifact@v4

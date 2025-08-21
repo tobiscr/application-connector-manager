@@ -87,7 +87,14 @@ jobs:
         working-directory: ./components/central-application-gateway
         run: |
           set -o pipefail
-          go test ./... | tee test.log
+          go test -coverprofile cover.out ./... | tee test.log
+      - name: coveralls github action
+        uses: coverallsapp/github-action@v2.3.6
+        with:
+          format: golang
+          file: ./components/central-application-gateway/cover.out
+          fail-on-error: false
+          base-path: /components/central-application-gateway
       - name: Archive test results
         if: success() || failure()
         uses: actions/upload-artifact@v4
