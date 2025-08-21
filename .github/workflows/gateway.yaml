@@ -95,6 +95,8 @@ jobs:
           file: ./components/central-application-gateway/cover.out
           fail-on-error: false
           base-path: /components/central-application-gateway
+          flag-name: CAG
+          carryforward: ACM,CACV,CRA
       - name: Archive test results
         if: success() || failure()
         uses: actions/upload-artifact@v4
