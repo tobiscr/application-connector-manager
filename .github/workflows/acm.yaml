@@ -74,6 +74,8 @@ jobs:
           file: ./cover.out
           fail-on-error: false
           base-path: /
+          flag-name: ACM
+          carryforward: CACV,CAG,CRA
       - name: Archive test results
         uses: actions/upload-artifact@v4
         if: success() || failure()
