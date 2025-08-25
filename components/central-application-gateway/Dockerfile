@@ -16,7 +16,7 @@ RUN echo "nobody:x:65534:5534:nobody:/:" > /etc_passwd
 RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o applicationgateway ./cmd/applicationgateway
 
 
-FROM golang:1.24.4-alpine3.22 as certs
+FROM golang:1.25.0-alpine3.22 as certs
 RUN apk add -U --no-cache ca-certificates
 
 FROM scratch
