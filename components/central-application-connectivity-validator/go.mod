@@ -59,13 +59,13 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/net v0.39.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/term v0.31.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/term v0.34.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
-	golang.org/x/tools v0.31.0 // indirect
+	golang.org/x/tools v0.36.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
@@ -85,10 +85,10 @@ replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.7.27
 	github.com/docker/docker => github.com/docker/docker v28.2.2+incompatible
 	github.com/opencontainers/runc => github.com/opencontainers/runc v1.2.6
-	golang.org/x/net => golang.org/x/net v0.39.0
-	golang.org/x/sys => golang.org/x/sys v0.32.0
-	golang.org/x/term => golang.org/x/term v0.31.0
-	golang.org/x/text => golang.org/x/text v0.24.0
-	golang.org/x/time => golang.org/x/time v0.11.0
-	golang.org/x/tools => golang.org/x/tools v0.32.0
+	golang.org/x/net => golang.org/x/net v0.43.0
+	golang.org/x/sys => golang.org/x/sys v0.35.0
+	golang.org/x/term => golang.org/x/term v0.34.0
+	golang.org/x/text => golang.org/x/text v0.28.0
+	golang.org/x/time => golang.org/x/time v0.12.0
+	golang.org/x/tools => golang.org/x/tools v0.36.0
 )
