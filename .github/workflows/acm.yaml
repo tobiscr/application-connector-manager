@@ -67,11 +67,33 @@ jobs:
         run: |
           set -o pipefail
           make test | tee test.log
+      - name: filter out coverage
+        run: |
+          #!/bin/bash
+
+          filters=(
+              "github.com/kyma-project/application-connector-manager/api"
+              "mock"
+              "testing"
+          )
+
+          input="cover.out"
+          output="cover-filtered.out"
+
+          cp "$input" "$output"
+
+          for i in "${filters[@]}"; do
+            echo "filtering $i"
+            cp "$output" "$output~"
+            grep --invert-match $i "$output~" > "$output"
+            wc -l $output
+          done
+          rm "$output~"
       - name: coveralls github action
         uses: coverallsapp/github-action@v2.3.6
         with:
           format: golang
-          file: ./cover.out
+          file: ./cover-filtered.out
           fail-on-error: false
           base-path: /
           flag-name: ACM
