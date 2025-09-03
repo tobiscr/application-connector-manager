@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.tag.outputs.tag }}
+      tag-experimental: ${{ steps.tag.outputs.tag }}-experimental
     steps:
       - id: tag
         # if: github.event_name == 'push' && github.ref_type == 'tag'
@@ -29,6 +30,7 @@ jobs:
       context: components/central-application-connectivity-validator
       tags: |
         ${{ needs.setup.outputs.tag }}
+        ${{ needs.setup.outputs.tag-experimental }}
 
   build-cra:
     needs: setup
@@ -39,6 +41,7 @@ jobs:
       context: components/compass-runtime-agent
       tags: |
         ${{ needs.setup.outputs.tag }}
+        ${{ needs.setup.outputs.tag-experimental }}        
 
   build-gateway:
     needs: setup
@@ -49,3 +52,4 @@ jobs:
       context: components/central-application-gateway
       tags: |
         ${{ needs.setup.outputs.tag }}
+        ${{ needs.setup.outputs.tag-experimental }}
