@@ -1032,7 +1032,7 @@ spec:
             capabilities:
               drop:
                 - ALL
-            procMount: default
+            procMount: Default
             readOnlyRootFilesystem: true
           ports:
             - containerPort: 8090
