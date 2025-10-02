@@ -7,13 +7,13 @@ require (
 	github.com/onsi/gomega v1.38.2
 	github.com/stretchr/testify v1.11.1
 	go.uber.org/zap v1.27.0
-	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b
+	golang.org/x/exp v0.0.0-20250911091902-df9299821621
 	istio.io/client-go v1.23.2
 	k8s.io/api v0.30.1
 	k8s.io/apiextensions-apiserver v0.29.5
 	k8s.io/apimachinery v0.30.3
 	k8s.io/client-go v0.29.5
-	k8s.io/utils v0.0.0-20250321185631-1f6e0b77f77e
+	k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d
 	sigs.k8s.io/controller-runtime v0.17.2
 )
 
@@ -70,13 +70,13 @@ require (
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/net v0.44.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
-	golang.org/x/term v0.34.0 // indirect
-	golang.org/x/text v0.28.0 // indirect
-	golang.org/x/time v0.11.0 // indirect
-	golang.org/x/tools v0.36.0 // indirect
+	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/term v0.35.0 // indirect
+	golang.org/x/text v0.29.0 // indirect
+	golang.org/x/time v0.13.0 // indirect
+	golang.org/x/tools v0.37.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240610135401-a8a62080eff3 // indirect
 	google.golang.org/protobuf v1.36.7 // indirect
@@ -87,18 +87,18 @@ require (
 	k8s.io/component-base v0.29.5 // indirect
 	k8s.io/klog/v2 v2.120.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240521193020-835d969ad83a // indirect
-	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
+	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
 replace (
-	golang.org/x/net => golang.org/x/net v0.43.0
+	golang.org/x/net => golang.org/x/net v0.44.0
 	golang.org/x/oauth2 => golang.org/x/oauth2 v0.30.0
 	golang.org/x/sys => golang.org/x/sys v0.35.0
-	golang.org/x/term => golang.org/x/term v0.34.0
-	golang.org/x/text => golang.org/x/text v0.28.0
-	golang.org/x/time => golang.org/x/time v0.12.0
+	golang.org/x/term => golang.org/x/term v0.35.0
+	golang.org/x/text => golang.org/x/text v0.29.0
+	golang.org/x/time => golang.org/x/time v0.13.0
 	golang.org/x/tools => golang.org/x/tools v0.36.0
 	google.golang.org/protobuf => google.golang.org/protobuf v1.36.6
 )

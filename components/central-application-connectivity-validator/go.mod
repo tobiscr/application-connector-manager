@@ -4,7 +4,7 @@ go 1.25
 
 require (
 	github.com/gorilla/mux v1.8.1
-	github.com/kyma-project/kyma/common/logging v0.0.0-20250404123224-5afb7a10791b
+	github.com/kyma-project/kyma/common/logging v0.0.0-20250825081818-b67459e41320
 	github.com/kyma-project/kyma/components/central-application-gateway v0.0.0-20230130154909-4c81ab2cee61
 	github.com/oklog/run v1.1.0
 	github.com/onsi/ginkgo/v2 v2.25.1
@@ -15,7 +15,7 @@ require (
 	go.uber.org/zap v1.27.0
 	k8s.io/apimachinery v0.27.4
 	k8s.io/client-go v0.26.7
-	k8s.io/utils v0.0.0-20250321185631-1f6e0b77f77e
+	k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d
 	sigs.k8s.io/controller-runtime v0.14.6
 )
 
@@ -29,7 +29,7 @@ require (
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
-	github.com/go-logr/zapr v1.2.3 // indirect
+	github.com/go-logr/zapr v1.3.0 // indirect
 	github.com/go-openapi/jsonpointer v0.22.0 // indirect
 	github.com/go-openapi/jsonreference v0.21.1 // indirect
 	github.com/go-openapi/swag v0.24.1 // indirect
@@ -71,12 +71,12 @@ require (
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/net v0.44.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
-	golang.org/x/term v0.34.0 // indirect
-	golang.org/x/text v0.28.0 // indirect
-	golang.org/x/time v0.3.0 // indirect
+	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/term v0.35.0 // indirect
+	golang.org/x/text v0.29.0 // indirect
+	golang.org/x/time v0.13.0 // indirect
 	golang.org/x/tools v0.36.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
 	google.golang.org/protobuf v1.36.7 // indirect
@@ -88,19 +88,19 @@ require (
 	k8s.io/component-base v0.26.1 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f // indirect
-	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
+	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
 replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.7.27
-	github.com/docker/docker => github.com/docker/docker v28.3.3+incompatible
+	github.com/docker/docker => github.com/docker/docker v28.4.0+incompatible
 	github.com/opencontainers/runc => github.com/opencontainers/runc v1.2.6
-	golang.org/x/net => golang.org/x/net v0.43.0
+	golang.org/x/net => golang.org/x/net v0.44.0
 	golang.org/x/sys => golang.org/x/sys v0.35.0
-	golang.org/x/term => golang.org/x/term v0.34.0
-	golang.org/x/text => golang.org/x/text v0.28.0
-	golang.org/x/time => golang.org/x/time v0.12.0
+	golang.org/x/term => golang.org/x/term v0.35.0
+	golang.org/x/text => golang.org/x/text v0.29.0
+	golang.org/x/time => golang.org/x/time v0.13.0
 	golang.org/x/tools => golang.org/x/tools v0.36.0
 )
