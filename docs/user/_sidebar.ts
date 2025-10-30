@@ -24,9 +24,10 @@ export default [
   { text: 'Tutorials', link: './tutorials/README', collapsed: true, items: [
     { text: 'Integrate an External System with Kyma', link: './tutorials/01-00-integrate-external-system' },
     { text: 'Create an Application CR', link: './tutorials/01-10-create-application' },
-    { text: 'Register a Service', link: './tutorials/01-20-register-manage-services' },
-    { text: 'Register a Secured API', link: './tutorials/01-30-register-secured-api' },
-    { text: 'Disable TLS Validation', link: './tutorials/01-50-disable-tls-certificate-verification' },
+    { text: 'Register a Service', link: './tutorials/01-20-register-manage-services', collapsed: true, items: [
+      { text: 'Register a Secured API', link: './tutorials/01-30-register-secured-api' },
+      { text: 'Disable TLS Validation', link: './tutorials/01-50-disable-tls-certificate-verification' }
+      ]},
     { text: 'Call a Registered External Service from Kyma', link: './tutorials/01-40-call-registered-service-from-kyma' }
     ] }
 ];
