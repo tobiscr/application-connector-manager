@@ -2,6 +2,7 @@ package httptools
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"go.uber.org/zap"
@@ -18,7 +19,9 @@ func RespondWithError(log *zap.SugaredLogger, w http.ResponseWriter, apperr appe
 	statusCode, responseBody := httperrors.AppErrorToResponse(apperr)
 
 	Respond(w, statusCode)
-	json.NewEncoder(w).Encode(responseBody)
+	if err := json.NewEncoder(w).Encode(responseBody); err != nil {
+		slog.Warn("encode failed", "body", responseBody, "err", err.Error())
+	}
 }
 
 func Respond(w http.ResponseWriter, statusCode int) {
@@ -28,5 +31,7 @@ func Respond(w http.ResponseWriter, statusCode int) {
 
 func RespondWithBody(w http.ResponseWriter, statusCode int, responseBody interface{}) {
 	Respond(w, statusCode)
-	json.NewEncoder(w).Encode(responseBody)
+	if err := json.NewEncoder(w).Encode(responseBody); err != nil {
+		slog.Warn("encode failed", "body", responseBody, "err", err.Error())
+	}
 }

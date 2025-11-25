@@ -1,6 +1,8 @@
-FROM golang:1.23.1-alpine3.20 as builder
-
+FROM --platform=$BUILDPLATFORM golang:1.25.1-alpine3.22 AS builder
+ARG TARGETOS
+ARG TARGETARCH
 ARG DOCK_PKG_DIR=/go/src/github.com/kyma-project/kyma/components/central-application-gateway
+
 WORKDIR $DOCK_PKG_DIR
 
 COPY go.mod .
@@ -11,10 +13,10 @@ COPY . $DOCK_PKG_DIR
 
 RUN echo "nobody:x:65534:5534:nobody:/:" > /etc_passwd
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o applicationgateway ./cmd/applicationgateway
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o applicationgateway ./cmd/applicationgateway
 
 
-FROM eu.gcr.io/kyma-project/external/alpine:3.17.3 as certs
+FROM golang:1.25.1-alpine3.22 as certs
 RUN apk add -U --no-cache ca-certificates
 
 FROM scratch

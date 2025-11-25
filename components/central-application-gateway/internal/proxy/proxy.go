@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"io/ioutil"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"time"
@@ -82,7 +82,7 @@ func (p *proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (p *proxy) extractPath(u *url.URL) (model.APIIdentifier, *url.URL, *url.URL, apperrors.AppError) {
 	apiIdentifier, path, gwURL, err := p.extractPathFunc(u)
 	if err != nil {
-		return model.APIIdentifier{}, nil, nil, apperrors.WrongInput("failed to extract API Identifier from path")
+		return model.APIIdentifier{}, nil, nil, apperrors.WrongInputf("failed to extract API Identifier from path")
 	}
 
 	return apiIdentifier, path, gwURL, nil
@@ -155,7 +155,7 @@ func copyRequestBody(r *http.Request) (io.ReadCloser, apperrors.AppError) {
 
 	bodyCopy, secondRequestBody, err := drainBody(r.Body)
 	if err != nil {
-		return nil, apperrors.Internal("failed to drain request body, %s", err)
+		return nil, apperrors.Internalf("failed to drain request body, %s", err)
 	}
 	r.Body = bodyCopy
 
@@ -173,7 +173,7 @@ func drainBody(b io.ReadCloser) (r1, r2 io.ReadCloser, err error) {
 	if err = b.Close(); err != nil {
 		return nil, b, err
 	}
-	return ioutil.NopCloser(&buf), ioutil.NopCloser(bytes.NewReader(buf.Bytes())), nil
+	return io.NopCloser(&buf), io.NopCloser(bytes.NewReader(buf.Bytes())), nil
 }
 
 func handleErrors(w http.ResponseWriter, apperr apperrors.AppError) {
@@ -186,5 +186,7 @@ func respondWithBody(w http.ResponseWriter, code int, body httperrors.ErrorRespo
 
 	w.WriteHeader(code)
 
-	json.NewEncoder(w).Encode(body)
+	if err := json.NewEncoder(w).Encode(body); err != nil {
+		slog.Warn("encode failed", "body", body, "err", err.Error())
+	}
 }

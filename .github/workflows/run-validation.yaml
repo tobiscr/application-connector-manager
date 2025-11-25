@@ -15,12 +15,12 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up go environment
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
-        go-version: 1.23.1
+        go-version: 1.25
 
     - name: Run integration tests without lifecycle-manager
       run: make -C hack/ci run-without-lifecycle-manager

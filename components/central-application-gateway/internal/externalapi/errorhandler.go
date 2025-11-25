@@ -2,6 +2,7 @@ package externalapi
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/kyma-project/kyma/components/central-application-gateway/internal/httperrors"
@@ -22,5 +23,7 @@ func (eh *ErrorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set(httpconsts.HeaderContentType, httpconsts.ContentTypeApplicationJson)
 	w.WriteHeader(eh.Code)
-	json.NewEncoder(w).Encode(responseBody)
+	if err := json.NewEncoder(w).Encode(responseBody); err != nil {
+		slog.Warn("encode failed", "body", responseBody, "err", err.Error())
+	}
 }

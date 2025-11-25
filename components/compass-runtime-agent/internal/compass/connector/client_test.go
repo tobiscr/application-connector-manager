@@ -17,7 +17,7 @@ const (
 	TokenHeader = "Connector-Token"
 
 	expectedConfigurationQuery = `query {
-	result: configuration() {
+	result: configuration {
 		token { token }
 		certificateSigningRequestInfo { subject keyAlgorithm }
 		managementPlaneInfo { 

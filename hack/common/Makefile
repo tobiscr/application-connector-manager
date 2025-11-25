@@ -18,8 +18,8 @@ help:
 
 .PHONY: install-istio
 install-istio:
-	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-manager.yaml
-	kubectl apply -f https://github.com/kyma-project/istio/releases/latest/download/istio-default-cr.yaml
+	kubectl apply -f https://github.com/kyma-project/istio/releases/download/1.17.1/istio-manager.yaml
+	kubectl apply -f https://github.com/kyma-project/istio/releases/download/1.17.1/istio-default-cr.yaml
 	kubectl wait -n kyma-system istios/default --for=jsonpath='{.status.state}'=Ready --timeout=300s
 
 .PHONY: create-cra-config
@@ -35,7 +35,6 @@ create-cra-config:
 .PHONY: run-without-lifecycle-manager
 run-without-lifecycle-manager: ## Create k3d cluster and deploy module without the lifecycle-manager.
 run-without-lifecycle-manager: \
-        kyma \
 	create-k3d \
 	create-kyma-system-ns \
 	install-istio \
@@ -49,7 +48,17 @@ run-without-lifecycle-manager: \
 
 .PHONY: create-k3d
 create-k3d: ## Create k3d with kyma CRDs.
-	${KYMA} provision k3d --registry-port ${REGISTRY_PORT} --name ${CLUSTER_NAME} -p 8080:80@loadbalancer -p 8443:443@loadbalancer --ci
+	@echo "::group::create-k3d"
+	k3d cluster create ${CLUSTER_NAME} \
+		--image docker.io/rancher/k3s:v1.31.7-k3s1 \
+		--api-port 6550 \
+		-p 8080:80@loadbalancer \
+		-p 8443:443@loadbalancer \
+		-p 9090-9099:9090-9099@loadbalancer \
+		--agents 2 \
+		--registry-create k3d-${REGISTRY_NAME}:${REGISTRY_PORT}
+	kubectl version
+	@echo "::endgroup::"
 
 .PHONY: delete-k3d
 delete-k3d: ## Delete k3d with kyma CRDs.
@@ -62,10 +71,6 @@ delete-k3d-registry: ## Delete k3d kyma registry.
 .PHONY: patch-with-istio-crds
 patch-with-istio-crds: ## Delete k3d kyma cluster.
 	kubectl apply -f ./k3d-patches/patch-istio-crds.yaml
-
-.PHONY: create-k3d
-create-k3d: ## Create k3d with kyma CRDs.
-	${KYMA} provision k3d --registry-port ${REGISTRY_PORT} --name ${CLUSTER_NAME} -p 8080:80@loadbalancer -p 8443:443@loadbalancer --ci
 
 ##@ Module management
 

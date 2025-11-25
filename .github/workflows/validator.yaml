@@ -43,7 +43,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Detect files
         id: detect-files
-        uses: tj-actions/changed-files@d6babd6899969df1a11d14c368283ea4436bca78
+        uses: step-security/changed-files@89030a259c7f36d294c5ad1184fd3ca4a76942de
         with:
           files_yaml: |
             validator:
@@ -58,6 +58,15 @@ jobs:
         run: |
           echo "validator_any_changed=true" >> $GITHUB_OUTPUT
           echo "test_any_changed=true" >> $GITHUB_OUTPUT
+
+  tags:
+    runs-on: ubuntu-latest
+    outputs:
+      latest: ${{ steps.latest.outputs.latest || '' }}
+    steps:
+      - id: latest
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name == 'push'
+        run: echo "latest=latest" >> $GITHUB_OUTPUT
 
   unit-tests:
     needs: setup
@@ -76,7 +85,19 @@ jobs:
           cache-dependency-path: components/central-application-connectivity-validator/go.sum
       - name: Run unit tests
         working-directory: ./components/central-application-connectivity-validator
-        run: make test | tee test.log
+        run: |
+          set -o pipefail
+          make test | tee test.log
+      - name: coveralls github action
+        uses: coverallsapp/github-action@v2.3.6
+        with:
+          format: golang
+          file: ./components/central-application-connectivity-validator/cover.out
+          fail-on-error: false
+          base-path: /components/central-application-connectivity-validator
+          flag-name: CACV
+          carryforward: ACM,CRA,CAG
+          build-number: ${{ github.sha }}
       - name: Archive test results
         if: success() || failure()
         uses: actions/upload-artifact@v4
@@ -99,23 +120,25 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: azure/setup-helm@v4.1.0
+      - uses: azure/setup-helm@v4.3.0
         id: install
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Set up go environment
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.23.1
+          go-version: 1.25
       - name: Install k3d
         env:
           K3D_URL: https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
-          DEFAULT_K3D_VERSION: v5.6.0
+          DEFAULT_K3D_VERSION: v5.8.3
         run: curl --silent --fail $K3D_URL | TAG=$DEFAULT_K3D_VERSION bash
       - name: Install yq
         run: sudo go install github.com/mikefarah/yq/v4@latest
       - name: Run unit tests
-        run: make -C tests/hack/ci k3d-validator-tests
+        run: |
+          set -o pipefail
+          make -C tests/hack/ci k3d-validator-tests
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -145,14 +168,15 @@ jobs:
       context: tests
 
   build-image:
-    needs: setup
+    needs: [setup, tags]
     if: needs.setup.outputs.validator == 'true'
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: central-application-connectivity-validator
       dockerfile: Dockerfile
       context: components/central-application-connectivity-validator
-      export-tags: true
+      tags: |
+        ${{ needs.tags.outputs.latest }}
 
   print-images:
     runs-on: ubuntu-latest

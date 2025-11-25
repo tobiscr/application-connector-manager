@@ -47,7 +47,7 @@ jobs:
       - name: Detect files
         continue-on-error: true
         id: detect-files
-        uses: tj-actions/changed-files@d6babd6899969df1a11d14c368283ea4436bca78
+        uses: step-security/changed-files@89030a259c7f36d294c5ad1184fd3ca4a76942de
         with:
           files_yaml: |
             cra:
@@ -62,6 +62,15 @@ jobs:
         run: |
           echo "cra_any_changed=true" >> $GITHUB_OUTPUT
           echo "test_any_changed=true" >> $GITHUB_OUTPUT
+
+  tags:
+    runs-on: ubuntu-latest
+    outputs:
+      latest: ${{ steps.latest.outputs.latest || '' }}
+    steps:
+      - id: latest
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name == 'push'
+        run: echo "latest=latest" >> $GITHUB_OUTPUT
 
   unit-tests:
     permissions:
@@ -82,9 +91,22 @@ jobs:
           cache-dependency-path: components/compass-runtime-agent/go.sum
       - name: Run unit tests
         working-directory: ./components/compass-runtime-agent
+        env:
+          ARTIFACTS: "./"
         run: |
+          set -o pipefail
           touch test.log
           make test | tee -a test.log
+      - name: coveralls github action
+        uses: coverallsapp/github-action@v2.3.6
+        with:
+          format: golang
+          file: ./components/compass-runtime-agent/filtered.cov
+          fail-on-error: false
+          base-path: /components/compass-runtime-agent
+          flag-name: CRA
+          carryforward: ACM,CACV,CAG
+          build-number: ${{ github.sha }}
       - name: Archive test results
         if: success() || failure()
         uses: actions/upload-artifact@v4
@@ -104,12 +126,28 @@ jobs:
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
 
+  k3d-PR-integration:
+    # we're using reusable because we can't modify workflows as contributors
+    # it could cause the secret leakeages
+    uses: "./.github/workflows/reusable-k3d-agent-test.yml"
+    needs: build-image
+    with:
+      k3d-version: v5.8.3
+      cra-image: ${{ fromJSON(needs.build-image.outputs.images)[0] }}
+      artifact-prefix: "pr-"
+    secrets:
+      compass-host: ${{ secrets.COMPASS_HOST }}
+      compass-client-id: ${{ secrets.COMPASS_CLIENT_ID }}
+      compass-client-secret: ${{ secrets.COMPASS_CLIENT_SECRET }}
+
   k3d-integration:
     # we're using reusable because we can't modify workflows as contributors
     # it could cause the secret leakeages
     uses: "./.github/workflows/reusable-k3d-agent-test.yml"
+    if: github.ref == 'refs/heads/main'
     with:
-      k3d-version: v5.6.0
+      k3d-version: v5.8.3
+      cra-image: ""
     secrets:
       compass-host: ${{ secrets.COMPASS_HOST }}
       compass-client-id: ${{ secrets.COMPASS_CLIENT_ID }}
@@ -125,13 +163,15 @@ jobs:
       context: tests
 
   build-image:
-    needs: setup
+    needs: [setup, tags]
     if: needs.setup.outputs.cra == 'true'
     uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
     with:
       name: compass-runtime-agent
       dockerfile: Dockerfile
       context: components/compass-runtime-agent
+      tags: |
+        ${{ needs.tags.outputs.latest }}
 
   print-images:
     runs-on: ubuntu-latest

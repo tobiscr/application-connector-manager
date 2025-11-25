@@ -41,11 +41,17 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.tag.outputs.tag }}
+      tag: ${{ steps.tag.outputs.tag || '' }}
+      # set to {tag}-experimental if tag is set, otherwise set to empty string
+      tag-experimental: ${{ steps.tag.outputs.tag && format('{0}-experimental', steps.tag.outputs.tag) || '' }}
+      latest: ${{ steps.latest.outputs.latest || '' }}
     steps:
       - id: tag
         if: github.event_name == 'push' && github.ref_type == 'tag'
         run: echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+      - id: latest
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name == 'push'
+        run: echo "latest=latest" >> $GITHUB_OUTPUT
 
   unit-tests:
     runs-on: ubuntu-latest
@@ -56,11 +62,45 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Set up go environment
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
       - name: Run unit tests
-        run: make test | tee test.log
+        run: |
+          set -o pipefail
+          make test | tee test.log
+      - name: filter out coverage
+        run: |
+          #!/bin/bash
+
+          filters=(
+              "github.com/kyma-project/application-connector-manager/api"
+              "mock"
+              "testing"
+          )
+
+          input="cover.out"
+          output="cover-filtered.out"
+
+          cp "$input" "$output"
+
+          for i in "${filters[@]}"; do
+            echo "filtering $i"
+            cp "$output" "$output~"
+            grep --invert-match $i "$output~" > "$output"
+            wc -l $output
+          done
+          rm "$output~"
+      - name: coveralls github action
+        uses: coverallsapp/github-action@v2.3.6
+        with:
+          format: golang
+          file: ./cover-filtered.out
+          fail-on-error: false
+          base-path: /
+          flag-name: ACM
+          carryforward: CACV,CAG,CRA
+          build-number: ${{ github.sha }}
       - name: Archive test results
         uses: actions/upload-artifact@v4
         if: success() || failure()
@@ -87,7 +127,10 @@ jobs:
       name: application-connector-manager
       dockerfile: Dockerfile
       context: .
-      tags: ${{ needs.setup.outputs.tag }}
+      tags: |
+        ${{ needs.setup.outputs.tag }}
+        ${{ needs.setup.outputs.tag-experimental }}
+        ${{ needs.setup.outputs.latest }}
 
   print-images:
     runs-on: ubuntu-latest
