@@ -1,6 +1,6 @@
 module github.com/kyma-project/kyma/components/central-application-gateway
 
-go 1.25
+go 1.25.5
 
 require (
 	github.com/gorilla/mux v1.8.1
@@ -51,12 +51,12 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/net v0.44.0 // indirect
-	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
-	golang.org/x/term v0.35.0 // indirect
-	golang.org/x/text v0.29.0 // indirect
-	golang.org/x/time v0.13.0 // indirect
+	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/oauth2 v0.34.0 // indirect
+	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/term v0.38.0 // indirect
+	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/time v0.14.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
@@ -71,10 +71,11 @@ require (
 )
 
 replace (
-	golang.org/x/net => golang.org/x/net v0.44.0
-	golang.org/x/sys => golang.org/x/sys v0.35.0
-	golang.org/x/term => golang.org/x/term v0.35.0
-	golang.org/x/text => golang.org/x/text v0.29.0
-	golang.org/x/time => golang.org/x/time v0.13.0
-	golang.org/x/tools => golang.org/x/tools v0.36.0
+	golang.org/x/crypto => golang.org/x/crypto v0.46.0
+	golang.org/x/net => golang.org/x/net v0.48.0
+	golang.org/x/oauth2 => golang.org/x/oauth2 v0.34.0
+	golang.org/x/sys => golang.org/x/sys v0.39.0
+	golang.org/x/term => golang.org/x/term v0.38.0
+	golang.org/x/text => golang.org/x/text v0.32.0
+	golang.org/x/time => golang.org/x/time v0.14.0
 )
