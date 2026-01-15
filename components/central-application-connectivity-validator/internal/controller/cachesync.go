@@ -74,6 +74,8 @@ func (c *cacheSync) Init(ctx context.Context) {
 	for _, app := range applicationList.Items {
 		c.syncApplication(&app)
 	}
+
+	c.log.WithContext().Infof("Cache initialisation finished successfully")
 }
 
 func (c *cacheSync) Sync(ctx context.Context, applicationName string) error {
