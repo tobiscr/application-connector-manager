@@ -2,13 +2,14 @@ package controller
 
 import (
 	"context"
+	"strings"
+
 	"github.com/kyma-project/kyma/components/central-application-connectivity-validator/internal/logging/logger"
 	"github.com/kyma-project/kyma/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
 	gocache "github.com/patrickmn/go-cache"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"strings"
 )
 
 type CacheSync interface {
@@ -98,6 +99,8 @@ func (c *cacheSync) Sync(ctx context.Context, applicationName string) error {
 }
 
 func (c *cacheSync) syncApplication(application *v1alpha1.Application) {
+	c.log.WithContext().With("controller", c.controllerName).Infof("Syncing application: %s", application.Name)
+
 	key := application.Name
 	if !application.DeletionTimestamp.IsZero() {
 		c.appCache.Delete(key)
