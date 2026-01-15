@@ -39,8 +39,6 @@ func (c *controller) Reconcile(ctx context.Context, request reconcile.Request) (
 
 func (c *controller) SetupWithManager(mgr ctrl.Manager) error {
 
-	//c.cacheSync.Init(context.Background())
-
 	if err := ctrl.NewControllerManagedBy(mgr).
 		For(&v1alpha1.Application{}).
 		Complete(c); err != nil {
