@@ -67,7 +67,7 @@ func (c *cacheSync) Init(ctx context.Context) {
 	}
 
 	if err != nil {
-		c.log.WithContext().Warnf("Unable to read applications")
+		c.log.WithContext().Warnf("Unable to read applications: %s", err.Error())
 	}
 
 	for _, app := range applicationList.Items {
