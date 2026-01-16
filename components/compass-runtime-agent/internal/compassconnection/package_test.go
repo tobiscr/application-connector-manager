@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/kyma-incubator/compass/components/director/pkg/str"
+	ctrlCache "sigs.k8s.io/controller-runtime/pkg/cache"
 
 	"github.com/kyma-incubator/compass/components/director/pkg/correlation"
 
@@ -140,7 +141,12 @@ var (
 func TestCompassConnectionController(t *testing.T) {
 
 	syncPeriodTime := syncPeriod
-	ctrlManager, err := manager.New(cfg, manager.Options{SyncPeriod: &syncPeriodTime})
+	ctrlManager, err := manager.New(cfg, manager.Options{
+		Cache: ctrlCache.Options{
+			SyncPeriod: &syncPeriodTime,
+		},
+	})
+
 	require.NoError(t, err)
 
 	// Credentials manager
@@ -504,7 +510,11 @@ func TestCompassConnectionController(t *testing.T) {
 func TestFailedToInitializeConnection(t *testing.T) {
 
 	syncPeriodTime := syncPeriod
-	ctrlManager, err := manager.New(cfg, manager.Options{SyncPeriod: &syncPeriodTime})
+	ctrlManager, err := manager.New(cfg, manager.Options{
+		Cache: ctrlCache.Options{
+			SyncPeriod: &syncPeriodTime,
+		},
+	})
 	require.NoError(t, err)
 
 	// Connector token client
