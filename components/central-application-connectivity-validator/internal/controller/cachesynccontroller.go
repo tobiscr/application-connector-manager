@@ -39,9 +39,19 @@ func (c *controller) Reconcile(ctx context.Context, request reconcile.Request) (
 
 func (c *controller) SetupWithManager(mgr ctrl.Manager) error {
 
-	c.cacheSync.Init(context.Background())
-
-	return ctrl.NewControllerManagedBy(mgr).
+	if err := ctrl.NewControllerManagedBy(mgr).
 		For(&v1alpha1.Application{}).
-		Complete(c)
+		Complete(c); err != nil {
+		return err
+	}
+
+	// Initialize cache after manager starts and leader election is completed in case it's enabled
+	go func() {
+		<-mgr.Elected()
+		if mgr.GetCache().WaitForCacheSync(context.Background()) {
+			c.cacheSync.Init(context.Background())
+		}
+	}()
+
+	return nil
 }
