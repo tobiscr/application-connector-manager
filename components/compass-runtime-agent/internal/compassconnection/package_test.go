@@ -549,8 +549,8 @@ func TestFailedToInitializeConnection(t *testing.T) {
 			t.Logf("error while deleting Compass Connection: %s", err.Error())
 		}
 	}()
-	//cancelFunc, _ := StartTestManager(t, ctrlManager)
-	//defer cancelFunc()
+	cancelFunc, _ := StartTestManager(t, ctrlManager)
+	defer cancelFunc()
 
 	initConnectionIfNotExist := func() {
 		_, err := compassConnectionCRClient.Get(context.Background(), compassConnectionName, v1.GetOptions{})
