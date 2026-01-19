@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/kyma-incubator/compass/components/director/pkg/str"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	ctrlCache "sigs.k8s.io/controller-runtime/pkg/cache"
 
 	"github.com/kyma-incubator/compass/components/director/pkg/correlation"
@@ -192,6 +193,7 @@ func TestCompassConnectionController(t *testing.T) {
 		ConnectionDataCache:          connectionDataCache,
 
 		RuntimeURLsConfig: runtimeURLsConfig,
+		TestConfiguration: true,
 	}
 
 	supervisor, err := baseDependencies.InitializeController()
@@ -505,9 +507,7 @@ func TestCompassConnectionController(t *testing.T) {
 	})
 }
 
-/* Disable temporarily flaky test
 func TestFailedToInitializeConnection(t *testing.T) {
-
 
 	syncPeriodTime := syncPeriod
 	ctrlManager, err := manager.New(cfg, manager.Options{
@@ -537,6 +537,7 @@ func TestFailedToInitializeConnection(t *testing.T) {
 		ConfigProvider:               configProviderMock,
 		CertValidityRenewalThreshold: 0.3,
 		MinimalCompassSyncTime:       minimalConfigSyncTime,
+		TestConfiguration:            true,
 	}
 
 	supervisor, err := baseDependencies.InitializeController()
@@ -548,8 +549,8 @@ func TestFailedToInitializeConnection(t *testing.T) {
 			t.Logf("error while deleting Compass Connection: %s", err.Error())
 		}
 	}()
-	cancelFunc, _ := StartTestManager(t, ctrlManager)
-	defer cancelFunc()
+	//cancelFunc, _ := StartTestManager(t, ctrlManager)
+	//defer cancelFunc()
 
 	initConnectionIfNotExist := func() {
 		_, err := compassConnectionCRClient.Get(context.Background(), compassConnectionName, v1.GetOptions{})
@@ -648,7 +649,7 @@ func TestFailedToInitializeConnection(t *testing.T) {
 			require.NoError(t, waitForResourceUpdate(v1alpha1.ConnectionFailed))
 		})
 	}
-}*/
+}
 
 func waitFor(interval, timeout time.Duration, isDone func() bool) error {
 	done := time.After(timeout)

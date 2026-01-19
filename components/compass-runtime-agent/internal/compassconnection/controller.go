@@ -20,10 +20,6 @@ import (
 	"github.com/kyma-project/kyma/components/compass-runtime-agent/pkg/apis/compass/v1alpha1"
 )
 
-const (
-	controllerName = "compass-connection-controller"
-)
-
 type Client interface {
 	Get(ctx context.Context, key client.ObjectKey, obj client.Object, opts ...client.GetOption) error
 	Update(ctx context.Context, obj client.Object, opts ...client.UpdateOption) error
@@ -46,15 +42,16 @@ func InitCompassConnectionController(
 	mgr manager.Manager,
 	supervisor Supervisor,
 	minimalConfigSyncTime time.Duration,
-	configProvider config.Provider) error {
+	configProvider config.Provider,
+	ctrlName string) error {
 
 	reconciler := newReconciler(mgr.GetClient(), supervisor, minimalConfigSyncTime, configProvider)
 
-	return startController(mgr, reconciler)
+	return startController(mgr, reconciler, ctrlName)
 }
 
-func startController(mgr manager.Manager, reconciler reconcile.Reconciler) error {
-	c, err := controller.New(controllerName, mgr, controller.Options{Reconciler: reconciler})
+func startController(mgr manager.Manager, reconciler reconcile.Reconciler, ctrlName string) error {
+	c, err := controller.New(ctrlName, mgr, controller.Options{Reconciler: reconciler})
 	if err != nil {
 		return err
 	}
