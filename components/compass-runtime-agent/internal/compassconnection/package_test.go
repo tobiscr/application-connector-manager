@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/kyma-incubator/compass/components/director/pkg/str"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	ctrlCache "sigs.k8s.io/controller-runtime/pkg/cache"
 
 	"github.com/kyma-incubator/compass/components/director/pkg/correlation"
-
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/compass/cache"
 
@@ -140,7 +140,12 @@ var (
 func TestCompassConnectionController(t *testing.T) {
 
 	syncPeriodTime := syncPeriod
-	ctrlManager, err := manager.New(cfg, manager.Options{SyncPeriod: &syncPeriodTime})
+	ctrlManager, err := manager.New(cfg, manager.Options{
+		Cache: ctrlCache.Options{
+			SyncPeriod: &syncPeriodTime,
+		},
+	})
+
 	require.NoError(t, err)
 
 	// Credentials manager
@@ -188,6 +193,7 @@ func TestCompassConnectionController(t *testing.T) {
 		ConnectionDataCache:          connectionDataCache,
 
 		RuntimeURLsConfig: runtimeURLsConfig,
+		TestConfiguration: true,
 	}
 
 	supervisor, err := baseDependencies.InitializeController()
@@ -504,7 +510,11 @@ func TestCompassConnectionController(t *testing.T) {
 func TestFailedToInitializeConnection(t *testing.T) {
 
 	syncPeriodTime := syncPeriod
-	ctrlManager, err := manager.New(cfg, manager.Options{SyncPeriod: &syncPeriodTime})
+	ctrlManager, err := manager.New(cfg, manager.Options{
+		Cache: ctrlCache.Options{
+			SyncPeriod: &syncPeriodTime,
+		},
+	})
 	require.NoError(t, err)
 
 	// Connector token client
@@ -527,6 +537,7 @@ func TestFailedToInitializeConnection(t *testing.T) {
 		ConfigProvider:               configProviderMock,
 		CertValidityRenewalThreshold: 0.3,
 		MinimalCompassSyncTime:       minimalConfigSyncTime,
+		TestConfiguration:            true,
 	}
 
 	supervisor, err := baseDependencies.InitializeController()
