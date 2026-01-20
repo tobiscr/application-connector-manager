@@ -104,7 +104,7 @@ func sFnRegisterDependencyWatch(_ context.Context, r *fsm, s *systemState) (stat
 
 		src := source.Kind[client.Object](
 			r.Cache,
-			&u,
+			&obj,
 			handler.EnqueueRequestsFromMapFunc(r.MapFunc),
 			predicate.And[client.Object](labelSelectorPredicate, objPredicate),
 		)
