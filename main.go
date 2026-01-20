@@ -19,6 +19,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 
 	"go.uber.org/zap"
@@ -94,23 +95,31 @@ func main() {
 	}
 
 	file, err := os.Open("application-connector.yaml")
+
 	if err != nil {
-		setupLog.Error(err, "unable to open k8s data")
+		setupLog.Error(err, "unable to open application-connector.yaml")
+		os.Exit(1)
 	}
 
 	data, err := yaml.LoadData(file)
+	_ = file.Close()
+
 	if err != nil {
-		setupLog.Error(err, "unable to load k8s data")
+		setupLog.Error(err, "unable to load k8s data from application-connector.yaml")
 		os.Exit(1)
 	}
 
 	file2, err := os.Open("application-connector-dependencies.yaml")
 	if err != nil {
 		setupLog.Error(err, "unable to open k8s data")
+		os.Exit(1)
 	}
+
 	data2, err := yaml.LoadData(file2)
+	_ = file2.Close()
+
 	if err != nil {
-		setupLog.Error(err, "unable to load k8s data")
+		setupLog.Error(err, "unable to load k8s data from application-connector-dependencies.yaml")
 		os.Exit(1)
 	}
 
@@ -131,7 +140,7 @@ func main() {
 	//nolint:staticcheck ignore deprecation of EventRecorder for some time
 	appConReconciler := controllers.NewApplicationConnetorReconciler(
 		mgr.GetClient(),
-		mgr.GetEventRecorderFor("application-connector-manager"),
+		mgr.GetEventRecorderFor("application-connector-manager"), //nolint:staticcheck ignore deprecation of EventRecorder for some time
 		appConLogger.Sugar(),
 		data,
 		data2,
@@ -146,8 +155,8 @@ func main() {
 		setupLog.Error(err, "unable to set up health check")
 		os.Exit(1)
 	}
-	if err := mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
-		setupLog.Error(err, "unable to set up ready check")
+	if err := mgr.AddReadyzCheck("cache-sync", cacheSyncCheck(mgr.GetCache())); err != nil {
+		setupLog.Error(err, "unable to set up ready cache-sync check")
 		os.Exit(1)
 	}
 
@@ -155,5 +164,17 @@ func main() {
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
+	}
+}
+
+// Helper checking, if cache (Informers) is in sync
+func cacheSyncCheck(c cache.Cache) healthz.Checker {
+	return func(req *http.Request) error {
+		synced := c.WaitForCacheSync(req.Context())
+
+		if !synced {
+			return fmt.Errorf("cache not synced yet")
+		}
+		return nil
 	}
 }
