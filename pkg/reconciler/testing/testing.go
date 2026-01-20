@@ -63,7 +63,7 @@ func LoadTestData(st StateTest) (map[string][]unstructured.Unstructured, error) 
 		// extract data from data file
 		data, err := yaml.LoadData(file)
 		if err != nil {
-			return nil, fmt.Errorf("unable to extrat content from test data file: %w", err)
+			return nil, fmt.Errorf("unable to extract content from test data file: %w", err)
 		}
 		result[e.Name()] = data
 	}
