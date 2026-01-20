@@ -23,6 +23,7 @@ func sFnApply(ctx context.Context, r *fsm, s *systemState) (stateFn, *ctrl.Resul
 			With("ns", obj.GetNamespace()).
 			Debug("applying")
 
+		//nolint:staticcheck ignore deprecation of client.Apply for now
 		err := r.Patch(ctx, &obj, client.Apply, &client.PatchOptions{
 			Force:        ptr.To[bool](true),
 			FieldManager: "application-connector-manager",

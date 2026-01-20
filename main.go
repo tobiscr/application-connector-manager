@@ -128,6 +128,7 @@ func main() {
 
 	setupLog.Info(fmt.Sprintf("log level set to: %s", appConLogger.Level()))
 
+	//nolint:staticcheck ignore deprecation of EventRecorder for some time
 	appConReconciler := controllers.NewApplicationConnetorReconciler(
 		mgr.GetClient(),
 		mgr.GetEventRecorderFor("application-connector-manager"),
