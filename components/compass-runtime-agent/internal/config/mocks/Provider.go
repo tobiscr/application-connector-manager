@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	config "github.com/kyma-project/kyma/components/compass-runtime-agent/internal/config"
+	config "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/config"
 	mock "github.com/stretchr/testify/mock"
 )
 

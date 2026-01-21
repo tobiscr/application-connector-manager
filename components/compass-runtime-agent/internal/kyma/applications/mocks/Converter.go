@@ -3,8 +3,8 @@
 package mocks
 
 import (
-	v1alpha1 "github.com/kyma-project/kyma/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
-	model "github.com/kyma-project/kyma/components/compass-runtime-agent/internal/kyma/model"
+	v1alpha1 "github.com/kyma-project/application-connector-manager/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
+	model "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/kyma/model"
 	mock "github.com/stretchr/testify/mock"
 )
 

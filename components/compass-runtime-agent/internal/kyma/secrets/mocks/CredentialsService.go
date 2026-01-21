@@ -3,12 +3,12 @@
 package mocks
 
 import (
-	apperrors "github.com/kyma-project/kyma/components/compass-runtime-agent/internal/apperrors"
-	applications "github.com/kyma-project/kyma/components/compass-runtime-agent/internal/kyma/applications"
+	apperrors "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/apperrors"
+	applications "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/kyma/applications"
 
 	mock "github.com/stretchr/testify/mock"
 
-	model "github.com/kyma-project/kyma/components/compass-runtime-agent/internal/kyma/model"
+	model "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/kyma/model"
 
 	types "k8s.io/apimachinery/pkg/types"
 )

@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	v1alpha1 "github.com/kyma-project/kyma/components/compass-runtime-agent/pkg/apis/compass/v1alpha1"
+	v1alpha1 "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/pkg/apis/compass/v1alpha1"
 	mock "github.com/stretchr/testify/mock"
 )
 

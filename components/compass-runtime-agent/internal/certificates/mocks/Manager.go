@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	certificates "github.com/kyma-project/kyma/components/compass-runtime-agent/internal/certificates"
+	certificates "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/certificates"
 	mock "github.com/stretchr/testify/mock"
 )
 
