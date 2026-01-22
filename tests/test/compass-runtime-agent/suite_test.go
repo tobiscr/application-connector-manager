@@ -17,13 +17,13 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/applications"
-	"github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/director"
-	"github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/graphql"
-	initcra "github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/init"
-	compassruntimeagentinittypes "github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/init/types"
-	"github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/oauth"
-	"github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/random"
+	"github.com/kyma-project/application-connector-manager/tests/test/compass-runtime-agent/testkit/applications"
+	"github.com/kyma-project/application-connector-manager/tests/test/compass-runtime-agent/testkit/director"
+	"github.com/kyma-project/application-connector-manager/tests/test/compass-runtime-agent/testkit/graphql"
+	initcra "github.com/kyma-project/application-connector-manager/tests/test/compass-runtime-agent/testkit/init"
+	compassruntimeagentinittypes "github.com/kyma-project/application-connector-manager/tests/test/compass-runtime-agent/testkit/init/types"
+	"github.com/kyma-project/application-connector-manager/tests/test/compass-runtime-agent/testkit/oauth"
+	"github.com/kyma-project/application-connector-manager/tests/test/compass-runtime-agent/testkit/random"
 )
 
 type CompassRuntimeAgentSuite struct {

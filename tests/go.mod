@@ -1,4 +1,4 @@
-module github.com/kyma-project/application-connector-manager/tests/components/application-connector
+module github.com/kyma-project/application-connector-manager/tests
 
 go 1.25.6
 

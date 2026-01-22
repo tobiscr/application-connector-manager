@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	oauth "github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/oauth"
+	oauth "github.com/kyma-project/application-connector-manager/tests/test/compass-runtime-agent/testkit/oauth"
 	mock "github.com/stretchr/testify/mock"
 )
 
