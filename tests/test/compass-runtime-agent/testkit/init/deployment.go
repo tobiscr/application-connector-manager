@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/avast/retry-go"
-	"github.com/kyma-project/kyma/tests/components/application-connector/test/compass-runtime-agent/testkit/init/types"
+	"github.com/kyma-project/application-connector-manager/tests/components/application-connector/test/compass-runtime-agent/testkit/init/types"
 	"github.com/pkg/errors"
 	v12 "k8s.io/api/apps/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"

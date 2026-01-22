@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"github.com/kyma-project/kyma/tests/components/application-connector/internal/testkit/test-api"
+	"github.com/kyma-project/application-connector-manager/tests/components/application-connector/internal/testkit/test-api"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"

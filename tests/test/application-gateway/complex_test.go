@@ -3,7 +3,7 @@ package application_gateway
 import (
 	"time"
 
-	"github.com/kyma-project/kyma/tests/components/application-connector/internal/testkit/httpd"
+	"github.com/kyma-project/application-connector-manager/tests/components/application-connector/internal/testkit/httpd"
 )
 
 func (gs *GatewaySuite) TestComplex() {
