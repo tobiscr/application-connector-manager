@@ -1,11 +1,11 @@
-module github.com/kyma-project/kyma/components/central-application-connectivity-validator
+module github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator
 
-go 1.25.5
+go 1.25.6
 
 require (
 	github.com/go-logr/zapr v1.3.0
 	github.com/gorilla/mux v1.8.1
-	github.com/kyma-project/kyma/components/central-application-gateway v0.0.0-20230130154909-4c81ab2cee61
+	github.com/kyma-project/application-connector-manager/components/central-application-gateway v0.0.0-20260121152147-3c2682d7e0e1
 	github.com/oklog/run v1.2.0
 	github.com/onsi/ginkgo/v2 v2.27.5
 	github.com/onsi/gomega v1.39.0
@@ -27,6 +27,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emicklei/go-restful/v3 v3.13.0 // indirect
+	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
 	github.com/evanphx/json-patch/v5 v5.9.11 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
