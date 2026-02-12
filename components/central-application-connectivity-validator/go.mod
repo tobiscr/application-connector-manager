@@ -1,6 +1,6 @@
 module github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator
 
-go 1.25.7
+go 1.26.0
 
 require (
 	github.com/go-logr/zapr v1.3.0
