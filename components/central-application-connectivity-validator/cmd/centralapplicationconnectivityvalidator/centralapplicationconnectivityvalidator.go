@@ -10,17 +10,17 @@ import (
 	"syscall"
 	"time"
 
-	"sigs.k8s.io/controller-runtime/pkg/client"
-
+	ctrlCache "sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	"github.com/kyma-project/kyma/common/logging/logger"
-	"github.com/kyma-project/kyma/common/logging/tracing"
-	"github.com/kyma-project/kyma/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/logging/logger"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/logging/tracing"
+	"github.com/kyma-project/application-connector-manager/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
 
-	"github.com/kyma-project/kyma/components/central-application-connectivity-validator/internal/controller"
-	"github.com/kyma-project/kyma/components/central-application-connectivity-validator/internal/externalapi"
-	"github.com/kyma-project/kyma/components/central-application-connectivity-validator/internal/validationproxy"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/controller"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/externalapi"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/validationproxy"
 	"github.com/oklog/run"
 	"github.com/patrickmn/go-cache"
 
@@ -47,20 +47,20 @@ func main() {
 	options, err := parseOptions()
 	if err != nil {
 		if logErr := logger.LogFatalError("Failed to parse options: %s", err.Error()); logErr != nil {
-			fmt.Printf("Failed to initializie default fatal error logger: %s,Failed to parse options: %s", logErr, err)
+			fmt.Printf("Failed to initialize default fatal error logger: %s,Failed to parse options: %s", logErr, err)
 		}
 		os.Exit(1)
 	}
 	if err = options.validate(); err != nil {
 		if logErr := logger.LogFatalError("Failed to validate options: %s", err.Error()); logErr != nil {
-			fmt.Printf("Failed to initializie default fatal error logger: %s,Failed to validate options: %s", logErr, err)
+			fmt.Printf("Failed to initialize default fatal error logger: %s,Failed to validate options: %s", logErr, err)
 		}
 		os.Exit(1)
 	}
 	level, err := logger.MapLevel(options.LogLevel)
 	if err != nil {
 		if logErr := logger.LogFatalError("Failed to map log level from options: %s", err.Error()); logErr != nil {
-			fmt.Printf("Failed to initializie default fatal error logger: %s, Failed to map log level from options: %s", logErr, err)
+			fmt.Printf("Failed to initialize default fatal error logger: %s, Failed to map log level from options: %s", logErr, err)
 		}
 
 		os.Exit(2)
@@ -68,19 +68,19 @@ func main() {
 	format, err := logger.MapFormat(options.LogFormat)
 	if err != nil {
 		if logErr := logger.LogFatalError("Failed to map log format from options: %s", err.Error()); logErr != nil {
-			fmt.Printf("Failed to initializie default fatal error logger: %s, Failed to map log format from options: %s", logErr, err)
+			fmt.Printf("Failed to initialize default fatal error logger: %s, Failed to map log format from options: %s", logErr, err)
 		}
 		os.Exit(3)
 	}
 	log, err := logger.New(format, level)
 	if err != nil {
 		if logErr := logger.LogFatalError("Failed to initialize logger: %s", err.Error()); logErr != nil {
-			fmt.Printf("Failed to initializie default fatal error logger: %s, Failed to initialize logger: %s", logErr, err)
+			fmt.Printf("Failed to initialize default fatal error logger: %s, Failed to initialize logger: %s", logErr, err)
 		}
 		os.Exit(4)
 	}
 	if err := logger.InitKlog(log, level); err != nil {
-		log.WithContext().Error("While initializing klog logger: %s", err.Error())
+		log.WithContext().Error("While initialising klog logger: %s", err.Error())
 		os.Exit(5)
 	}
 
@@ -116,13 +116,15 @@ func main() {
 	}
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme:             scheme,
-		MetricsBindAddress: "0",
-		SyncPeriod:         &options.syncPeriod,
-		ClientDisableCacheFor: []client.Object{
-			&v1alpha1.Application{},
+		Scheme: scheme,
+		Cache: ctrlCache.Options{
+			SyncPeriod: &options.syncPeriod, // This applies to all cached resources
+		},
+		Metrics: metricsserver.Options{
+			BindAddress: "0", // disable metrics
 		},
 	})
+
 	if err != nil {
 		log.WithContext().Error("Unable to start manager: %s", err.Error())
 		os.Exit(1)

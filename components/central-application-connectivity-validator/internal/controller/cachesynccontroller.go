@@ -3,8 +3,8 @@ package controller
 import (
 	"context"
 
-	"github.com/kyma-project/kyma/common/logging/logger"
-	"github.com/kyma-project/kyma/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/logging/logger"
+	"github.com/kyma-project/application-connector-manager/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
 	gocache "github.com/patrickmn/go-cache"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -39,9 +39,19 @@ func (c *controller) Reconcile(ctx context.Context, request reconcile.Request) (
 
 func (c *controller) SetupWithManager(mgr ctrl.Manager) error {
 
-	c.cacheSync.Init(context.Background())
-
-	return ctrl.NewControllerManagedBy(mgr).
+	if err := ctrl.NewControllerManagedBy(mgr).
 		For(&v1alpha1.Application{}).
-		Complete(c)
+		Complete(c); err != nil {
+		return err
+	}
+
+	// Initialize cache after manager starts and leader election is completed in case it's enabled
+	go func() {
+		<-mgr.Elected()
+		if mgr.GetCache().WaitForCacheSync(context.Background()) {
+			c.cacheSync.Init(context.Background())
+		}
+	}()
+
+	return nil
 }

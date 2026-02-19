@@ -2,20 +2,22 @@ package main
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/kyma-incubator/compass/components/director/pkg/correlation"
 	"github.com/kyma-incubator/compass/components/director/pkg/str"
+	ctrlCache "sigs.k8s.io/controller-runtime/pkg/cache"
 
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/certificates"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/compass"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/compass/cache"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/compassconnection"
-	confProvider "github.com/kyma-project/kyma/components/compass-runtime-agent/internal/config"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/graphql"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/healthz"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/kyma"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/secrets"
-	apis "github.com/kyma-project/kyma/components/compass-runtime-agent/pkg/apis/compass/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/certificates"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/compass"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/compass/cache"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/compassconnection"
+	confProvider "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/config"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/graphql"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/healthz"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/kyma"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/secrets"
+	apis "github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/pkg/apis/compass/v1alpha1"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -55,7 +57,12 @@ func main() {
 	agentConfigSecret := parseNamespacedName(options.AgentConfigurationSecret)
 
 	log.Info("Setting up manager")
-	mgr, err := manager.New(cfg, manager.Options{SyncPeriod: &options.ControllerSyncPeriod})
+	mgr, err := manager.New(cfg, manager.Options{
+		Cache: ctrlCache.Options{
+			SyncPeriod: &options.ControllerSyncPeriod, // This applies to all cached resources
+		},
+	})
+
 	exitOnError(err, "Failed to set up overall controller manager")
 
 	// Setup Scheme for all resources

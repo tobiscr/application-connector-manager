@@ -6,6 +6,7 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	ctrlCache "sigs.k8s.io/controller-runtime/pkg/cache"
 
 	"context"
 	"io"
@@ -14,11 +15,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kyma-project/kyma/common/logging/logger"
-	"github.com/kyma-project/kyma/common/logging/tracing"
-	"github.com/kyma-project/kyma/components/central-application-connectivity-validator/internal/controller"
-	"github.com/kyma-project/kyma/components/central-application-connectivity-validator/internal/validationproxy"
-	"github.com/kyma-project/kyma/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/controller"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/logging/logger"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/logging/tracing"
+	"github.com/kyma-project/application-connector-manager/components/central-application-connectivity-validator/internal/validationproxy"
+	"github.com/kyma-project/application-connector-manager/components/central-application-gateway/pkg/apis/applicationconnector/v1alpha1"
 	"github.com/patrickmn/go-cache"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
@@ -50,7 +51,7 @@ var (
 type testTransport struct {
 }
 
-func (t testTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (t testTransport) RoundTrip(_ *http.Request) (*http.Response, error) {
 	responseBody := "eventing-event-publisher-proxy.kyma-system: [OK]"
 	respReader := io.NopCloser(strings.NewReader(responseBody))
 	resp := http.Response{
@@ -89,8 +90,10 @@ var _ = BeforeSuite(func() {
 	Expect(k8sClient).NotTo(BeNil())
 
 	k8sManager, err := ctrl.NewManager(config, ctrl.Options{
-		Scheme:     scheme.Scheme,
-		SyncPeriod: pointer.Duration(time.Second * 2),
+		Scheme: scheme.Scheme,
+		Cache: ctrlCache.Options{
+			SyncPeriod: pointer.Duration(time.Second * 2),
+		},
 	})
 	Expect(err).ToNot(HaveOccurred())
 

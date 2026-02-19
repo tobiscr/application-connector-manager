@@ -1,23 +1,28 @@
 package compassconnection
 
 import (
+	"fmt"
 	"time"
 
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/compass/cache"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/compass/cache"
 
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/compass/director"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/compass/director"
 
 	"github.com/pkg/errors"
 
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/certificates"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/compass"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/config"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/internal/kyma"
-	"github.com/kyma-project/kyma/components/compass-runtime-agent/pkg/client/clientset/versioned/typed/compass/v1alpha1"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/certificates"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/compass"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/config"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/internal/kyma"
+	"github.com/kyma-project/application-connector-manager/components/compass-runtime-agent/pkg/client/clientset/versioned/typed/compass/v1alpha1"
 
 	"k8s.io/client-go/rest"
+)
+
+const (
+	controllerName = "compass-connection-controller"
 )
 
 type DependencyConfig struct {
@@ -33,6 +38,7 @@ type DependencyConfig struct {
 	RuntimeURLsConfig            director.RuntimeURLsConfig
 	CertValidityRenewalThreshold float64
 	MinimalCompassSyncTime       time.Duration
+	TestConfiguration            bool
 }
 
 func (config DependencyConfig) InitializeController() (Supervisor, error) {
@@ -56,7 +62,13 @@ func (config DependencyConfig) InitializeController() (Supervisor, error) {
 		config.RuntimeURLsConfig,
 		config.ConnectionDataCache)
 
-	if err := InitCompassConnectionController(config.ControllerManager, connectionSupervisor, config.MinimalCompassSyncTime, config.ConfigProvider); err != nil {
+	usedName := controllerName
+
+	if config.TestConfiguration {
+		usedName = fmt.Sprintf("compass-connection-controller-%d", time.Now().UnixNano())
+	}
+
+	if err := InitCompassConnectionController(config.ControllerManager, connectionSupervisor, config.MinimalCompassSyncTime, config.ConfigProvider, usedName); err != nil {
 		return nil, errors.Wrap(err, "Unable to register controllers to the manager")
 	}
 
